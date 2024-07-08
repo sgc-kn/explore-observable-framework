@@ -19,7 +19,7 @@ jobs:
       with:
         lfs: true
     
-    - name: Set up Python 3.11
+    - name: Use Python 3.11
       uses: actions/setup-python@v3
       with:
         python-version: "3.11"
@@ -39,3 +39,9 @@ jobs:
     - name: Build
       run: |
         npm run build
+
+    - name: Upload static HTML artifact
+      uses: actions/upload-github-pages-artifact@v3
+      with:
+        name: static-html
+        path: dist
