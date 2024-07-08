@@ -41,7 +41,7 @@ jobs:
         npm run build
 
     - name: Upload static HTML artifact
-      uses: actions/upload-github-pages-artifact@v3
+      uses: actions/upload-pages-artifact@v3
       with:
         name: static-html
         path: dist
