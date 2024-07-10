@@ -1,0 +1,33 @@
+name: 'minio upload'
+description: 'upload directory to s3-compatible storage'
+inputs:
+  endpoint:
+    description: 'MINIO_ENDPOINT'
+    required: true
+  access_key:
+    description: 'MINIO_ACCESS_KEY'
+    required: true
+  secret_key:
+    description: 'MINIO_SECRET_KEY'
+    required: true
+  bucket:
+    description: 'target bucket'
+    required: true
+  source_dir:
+    description: 'source directory'
+    required: false
+    default: 'public'
+  target_dir:
+    description: 'target directory'
+    required: false
+    default: '/'
+runs:
+  using: 'docker'
+  image: docker.io/bitnami/minio-client:latest
+  env:
+    MINIO_ENDPOINT: ${{ inputs.endpoint }}
+    MINIO_ACCESS_KEY: ${{ inputs.access_key }}
+    MINIO_SECRET_KEY: ${{ inputs.secret_key }}
+  args:
+    - ${{ inputs.source_dir }}
+    - '${{ inputs.bucket }}${{ inputs.target_dir }}'
