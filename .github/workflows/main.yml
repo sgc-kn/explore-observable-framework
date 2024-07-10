@@ -59,7 +59,7 @@ jobs:
       - name: Upload website to S3
         uses: ./.github/actions/minio-upload
         with:
-          host: s3-eu-central-1.ionoscloud.com
+          host: s3-eu-central-2.ionoscloud.com
           scheme: https
           port: 443
           access_key:  ${{ secrets.S3_ACCESS_KEY }}
