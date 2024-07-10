@@ -54,8 +54,6 @@ jobs:
         with:
           name: static-html
           path: dist
-      - name: Debug ls
-        run: ls -la
       - name: Upload website to S3
         uses: ./.github/actions/minio-upload
         with:
