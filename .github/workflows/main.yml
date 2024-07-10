@@ -63,7 +63,7 @@ jobs:
           secretKey:  ${{ secrets.S3_SECRET_KEY }}
           bucket: sgc-dashboard-preview-d98d665658f0
           source_dir: dist/
-          target_dir: /pr/${{ github.event.number }}/${{ github.sha }}
+          target_dir: /pr/${{ github.event.number }}/${{github.event.pull_request.head.sha}}
   
   advertise-pr-preview:
     needs: deploy-pr-preview
@@ -79,7 +79,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: "Preview deployed to https://sgc-dashboard-preview-d98d665658f0.s3-eu-central-2.ionoscloud.com/pr/${{ github.event.number }}/${{ github.sha }}/index.html"
+              body: "Preview deployed to https://sgc-dashboard-preview-d98d665658f0.s3-eu-central-2.ionoscloud.com/pr/${{github.event.number}}/${{github.event.pull_request.head.sha}}/index.html"
             })
             
   deploy-main:
