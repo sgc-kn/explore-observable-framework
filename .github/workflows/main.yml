@@ -48,11 +48,12 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - name: Download static HTML artifact
         uses: actions/download-artifact@v4
         with:
           name: static-html
-          path: .
+          path: dist
       - name: Debug ls
         run: ls -la
       - name: Upload website to S3
@@ -62,5 +63,5 @@ jobs:
           acces_key:  ${{ secrets.S3_ACCESS_KEY }}
           secret_key:  ${{ secrets.S3_SECRET_KEY }}
           bucket: github-dashboard-ci
-          source_dir: .
+          source_dir: dist/
           target_dir: /
