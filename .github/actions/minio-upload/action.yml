@@ -1,0 +1,46 @@
+name: 'minio upload'
+description: 'upload directory to s3-compatible storage'
+inputs:
+  url:
+    description: 'alias.json.url'
+    required: true
+  accessKey:
+    description: 'alias.json.accessKey'
+    required: true
+  secretKey:
+    description: 'alias.json.secretKey'
+    required: true
+  api:
+    description: 'alias.json.api'
+    required: true
+    default: 's3v4'
+  path:
+    description: 'minio-alias.json.path'
+    required: true
+    default: 'auto'
+  bucket:
+    description: 'target bucket'
+    required: true
+  source_dir:
+    description: 'source directory'
+    required: false
+    default: 'public'
+  target_dir:
+    description: 'target directory (with leading /)'
+    required: false
+    default: '/'
+runs:
+  using: 'docker'
+  image: Dockerfile
+  env:
+    MINIO_ALIAS_API: ${{ inputs.api }}
+    MINIO_ALIAS_URL: ${{ inputs.url }}
+    MINIO_ALIAS_PATH: ${{ inputs.path }}
+    MINIO_ALIAS_ACCESS_KEY: ${{ inputs.accessKey }}
+    MINIO_ALIAS_SECRET_KEY: ${{ inputs.secretKey }}
+  args:
+    - mc
+    - mirror
+    - --overwrite
+    - "${{ inputs.source_dir }}"
+    - "alias/${{ inputs.bucket }}${{ inputs.target_dir }}"
