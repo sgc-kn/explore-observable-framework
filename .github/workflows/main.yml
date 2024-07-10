@@ -81,7 +81,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: "Preview deployed to https://sgc-dashboard-preview-d98d665658f0.s3-eu-central-2.ionoscloud.com/pr/${{github.event.number}}/${{github.event.pull_request.head.sha}}/index.html"
-        })
+            })
 
   deploy-main:
     needs: build
