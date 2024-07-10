@@ -1,21 +1,23 @@
 name: 'minio upload'
 description: 'upload directory to s3-compatible storage'
 inputs:
-  host:
-    description: 'MINIO_SERVER_HOST'
+  url:
+    description: 'alias.json.url'
     required: true
-  scheme:
-    description: 'MINIO_SERVER_SCHEME'
+  accessKey:
+    description: 'alias.json.accessKey'
     required: true
-  port:
-    description: 'MINIO_SERVER_PORT'
+  secretKey:
+    description: 'alias.json.secretKey'
     required: true
-  access_key:
-    description: 'MINIO_ACCESS_KEY'
+  api:
+    description: 'alias.json.api'
     required: true
-  secret_key:
-    description: 'MINIO_SECRET_KEY'
+    default: 's3v4'
+  path:
+    description: 'minio-alias.json.path'
     required: true
+    default: 'auto'
   bucket:
     description: 'target bucket'
     required: true
@@ -29,16 +31,15 @@ inputs:
     default: '/'
 runs:
   using: 'docker'
-  image: docker.io/bitnami/minio-client:latest
+  image: Dockerfile
   env:
-    MINIO_SERVER_HOST: ${{ inputs.host }}
-    MINIO_SERVER_SCHEME: ${{ inputs.scheme }}
-    MINIO_SERVER_PORT: ${{ inputs.port }}
-    MINIO_SERVER_ACCESS_KEY: ${{ inputs.access_key }}
-    MINIO_SERVER_SECRET_KEY: ${{ inputs.secret_key }}
+    MINIO_ALIAS_API: ${{ inputs.api }}
+    MINIO_ALIAS_URL: ${{ inputs.url }}
+    MINIO_ALIAS_ACCESS_KEY: ${{ inputs.accessKey }}
+    MINIO_ALIAS_SECRET_KEY: ${{ inputs.secretKey }}
   args:
     - mc
     - mirror
     - --overwrite
     - "${{ inputs.source_dir }}"
-    - "minio/${{ inputs.bucket }}${{ inputs.target_dir }}"
+    - "alias/${{ inputs.bucket }}${{ inputs.target_dir }}"
