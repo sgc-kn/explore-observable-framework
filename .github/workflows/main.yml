@@ -65,8 +65,9 @@ jobs:
           source_dir: dist/
           target_dir: /preview/${{ github.sha }}
   
-  advertise:
-    needs: deploy
+  advertise-pr-preview:
+    needs: deploy-pr-preview
+    permissions: write-all
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
     steps:
