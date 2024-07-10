@@ -36,4 +36,9 @@ runs:
     MINIO_SERVER_PORT: ${{ inputs.port }}
     MINIO_SERVER_ACCESS_KEY: ${{ inputs.access_key }}
     MINIO_SERVER_SECRET_KEY: ${{ inputs.secret_key }}
-  entrypoint: "mc mirror --overwrite {{ inputs.source_dir }} "minio/${{ inputs.bucket }}${{ inputs.target_dir }}"
+  entrypoint:
+    - mc
+    - mirror
+    - --overwrite
+    - {{ inputs.source_dir }}
+    - "minio/${{ inputs.bucket }}${{ inputs.target_dir }}"
