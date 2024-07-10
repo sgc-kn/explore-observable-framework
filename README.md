@@ -1,3 +1,5 @@
+Preview of `main` branch (latest succesful CI build): https://sgc-dashboard-d0cafa4cdadf.s3-eu-central-2.ionoscloud.com/index.html
+
 # SGC Observable Framework Test
 
 This is an [Observable Framework](https://observablehq.com/framework) project. To start the local preview server, run:
