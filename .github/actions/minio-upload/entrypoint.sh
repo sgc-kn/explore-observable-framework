@@ -9,4 +9,4 @@ cat << EOF | mc alias import alias
 }
 EOF
 
-exec "$@"
+exec "/opt/bitnami/scripts/minio-client/entrypoint.sh" "$@"
