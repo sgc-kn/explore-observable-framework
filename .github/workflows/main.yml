@@ -64,6 +64,6 @@ jobs:
           port: 443
           access_key:  ${{ secrets.S3_ACCESS_KEY }}
           secret_key:  ${{ secrets.S3_SECRET_KEY }}
-          bucket: github-dashboard-ci
+          bucket: sgc-dashboard-d0cafa4cdadf
           source_dir: dist/
           target_dir: /
