@@ -37,6 +37,7 @@ runs:
     MINIO_SERVER_ACCESS_KEY: ${{ inputs.access_key }}
     MINIO_SERVER_SECRET_KEY: ${{ inputs.secret_key }}
   args:
+    - mc
     - mirror
     - --overwrite
     - "{{ inputs.source_dir }}"
