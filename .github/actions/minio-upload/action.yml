@@ -1,8 +1,14 @@
 name: 'minio upload'
 description: 'upload directory to s3-compatible storage'
 inputs:
-  endpoint:
-    description: 'MINIO_ENDPOINT'
+  host:
+    description: 'MINIO_SERVER_HOST'
+    required: true
+  scheme:
+    description: 'MINIO_SERVER_SCHEME'
+    required: true
+  port:
+    description: 'MINIO_SERVER_PORT'
     required: true
   access_key:
     description: 'MINIO_ACCESS_KEY'
@@ -25,9 +31,9 @@ runs:
   using: 'docker'
   image: docker.io/bitnami/minio-client:latest
   env:
-    MINIO_ENDPOINT: ${{ inputs.endpoint }}
-    MINIO_ACCESS_KEY: ${{ inputs.access_key }}
-    MINIO_SECRET_KEY: ${{ inputs.secret_key }}
-  args:
-    - ${{ inputs.source_dir }}
-    - '${{ inputs.bucket }}${{ inputs.target_dir }}'
+    MINIO_SERVER_HOST: ${{ inputs.host }}
+    MINIO_SERVER_SCHEME: ${{ inputs.scheme }}
+    MINIO_SERVER_PORT: ${{ inputs.port }}
+    MINIO_SERVER_ACCESS_KEY: ${{ inputs.access_key }}
+    MINIO_SERVER_SECRET_KEY: ${{ inputs.secret_key }}
+  entrypoint: "mc mirror --overwrite {{ inputs.source_dir }} "minio/${{ inputs.bucket }}${{ inputs.target_dir }}"
