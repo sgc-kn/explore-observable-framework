@@ -1,4 +1,4 @@
-#!/bin/sh -le
+#!/bin/sh -e
 
 cat << EOF | mc alias import alias
 {
