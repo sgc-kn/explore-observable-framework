@@ -40,5 +40,5 @@ runs:
     - mc
     - mirror
     - --overwrite
-    - "{{ inputs.source_dir }}"
+    - "${{ inputs.source_dir }}"
     - "minio/${{ inputs.bucket }}${{ inputs.target_dir }}"
