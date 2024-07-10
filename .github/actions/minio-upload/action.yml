@@ -35,6 +35,7 @@ runs:
   env:
     MINIO_ALIAS_API: ${{ inputs.api }}
     MINIO_ALIAS_URL: ${{ inputs.url }}
+    MINIO_ALIAS_PATH: ${{ inputs.path }}
     MINIO_ALIAS_ACCESS_KEY: ${{ inputs.accessKey }}
     MINIO_ALIAS_SECRET_KEY: ${{ inputs.secretKey }}
   args:
