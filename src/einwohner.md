@@ -58,7 +58,6 @@ const sortedData = Array.from(groupedData).sort((a, b) => {
 ```js
 const combinedData = sortedData.flatMap(item => item[1]);
 ```
-
 ```js
 //get select
 const select_ort = view( 
@@ -80,7 +79,7 @@ Plot.plot({
   width: 850,
   margin: 60, 
   marks: [
-    Plot.ruleY([0], {stroke: "rad"}),
+    Plot.ruleY([0], {stroke: "orange"}),
     Plot.axisX({fontSize: `${fontSize}`, tickRotate: -45,}),
     Plot.axisY({fontSize: `${fontSize}`, anchor: "right", ticks: 4, label: "Einwohner", tickFormat: d => d.toLocaleString('de-DE').replace(',', '.')
     }),    
@@ -118,49 +117,62 @@ Plot.plot({
   },
 )
 ```
-
+```js
+//color for charts
+const colorScale = d3.scaleOrdinal(d3.schemeCategory10)
+  .domain(d3.group(combinedData, d => d.STT).keys());
+```
+```js
+//add color to the array with Einwohner
+combinedData.forEach(d => {
+  d.color = colorScale(d.STT);
+});
+```
+```js
+const groupedData_new = d3.group(combinedData, (d) => d.STT);
+```
 ```js
 //get checkbox
-
-const checked_obj_pr = view(Inputs.checkbox(
-  d3.group(combinedData, (d) => d.STT),
+//const uniqueKeys = Array.from(d3.group(combinedData, d => d.STT).keys());
+const check_orts = view(Inputs.checkbox(
+  Array.from(groupedData_new.entries()).map(([key, values]) => ({
+    key: key,
+    values: values,
+    color: values[0].color
+  })),
   {
     label: "Ort:",
-    unique: true,    
+    unique: true,
+    format: (entry) => {
+      return Object.assign(document.createElement('span'), {
+        textContent: entry.key,
+        style: `border-bottom: 2px solid ${entry.color};`
+      });
+    }
   }
 ));
-
+```
+```js
+let arr = check_orts.map(item => item.values);
+const check_orts_pr = arr.flat(); //transform the data
 ```
 
 ```js
-let gb = d3.group(combinedData, (d) => d.STT);
-const gesamtstadtArray = gb.get("Gesamtstadt"); // get arrays with key "Gesamtstadt"
-checked_obj_pr.push(gesamtstadtArray); // get default value with key "Gesamtstadt"
-const check_orts_pr = checked_obj_pr.flat(); //transform the data
-
-```
-
-
-```js
-//const maxValue_ort = Math.max(...check_orts_pr.map(d => d.WachstumPCT));
-//const minValue_ort = Math.min(...check_orts_pr.map(d => d.WachstumPCT));
-```
-```js
-//get chart with all Einwohner
+//get chart with all 
 Plot.plot({
   height: 350,
   width: 850,
   margin: 60,  
   marks: [
-    Plot.ruleY([0], {stroke: "rad"}),
+    Plot.ruleY([0], {stroke: "black"}),
     Plot.axisX({fontSize: `${fontSize}`, tickRotate: -45,}),
     Plot.axisY({fontSize: `${fontSize}`, anchor: "right", tickFormat: d => d.toLocaleString('de-DE').replace('.', ',')
     }),
-    Plot.lineY(check_orts_pr, {x: "Jahr", y: "WachstumPCT", stroke: "STT", strokeWidth: 3}),   
+    Plot.lineY(check_orts_pr, {x: "Jahr", y: "WachstumPCT", stroke: "STT", strokeWidth: 3, stroke: d => colorScale(d.STT)}),   
     Plot.ruleX(check_orts_pr, Plot.pointerX({x: "Jahr", py: "WachstumPCT", stroke: "red"})),
     Plot.dot(check_orts_pr, Plot.pointerX({x: "Jahr", y: "WachstumPCT", stroke: "red"})),
     Plot.text(check_orts_pr, Plot.pointerX({px: "Jahr", py: "WachstumPCT", dy: -17, 
-    frameAnchor: "top-left", fontSize: `${fontSize}`, fontWeight: .1, strokeWidth: 2,
+    frameAnchor: "top-left", fontSize: `${fontSize}`, fontWeight: 0.1, strokeWidth: 2,
     text: (d) => [
       `Ort: ${d.STT}`,
       `Jahr: ${new Date(d.Jahr).getFullYear()}`,
@@ -173,8 +185,7 @@ Plot.plot({
     label: "Jahr",
     tickRotate: -45, // drehen Jahr
     labelAnchor: "center", // move the label along the X axis
-    labelOffset: 40, // move the label along the Y axis
-    labelFontSize: `${fontSize}`,    
+    labelOffset: 40, // move the label along the Y axis    
   }, 
   y: {    
     grid: true, 
