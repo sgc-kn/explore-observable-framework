@@ -38,7 +38,6 @@ runs:
     MINIO_ALIAS_ACCESS_KEY: ${{ inputs.accessKey }}
     MINIO_ALIAS_SECRET_KEY: ${{ inputs.secretKey }}
   args:
-    - mc
     - mirror
     - --overwrite
     - "${{ inputs.source_dir }}"
