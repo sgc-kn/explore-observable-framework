@@ -397,6 +397,7 @@ html`
 `
 ```
 ```js
+//get geojson daten
 function filterStates(geojson) {
   return {
     ...geojson,
@@ -407,60 +408,110 @@ function filterStates(geojson) {
 const stateGeojson = filterStates(geojson);
 ```
 ```js
-display(stateGeojson)
+//change ortname
+const fixCityName = name => {
+  let updatedName = name.replace(/_/g, '-');
+  if (updatedName === "Koenigsbau") updatedName = "Königsbau";
+  if (updatedName === "Fuerstenberg") updatedName = "Fürstenberg";
+  return updatedName;
+};
+
+const updatedStateGeojson = {
+  ...stateGeojson,
+  features: stateGeojson.features.map(feature => {
+    return {
+      ...feature,
+      properties: {
+        ...feature.properties,
+        STT_NAME: fixCityName(feature.properties.STT_NAME)
+      }
+    };
+  })
+};
+
 ```
+
 ```js
-display(groupedData)
+const getGesamtstadt = groupedData.get("Gesamtstadt");
+const gesamtEinwohner2023 = getGesamtstadt ? getGesamtstadt.find(d => d.Jahr === "2023")?.Einwohner : "NaN";
 ```
+
 ```js
 //get Einwohner by STT_NAME in stateGeojson
-const einwohner_map = stateGeojson.features.map(feature => {
-  const ort_name = feature.properties.STT_NAME; 
+const einwohner_map = updatedStateGeojson.features.map(feature => {
+  const ort_name = feature.properties.STT_NAME;
   const populationData = groupedData.get(ort_name);
+
   const population2023 = populationData ? populationData.find(d => d.Jahr === "2023")?.Einwohner : "NaN";
-  return {
-    ort_name: ort_name,
-    einwohner: population2023
-  };
-});
+  const percentage = population2023 !== "NaN" && gesamtEinwohner2023 !== "NaN"
+    ? ((population2023 / gesamtEinwohner2023) * 100).toFixed(2)
+    : "NaN";
+
+    return {
+      ort_name: ort_name,
+      einwohner: population2023,
+      percentage: percentage
+    };
+  }
+);
 ```
 ```js
-// Создание нового массива с объединенными данными
-const combinedData = stateGeojson.features.map(feature => {
+display(einwohner_map)
+```
+
+```js
+// combined array
+const combined_Data = updatedStateGeojson.features.map(feature => {
   const cityName = feature.properties.STT_NAME;
-  const einwohnerData = einwohnerArray.find(d => d.ort_name === cityName);
+  const einwohnerData = einwohner_map.find(d => d.ort_name === cityName);
   return {
     ...feature,
     properties: {
       ...feature.properties,
-      einwohner: einwohnerData ? einwohnerData.einwohner : "NaN"
+      einwohner: einwohnerData ? einwohnerData.einwohner : "NaN",
+      percentage: einwohnerData ? einwohnerData.percentage : "NaN"
     }
   };
 });
 ```
-
-
-
-
 ```js
+//change "combined_Data" for Plot (from array to objekt) 
+const combined_Data_obj = {
+  type: "FeatureCollection",
+  features: combined_Data
+};
+```
+```js
+//map
 Plot.plot({
-  height: 900,
-  width: 700,
-  projection: {type: "identity", domain: stateGeojson},
-  marks: [
-    Plot.geo(stateGeojson, {
-      fill: "white",
-      stroke: "black"
-    }),
-    Plot.text(stateGeojson.features, 
-    Plot.centroid(
-      {
-       // text: (d) => d.properties.STT_NAME,
-        text: (d) => `${d.properties.STT_NAME}: ${d.properties.einwohner}`,
-        fontextAnchor: "middle",
-        fill: "red"
-      }
-    ))
-  ]
+height: 1200,
+width: 900,
+projection: {type: "identity", domain: combined_Data_obj},
+
+marks: [
+  Plot.geo(combined_Data_obj, {
+  fill: "white",
+  stroke: "black"
+}),
+Plot.text(combined_Data_obj.features, 
+  Plot.centroid(
+    {
+      // text: (d) => d.properties.STT_NAME,
+      text: (d) => `
+        ${d.properties.STT_NAME} \n
+        ${d.properties.einwohner} 
+        (${d.properties.percentage} %)`,
+      fontextAnchor: "middle",
+      fill: "red",
+      fontWeight: "bold",
+      fontSize: 12,
+    }
+  ))
+],
+style: {
+  //transform: "rotate(180deg)",
+  //transformOrigin: "center"
+}
 })
 ```
+  
