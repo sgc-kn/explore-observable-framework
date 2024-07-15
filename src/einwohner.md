@@ -139,18 +139,24 @@ combinedData.forEach(d => {
 });
 ```
 ```js
+//add color to the array with Einwohner
+combinedData.forEach(d => {
+d.color = colorScale(d.STT);
+});
+```
+```js
 //set default value
 //group by STT
 const groupedData_new = d3.group(combinedData, (d) => d.STT);
 
-// set default value  "Gesamtstadt"
+// set default value "Gesamtstadt"
 const defaultSelections = [Array.from(groupedData_new.keys())[0]];
 
 // create array key - value
 const checkboxEntries = Array.from(groupedData_new.entries()).map(([key, values]) => ({
-  key: key,
-  values: values,
-  color: values[0].color
+key: key,
+values: values,
+color: values[0].color
 }));
 
 const defaultValue = checkboxEntries.filter(entry => defaultSelections.includes(entry.key));
@@ -167,9 +173,9 @@ const check_orts = view(Inputs.checkbox(
       return Object.assign(document.createElement('span'), {
         textContent: entry.key,
         style: `border-bottom: 2px solid ${entry.color};`
-      });
-    },
-    value: defaultValue   // default value "Gesamtstadt"
+    });
+  },
+  value: defaultValue // default value 
   }
 ));
 ```
@@ -200,7 +206,23 @@ const plot_checked = Plot.plot({
         `Wachstum: ${d.WachstumPCT.toFixed(2)} %`,      
         `Einwohner: ${d.Einwohner.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`    
       ].join(",")
-      })),      
+      })),
+      // Добавляем подписи названий к графику в одном месте для каждой линии
+      ...d3.groups(check_orts_pr, d => d.STT).map(([key, values]) =>
+        Plot.text(
+          [values[values.length - 1]], // выбираем последнюю точку для каждой группы
+          {
+            x: "Jahr",
+            y: "WachstumPCT",
+            text: d => d.STT,
+            dx: 7, // смещение по X для отступа от точки
+            dy: -7, // смещение по Y для отступа от точки
+            fontSize: `${fontSize}`,
+            fontWeight: "bold",
+            fill: colorScale(key) // цвет текста соответствует цвету линии
+          }
+        )
+      ),
       ],
     x: {
       label: "Jahr",
@@ -222,6 +244,14 @@ html`
     <div id="chart_check"  class="grid grid-cols-1">
       <div class="card grid-rowspan-2">${plot_checked}</div>
     </div>`
+```
+
+```js
+//display chart ????? 
+const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+const isAnyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+//document.getElementById('chart_check').style.display = isAnyChecked ? 'block' : 'none';
+
 ```
 
 ```js
