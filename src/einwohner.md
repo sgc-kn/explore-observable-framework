@@ -25,13 +25,10 @@ const geojson = FileAttachment("data/map.geojson").json();
 ```js
 display(geojson);
 ```
-
-
 ```js
 Inputs.table(data)
 ```
----
-s
+
 ```js
 const fontSize = 16
 const fontFamily = 'Arial, sans-serif'
@@ -64,6 +61,7 @@ const sortedData = Array.from(groupedData).sort((a, b) => {
 ```js
 const combinedData = sortedData.flatMap(item => item[1]);
 ```
+
 ```js
 //get select
 const select_ort = view( 
@@ -91,9 +89,9 @@ html`
 <div class="grid grid-cols-2" style="display: grid; grid-template-columns: 1.5fr 2.5fr; gap: 16px;">
   <div class="card">
     <h1 <span style="color: #efb118;">${ort}</h1>
-    <p>Die Gesamtzahl der Einwohner im Jahr 2023: <span style="color: #efb118; font-size: 18px;">${einwohner[0].Einwohner}</span></p>
-    <p>Maximale Einwohnerzahl im Jahr ${maxValueJahr}: <span style="color: #efb118; font-size: 18px;">${maxValue}</span></p>
-    <p>Manimale Einwohnerzahl im Jahr ${minValueJahr}: <span style="color: green; font-size: 18px;">${minValue}</span></p>
+    <p>Die Gesamtzahl der Einwohner im Jahr 2023: <span style="color: #efb118; font-size: 18px;">${einwohner[0].Einwohner.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</span></p>
+    <p>Maximale Einwohnerzahl: <span style="color: #efb118; font-size: 18px;">${maxValue.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</span> im Jahr <span style="color: #efb118; font-size: 18px;">${maxValueJahr}</span></p>
+    <p>Manimale Einwohnerzahl : <span style="color: green; font-size: 18px;">${minValue.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")} </span>im Jahr <span style="color: green; font-size: 18px;"> ${minValueJahr}</span></p>
   </div>
   <div class="card grid-rowspan-2">${plotEinwohner} </div>
 </div>
@@ -106,7 +104,7 @@ const plotEinwohner = Plot.plot({
   width: 850,
   margin: 60, 
   marks: [
-    Plot.ruleY([0], {stroke: "orange"}),
+    Plot.ruleY([0], {stroke: "black"}),
     Plot.axisX({fontSize: `${fontSize}`, tickRotate: -45, fontFamily: `${fontFamily}`}),
     Plot.axisY({fontSize: `${fontSize}`, anchor: "right", ticks: 4, label: "Einwohner", fontFamily: `${fontFamily}`, tickFormat: d => d.toLocaleString('de-DE').replace(',', '.')
     }),    
@@ -140,8 +138,7 @@ const plotEinwohner = Plot.plot({
   y: {
     grid: true, 
     nice: true,    
-  },  
-  },
+  }},
 )
 ```
 ```js
@@ -156,8 +153,11 @@ combinedData.forEach(d => {
 });
 ```
 ```js
-const groupedData_new = d3.group(combinedData, (d) => d.STT);
+const groupedData_new = d3.group(combinedData, (d) => d.STT); //group by ort
+const defaultSelections = [Array.from(groupedData_new.keys())[0]]; //default value for checkbox
+ //default value for checkbox
 ```
+
 ```js
 //get checkbox
 const check_orts = view(Inputs.checkbox(
@@ -174,80 +174,61 @@ const check_orts = view(Inputs.checkbox(
         textContent: entry.key,
         style: `border-bottom: 2px solid ${entry.color};`
       });
-    }
+    },
+    value: [Array.from(groupedData_new.keys())[0]]    //default value ??????
   }
 ));
 ```
 ```js
 let arr = check_orts.map(item => item.values);
 const check_orts_pr = arr.flat(); //transform the data
-
-//const einwohner = check_orts.filter(d => d.Jahr === "2023");
-const ORT_ = check_orts_pr.map(d => d.STT);
-const maxValue_checked = Math.max(...check_orts_pr.map(d => d.WachstumPCT));
-
-const maxValueJahrEntries_checked = check_orts_pr.filter(d => d.Einwohner === maxValue_checked);
-const maxValueJahr_checked = maxValueJahrEntries_checked.map(d => d.Jahr);
-
-const minValue_checked = Math.min(...check_orts_pr.map(d => d.WachstumPCT));
-//const minValueJahrEntries = select_ort.filter(d => d.Einwohner === minValue);
-//const minValueJahr = minValueJahrEntries.map(d => d.Jahr);
-```
-
-```js
-
+//check_orts_pr = defaultSelections.flatMap(key => groupedData_new.get(key));
 ```
 ```js
-  display(ORT_)
-```
-```js
-html`
-  <div class="grid" style="display: grid; grid-template-columns: 1.5fr 2.5fr; gap: 16px;">    
-    <div class="card">
-      1
-    </div>  
-    <div class="card grid-rowspan-2">${plot_check}</div>
-  </div>`
-```
-
-
-```js
-//get chart with all 
-const plot_check = Plot.plot({  
-  width: 850,
-  margin: 60,  
-  marks: [
-    Plot.ruleY([0], {stroke: "black"}),
-    Plot.axisX({fontSize: `${fontSize}`, tickRotate: -45, fontFamily: `${fontFamily}`}),
-    Plot.axisY({fontSize: `${fontSize}`, anchor: "right", fontFamily: `${fontFamily}`, tickFormat: d => d.toLocaleString('de-DE').replace('.', ',')
-    }),
-    Plot.lineY(check_orts_pr, {x: "Jahr", y: "WachstumPCT", stroke: "STT", strokeWidth: 3, stroke: d => colorScale(d.STT)}),   
-    Plot.ruleX(check_orts_pr, Plot.pointerX({x: "Jahr", py: "WachstumPCT", stroke: "red"})),
-    Plot.dot(check_orts_pr, Plot.pointerX({x: "Jahr", y: "WachstumPCT", stroke: "red"})),
-    Plot.text(check_orts_pr, Plot.pointerX({px: "Jahr", py: "WachstumPCT", dy: -17, 
-    frameAnchor: "top-left", fontSize: `${fontSize}`, fontWeight: 0.1, strokeWidth: 2,
-    text: (d) => [
-      `Ort: ${d.STT}`,
-      `Jahr: ${new Date(d.Jahr).getFullYear()}`,
-      `Wachstum: ${d.WachstumPCT.toFixed(2)} %`,      
-      `Einwohner: ${d.Einwohner.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`    
-    ].join(",")
-    })),      
-    ],
-  x: {
-    label: "Jahr",
-    tickRotate: -45, // drehen Jahr
-    labelAnchor: "center", // move the label along the X axis
-    labelOffset: 40, // move the label along the Y axis    
-  }, 
-  y: {    
-    grid: true, 
-    nice: true,
-    ticks: 5,
-  },
+//get chart with all   
+const plot_checked = Plot.plot({  
+    width: 1200,
+    margin: 60,  
+    marks: [
+      Plot.ruleY([0], {stroke: "black"}),
+      Plot.axisX({fontSize: `${fontSize}`, tickRotate: -45, fontFamily: `${fontFamily}`}),
+      Plot.axisY({fontSize: `${fontSize}`, anchor: "right", fontFamily: `${fontFamily}`, tickFormat: d => d.toLocaleString('de-DE').replace('.', ',')
+      }),
+      Plot.lineY(check_orts_pr, {x: "Jahr", y: "WachstumPCT", stroke: "STT", strokeWidth: 3, stroke: d => colorScale(d.STT)}),   
+      Plot.ruleX(check_orts_pr, Plot.pointerX({x: "Jahr", py: "WachstumPCT", stroke: "red"})),
+      Plot.dot(check_orts_pr, Plot.pointerX({x: "Jahr", y: "WachstumPCT", stroke: "red"})),
+      Plot.text(check_orts_pr, Plot.pointerX({px: "Jahr", py: "WachstumPCT", dy: -17, 
+      frameAnchor: "top-left", fontSize: `${fontSize}`, fontWeight: 0.1, strokeWidth: 2,
+      text: (d) => [
+        `Ort: ${d.STT}`,
+        `Jahr: ${new Date(d.Jahr).getFullYear()}`,
+        `Wachstum: ${d.WachstumPCT.toFixed(2)} %`,      
+        `Einwohner: ${d.Einwohner.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`    
+      ].join(",")
+      })),      
+      ],
+    x: {
+      label: "Jahr",
+      tickRotate: -45, // drehen Jahr
+      labelAnchor: "center", // move the label along the X axis
+      labelOffset: 40, // move the label along the Y axis    
+    }, 
+    y: {    
+      grid: true, 
+      nice: true,
+      ticks: 5,
+    }
   },
 )
 ```
+
+```js
+html`
+    <div id="chart" class="grid grid-cols-1">
+      <div class="card grid-rowspan-2">${plot_checked}</div>
+    </div>`
+```
+
 ```js
 //get select
 const select_ort_new = view( 
@@ -264,7 +245,8 @@ const einwohnerPlot = Plot.plot({
   margin: 80,  
   x: {
     label: "Jahr",
-    tickRotate: -45,    
+    tickRotate: -45,
+    tip: true   
   },
   y: {    
     label: "Einwohner",
@@ -289,9 +271,19 @@ const einwohnerPlot = Plot.plot({
       dy: -15, 
       fill: d => d.WachstumPCT >= 0 ? "black" : "red", 
       fontSize: 18,
-    }),      
+    },      
+    ),     
   ]
 })
+```
+```js
+//display chart ????? 
+//const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+//const isAnyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+//document.getElementById('chart').style.display = isAnyChecked ? 'block' : 'none';
+```
+```js
+//display(isAnyChecked)
 ```
 ```js
 html`
@@ -301,7 +293,47 @@ html`
   </div>  
 </div>`
 ```
+
 ```js
+//v-2
+const parsedData = select_ort_new.map(d => ({
+  ...d,
+  Jahr: parseInt(d.Jahr)
+}));
+```
+```js
+display(parsedData)
+```
+
+```js
+Plot.plot({
+  height: 350,
+  width: 1400,
+  margin: 80,
+  x: {label: "Jahr"},
+  y: {label: "Einwohner"},
+  marks: [
+    Plot.rectY(select_ort_new, 
+      { x: "Jahr", y: "Einwohner", fill: "steelblue",  
+      title: d => `Einwohner: ${d.Einwohner}` }),
+    Plot.dot(
+      select_ort_new, 
+      { x: "Jahr", y: "Einwohner", stroke: "red", fill: "white", r: 4, title: d => `Einwohner: ${d.Einwohner}` }
+    ),
+    Plot.text(select_ort_new, {
+      x: d => d.Jahr, 
+      y: d => d.Einwohner, 
+      text: d => `${d.WachstumPCT.toFixed(2).replace('.', ',')}`, 
+      textAnchor: "middle",
+      dy: -15, 
+      fill: d => d.WachstumPCT >= 0 ? "black" : "red", 
+      fontSize: 18,
+    }),
+  ]  
+})
+```
+```js
+//table
 const filteredData = select_ort_new.map(d => ({ 
   Stadtteil: d.STT, 
   Jahr: d.Jahr, 
@@ -317,8 +349,6 @@ const tableOptions = {
   fontSize: `${fontSize}`
 };
 ```
-
-
 ```js
 const filteredData_table = select_ort_new.map(d => ({ 
   Stadtteil: d.STT, 
@@ -344,7 +374,6 @@ const growthData = dataForYear.map(current => {
   };
 });
 ```
-
 ```js
 //table
 html`
@@ -367,7 +396,6 @@ html`
 </div>
 `
 ```
-
 ```js
 function filterStates(geojson) {
   return {
@@ -378,23 +406,61 @@ function filterStates(geojson) {
 // Gefilterte GeoJSON-Daten für "states"
 const stateGeojson = filterStates(geojson);
 ```
+```js
+display(stateGeojson)
+```
+```js
+display(groupedData)
+```
+```js
+//get Einwohner by STT_NAME in stateGeojson
+const einwohner_map = stateGeojson.features.map(feature => {
+  const ort_name = feature.properties.STT_NAME; 
+  const populationData = groupedData.get(ort_name);
+  const population2023 = populationData ? populationData.find(d => d.Jahr === "2023")?.Einwohner : "NaN";
+  return {
+    ort_name: ort_name,
+    einwohner: population2023
+  };
+});
+```
+```js
+// Создание нового массива с объединенными данными
+const combinedData = stateGeojson.features.map(feature => {
+  const cityName = feature.properties.STT_NAME;
+  const einwohnerData = einwohnerArray.find(d => d.ort_name === cityName);
+  return {
+    ...feature,
+    properties: {
+      ...feature.properties,
+      einwohner: einwohnerData ? einwohnerData.einwohner : "NaN"
+    }
+  };
+});
+```
+
+
+
 
 ```js
-//map
 Plot.plot({
-  width: 975,
-  height: 610,
-  projection: "identity",
-  color: {
-    type: "quantize",
-    n: 9,
-    domain: [1, 10],
-    scheme: "blues",
-    label: "Unemployment rate (%)",
-    legend: true
-  },
+  height: 900,
+  width: 700,
+  projection: {type: "identity", domain: stateGeojson},
   marks: [
-    Plot.geo(stateGeojson, {fill: "lightgrey", stroke: "white", strokeWidth: 0.5})
+    Plot.geo(stateGeojson, {
+      fill: "white",
+      stroke: "black"
+    }),
+    Plot.text(stateGeojson.features, 
+    Plot.centroid(
+      {
+       // text: (d) => d.properties.STT_NAME,
+        text: (d) => `${d.properties.STT_NAME}: ${d.properties.einwohner}`,
+        fontextAnchor: "middle",
+        fill: "red"
+      }
+    ))
   ]
 })
 ```
