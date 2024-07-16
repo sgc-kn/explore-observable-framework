@@ -68,6 +68,8 @@ jobs:
 
   announce-preview-deployment:
     needs: deploy-pr-preview
+    permissions:
+      deployments: write
     runs-on: ubuntu-latest
     steps:
       - uses: chrnorm/deployment-action@v2
@@ -79,8 +81,6 @@ jobs:
 
   deploy-main:
     needs: build
-    permissions:
-      deployments: write
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
     steps:
