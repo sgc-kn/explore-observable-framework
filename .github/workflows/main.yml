@@ -66,22 +66,18 @@ jobs:
           source_dir: dist/
           target_dir: /pr/${{ github.event.number }}/${{github.event.pull_request.head.sha}}
 
-  advertise-pr-preview:
+  announce-preview-deployment:
     needs: deploy-pr-preview
-    permissions: write-all
+    permissions:
+      deployments: write
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
     steps:
-      - name: Comment preview link to PR issue
-        uses: actions/github-script@v7
+      - uses: chrnorm/deployment-action@v2
         with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: "Preview deployed to https://sgc-dashboard-preview-d98d665658f0.s3-eu-central-2.ionoscloud.com/pr/${{github.event.number}}/${{github.event.pull_request.head.sha}}/index.html"
-            })
+          token: '${{ github.token }}'
+          environment-url: "https://sgc-dashboard-preview-d98d665658f0.s3-eu-central-2.ionoscloud.com/pr/${{github.event.number}}/${{github.event.pull_request.head.sha}}/index.html"
+          environment: preview-pr-${{github.event.number}}
+          initial-status: success
 
   deploy-main:
     needs: build
@@ -103,3 +99,16 @@ jobs:
           bucket: sgc-dashboard-d0cafa4cdadf
           source_dir: dist/
           target_dir: /
+
+  announce-main-deployment:
+    needs: deploy-main
+    permissions:
+      deployments: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: chrnorm/deployment-action@v2
+        with:
+          token: '${{ github.token }}'
+          environment-url: "https:/ sgc-dashboard-d0cafa4cdadf.s3-eu-central-2.ionoscloud.com/index.html"
+          environment: production
+          initial-status: success
