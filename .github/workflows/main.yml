@@ -46,6 +46,7 @@ jobs:
 
   deploy-pr-preview:
     needs: build
+    permissions: write-all
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
     steps:
@@ -76,6 +77,7 @@ jobs:
 
   deploy-main:
     needs: build
+    permissions: write-all
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
     steps:
