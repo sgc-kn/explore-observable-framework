@@ -110,5 +110,5 @@ jobs:
         with:
           token: '${{ github.token }}'
           environment-url: "https://sgc-dashboard-d0cafa4cdadf.s3-eu-central-2.ionoscloud.com/index.html"
-          environment: production
+          environment: main
           initial-status: success
