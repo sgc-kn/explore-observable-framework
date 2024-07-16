@@ -46,8 +46,6 @@ jobs:
 
   deploy-pr-preview:
     needs: build
-    permissions:
-      deployments: write
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
     steps:
@@ -68,9 +66,11 @@ jobs:
           source_dir: dist/
           target_dir: /pr/${{ github.event.number }}/${{github.event.pull_request.head.sha}}
 
+  announce-preview-deployment:
+    needs: deploy-pr-preview
+    runs-on: ubuntu-latest
+    steps:
       - uses: chrnorm/deployment-action@v2
-        name: Create GitHub deployment
-        id: deployment
         with:
           token: '${{ github.token }}'
           environment-url: "https://sgc-dashboard-preview-d98d665658f0.s3-eu-central-2.ionoscloud.com/pr/${{github.event.number}}/${{github.event.pull_request.head.sha}}/index.html"
@@ -99,9 +99,14 @@ jobs:
           bucket: sgc-dashboard-d0cafa4cdadf
           source_dir: dist/
           target_dir: /
+
+  announce-main-deployment:
+    needs: deploy-main
+    permissions:
+      deployments: write
+    runs-on: ubuntu-latest
+    steps:
       - uses: chrnorm/deployment-action@v2
-        name: Create GitHub deployment
-        id: deployment
         with:
           token: '${{ github.token }}'
           environment-url: "https:/ sgc-dashboard-d0cafa4cdadf.s3-eu-central-2.ionoscloud.com/index.html"
