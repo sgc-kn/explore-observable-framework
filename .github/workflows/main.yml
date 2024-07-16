@@ -109,6 +109,6 @@ jobs:
       - uses: chrnorm/deployment-action@v2
         with:
           token: '${{ github.token }}'
-          environment-url: "https:/ sgc-dashboard-d0cafa4cdadf.s3-eu-central-2.ionoscloud.com/index.html"
+          environment-url: "https://sgc-dashboard-d0cafa4cdadf.s3-eu-central-2.ionoscloud.com/index.html"
           environment: production
           initial-status: success
