@@ -208,15 +208,15 @@ const plot_checked = Plot.plot({
       ].join(",")
       })),
       // Добавляем подписи названий к графику в одном месте для каждой линии
-      ...d3.groups(check_orts_pr, d => d.STT).map(([key, values]) =>
+      ...d3.groups(check_orts_pr, d => d.STT).map(([key, values], i) =>
         Plot.text(
           [values[values.length - 1]], // выбираем последнюю точку для каждой группы
           {
             x: "Jahr",
             y: "WachstumPCT",
             text: d => d.STT,
-            dx: 7, // смещение по X для отступа от точки
-            dy: -7, // смещение по Y для отступа от точки
+            dx: 5, // смещение по X для отступа от точки
+            dy: i * 15 - 30, // смещение по Y для отступа от точки с учетом индекса группы
             fontSize: `${fontSize}`,
             fontWeight: "bold",
             fill: colorScale(key) // цвет текста соответствует цвету линии
