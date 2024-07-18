@@ -2,65 +2,110 @@
 
 We load the data as defined in `src/data/pkel-test.csv.py`. This Python
 script extracts a relevant subset of `data/merged_speed.csv`.
-
 ```js
-const data = FileAttachment("data/einwohner.csv").csv();
-
-const map = FileAttachment("data/map.csv").csv();
-
-const geojson = FileAttachment("data/map.geojson").json(); 
+html`
+<style type="text/css">
+  h1{
+    max-width: none;
+  }
+  form.inputs-3a86ea-checkbox{
+    max-width: none;
+  }
+  .info-box {
+      position: absolute;
+      padding: 5px;
+      background: white;
+      border: 1px solid black;
+      top: 10px;
+      right: 10px;
+      display: none;
+  }  
+</style>
+`
 ```
 ```js
+const data = FileAttachment("data/einwohner.csv").csv();
+//const map = FileAttachment("data/map.csv").csv();
+const geojson = FileAttachment("data/map.geojson").json(); 
+```
+
+```js
 display(data);
-display(map);
+//display(map);
 display(geojson);
 ```
 ```js
-// Inputs.table(data)
+Inputs.table(data)
 ```
-
 ```js
 const fontSize = 16
 const fontFamily = 'Arial, sans-serif'
 const yellowColor = '#efb118'
 ```
-
 ```js
 // string to number
-const clearData = data.map(item => {
+const clearData = data.map(item => {  
   return {
-      ...item,      
-      Einwohner: Number(item.Einwohner),
-      WachstumPCT: parseFloat(item.WachstumPCT)
+    ...item,
+    Einwohner: item.Einwohner ? Number(item.Einwohner) : "NaN",
+    //Jahr: item.Jahr && !isNaN(item.Jahr) ? parseInt(item.Jahr, 10) : "NaN",
+    Wachstum: item.Wachstum ? parseFloat(item.Wachstum) : "NaN"    
   };
 });
 ```
+
 ```js
 // at the first place "Gesamtstadt"
 const groupedData = d3.group(clearData, d => d.STT);
-
 const sortedData = Array.from(groupedData).sort((a, b) => {
   if (a[0] === "Gesamtstadt") return -1;
   if (b[0] === "Gesamtstadt") return 1;
   return a[0].localeCompare(b[0]);
 });
 ```
+
+
+
 ```js
+// at the first place "Gesamtstadt"
 const combinedData = sortedData.flatMap(item => item[1]);
 ```
+```js
+ //get last year (for example "2023")
+//const latestYear = Math.max(...data.map(item => parseInt(item.Jahr, 10))).toString();
+// 
+const years = data.map(item => {
+  const year = parseInt(item.Jahr, 10);
+  if (isNaN(year)) {
+    console.error(`Invalid year value: ${item.Jahr}`);
+  }
+  return year;
+}).filter(year => !isNaN(year)); // Filter out any invalid years
 
+// Find the maximum year
+const latestYear = Math.max(...years).toString();
+//console.log(`Latest year: ${latestYear}`);
+```
+```js
+html`
+<div class="grid grid-cols-1" style="">
+  <h1>Bevölkerungsstatistik der Stadtteile von Konstanz (1995-2023)</h1>
+</div>
+`
+```
 ```js
 //get select
 const select_ort = view( 
   Inputs.select(
     d3.group(combinedData, (d) => d.STT),
-    {label: "Ort:", unique: true}
+    {label: html`<h2>Stadtteile:</h2>`, unique: true, fontSize: `${fontSize}`}
   )
 );
 ```
 ```js
-const ort = select_ort[0].STT;
-const einwohner = select_ort.filter(d => d.Jahr === "2023");
+const ort = select_ort[0].STT; //"Gesamtstadt"
+
+const einwohner = select_ort.filter(d => d.Jahr === latestYear.toString());
 const maxValue = Math.max(...select_ort.map(d => d.Einwohner));
 const maxValueJahrEntries = select_ort.filter(d => d.Einwohner === maxValue);
 const maxValueJahr = maxValueJahrEntries.map(d => d.Jahr);
@@ -76,11 +121,11 @@ html`
 <div class="grid grid-cols-2" style="display: grid; grid-template-columns: 1.5fr 2.5fr; gap: 16px;">
   <div class="card">
     <h1 <span style="color: #efb118;">${ort}</h1>
-    <p>Die Gesamtzahl der Einwohner im Jahr 2023: <span style="color: #efb118; font-size: 18px;">${einwohner[0].Einwohner.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</span></p>
-    <p>Maximale Einwohnerzahl: <span style="color: #efb118; font-size: 18px;">${maxValue.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</span> im Jahr <span style="color: #efb118; font-size: 18px;">${maxValueJahr}</span></p>
-    <p>Manimale Einwohnerzahl : <span style="color: green; font-size: 18px;">${minValue.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")} </span>im Jahr <span style="color: green; font-size: 18px;"> ${minValueJahr}</span></p>
+    <p style="font-size: 16px;">Die Gesamtzahl der Einwohner im Jahr ${latestYear}: <span style="color: #efb118; font-size: 18px;">${einwohner[0].Einwohner.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</span></p>
+    <p style="font-size: 16px;">Maximale Einwohnerzahl: <span style="color: #efb118; font-size: 18px;">${maxValue.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</span> im Jahr <span style="color: #efb118; font-size: 18px;">${maxValueJahr}</span></p>
+    <p style="font-size: 16px;">Manimale Einwohnerzahl : <span style="color: green; font-size: 18px;">${minValue.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")} </span>im Jahr <span style="color: green; font-size: 18px;"> ${minValueJahr}</span></p>
   </div>
-  <div class="card grid-rowspan-2">${plotEinwohner} </div>
+  <div class="card grid-rowspan-2" style="font-size: 16px;">${plotEinwohner} </div>
 </div>
 `
 ```
@@ -89,6 +134,7 @@ html`
 const plotEinwohner = Plot.plot({  
   width: 850,
   margin: 60, 
+  title: "Title des Chartes",
   marks: [
     Plot.ruleY([0], {stroke: "black"}),
     Plot.axisX({fontSize: `${fontSize}`, tickRotate: -45, fontFamily: `${fontFamily}`}),
@@ -100,7 +146,7 @@ const plotEinwohner = Plot.plot({
     Plot.text(select_ort, Plot.pointerX({px: "Jahr", py: "Einwohner", dy: -17, 
     frameAnchor: "top-left", fontSize: `${fontSize}`, fontWeight: .1, strokeWidth: 2,
     text: (d) => [
-      `Ort: ${d.STT}`,
+      `Stadtteile: ${d.STT}`,
       `Jahr: ${new Date(d.Jahr).getFullYear()}`, 
       `Einwohner: ${d.Einwohner.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`,
     ].join(", ")
@@ -109,11 +155,12 @@ const plotEinwohner = Plot.plot({
     Plot.dot(select_ort.filter(d => d.Einwohner === maxValue), 
     {x: "Jahr", y: "Einwohner", stroke: "orange", r: 3}), 
     Plot.text(select_ort.filter(d => d.Einwohner === maxValue), 
-    {x: "Jahr", y: "Einwohner", text: d => `Max: ${d.Einwohner.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`, dy: -10, stroke: "orange", strokeWidth:0.7, fontSize: 20, fontWeight: 0.1,}),
+    {x: "Jahr", y: "Einwohner", text: d => `Max: ${d.Einwohner.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}\n${d.Jahr}`, dy: 0, stroke: "orange", strokeWidth:0.7, fontSize: 20, fontWeight: 0.1,}),
     
     // Mark min value
     Plot.dot(select_ort.filter(d => d.Einwohner === minValue), {x: "Jahr", y: "Einwohner", stroke: "black", r: 3}),
-    Plot.text(select_ort.filter(d => d.Einwohner === minValue), {x: "Jahr", y: "Einwohner", text: d => `Min: ${d.Einwohner.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`, dy: 10, stroke: "green", fontVariant: "tabular-nums", fontSize: 20, fontWeight: 0.1, strokeWidth:0.7})    
+    Plot.text(select_ort.filter(d => d.Einwohner === minValue), {x: "Jahr", y: "Einwohner", text: d => `Min: ${d.Einwohner.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}\n${d.Jahr}`,
+     dy: 23, stroke: "green", fontVariant: "tabular-nums", fontSize: 20, fontWeight: 0.1, strokeWidth:0.7})    
   ],
   x: {
     label: "Jahr",
@@ -160,19 +207,18 @@ color: values[0].color
 }));
 
 const defaultValue = checkboxEntries.filter(entry => defaultSelections.includes(entry.key));
-
 ```
 ```js
 //get checkbox
 const check_orts = view(Inputs.checkbox(
   checkboxEntries,
   {
-    label: "Ort:",
+    label: html`<h2>Stadtteile:</h2>`,
     unique: true,
     format: (entry) => {
       return Object.assign(document.createElement('span'), {
         textContent: entry.key,
-        style: `border-bottom: 2px solid ${entry.color};`
+        style: `border-bottom: 2px solid ${entry.color}; font-size: 18px`
     });
   },
   value: defaultValue // default value 
@@ -195,15 +241,15 @@ const plot_checked = Plot.plot({
       Plot.axisX({fontSize: `${fontSize}`, tickRotate: -45, fontFamily: `${fontFamily}`}),
       Plot.axisY({fontSize: `${fontSize}`, anchor: "right", fontFamily: `${fontFamily}`, tickFormat: d => d.toLocaleString('de-DE').replace('.', ','), tickSize: 0
       }),
-      Plot.lineY(check_orts_pr, {x: "Jahr", y: "WachstumPCT", stroke: "STT", strokeWidth: 3, stroke: d => colorScale(d.STT)}),   
-      Plot.ruleX(check_orts_pr, Plot.pointerX({x: "Jahr", py: "WachstumPCT", stroke: "red"})),
-      Plot.dot(check_orts_pr, Plot.pointerX({x: "Jahr", y: "WachstumPCT", stroke: "red"})),
-      Plot.text(check_orts_pr, Plot.pointerX({px: "Jahr", py: "WachstumPCT", dy: -17, 
+      Plot.lineY(check_orts_pr, {x: "Jahr", y: "Wachstum", stroke: "STT", strokeWidth: 3, stroke: d => colorScale(d.STT)}),   
+      Plot.ruleX(check_orts_pr, Plot.pointerX({x: "Jahr", py: "Wachstum", stroke: "red"})),
+      Plot.dot(check_orts_pr, Plot.pointerX({x: "Jahr", y: "Wachstum", stroke: "red"})),
+      Plot.text(check_orts_pr, Plot.pointerX({px: "Jahr", py: "Wachstum", dy: -17, 
       frameAnchor: "top-left", fontSize: `${fontSize}`, fontWeight: 0.1, strokeWidth: 2,
       text: (d) => [
-        `Ort: ${d.STT}`,
+        `Stadtteile: ${d.STT}`,
         `Jahr: ${new Date(d.Jahr).getFullYear()}`,
-        `Wachstum: ${d.WachstumPCT.toFixed(2)} %`,      
+        `Wachstum: ${d.Wachstum.toFixed(2)} %`,      
         `Einwohner: ${d.Einwohner.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`    
       ].join(",")
       })),
@@ -213,7 +259,7 @@ const plot_checked = Plot.plot({
           [values[values.length - 1]], // выбираем последнюю точку для каждой группы
           {
             x: "Jahr",
-            y: "WachstumPCT",
+            y: "Wachstum",
             text: d => d.STT,
             dx: 5, // смещение по X для отступа от точки
             dy: i * 15 - 30, // смещение по Y для отступа от точки с учетом индекса группы
@@ -238,7 +284,6 @@ const plot_checked = Plot.plot({
   },
 )
 ```
-
 ```js
 html`
     <div id="chart_check"  class="grid grid-cols-1">
@@ -251,7 +296,6 @@ html`
 const checkboxes = document.querySelectorAll('input[type="checkbox"]');
 const isAnyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
 //document.getElementById('chart_check').style.display = isAnyChecked ? 'block' : 'none';
-
 ```
 
 ```js
@@ -259,7 +303,7 @@ const isAnyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
 const select_ort_new = view( 
   Inputs.select(
     d3.group(combinedData, (d) => d.STT),
-    {label: "Ort:", unique: true}
+    {label: html`<h2>Stadtteile:</h2>`, unique: true}
   )
 );
 ```
@@ -271,8 +315,6 @@ html`
   </div>  
 </div>`
 ```
-
-
 
 ```js
 //v-2
@@ -303,10 +345,10 @@ const einwohnerPlot =  Plot.plot({
     Plot.text(select_ort_new, {
       x: d => d.Jahr, 
       y: d => d.Einwohner, 
-      text: d => `${d.WachstumPCT.toFixed(2).replace('.', ',')}`, 
+      text: d => `${d.Wachstum.toFixed(2).replace('.', ',')}`, 
       textAnchor: "middle",
       dy: -15, 
-      fill: d => d.WachstumPCT >= 0 ? "black" : "red", 
+      fill: d => d.Wachstum >= 0 ? "black" : "red", 
       fontSize: 18,
     }),
   ]  
@@ -319,7 +361,7 @@ const filteredData = select_ort_new.map(d => ({
   Stadtteil: d.STT, 
   Jahr: d.Jahr, 
   Einwohner: d.Einwohner.toLocaleString('de-DE'), //put a dot at the thousandth number
-  "Wachstum%": d.WachstumPCT.toFixed(2).replace('.', ',')
+  "Wachstum%": d.Wachstum.toFixed(2).replace('.', ',')
 }));
 ```
 ```js
@@ -335,12 +377,12 @@ const filteredData_table = select_ort_new.map(d => ({
   Stadtteil: d.STT, 
   Jahr: d.Jahr, 
   Einwohner: d.Einwohner.toLocaleString('de-DE'), //put a dot at the thousandth number
-  "Wachstum%": d.WachstumPCT.toFixed(2).replace('.', ',')
+  "Wachstum%": d.Wachstum.toFixed(2).replace('.', ',')
 }));
-const year = "2023";
-const previousYear = "2022";
 
-const dataForYear = filteredData_table.filter(d => d.Jahr === year);
+const previousYear = (parseInt(latestYear) - 1).toString();
+
+const dataForYear = filteredData_table.filter(d => d.Jahr === latestYear);
 const dataForPreviousYear = filteredData_table.filter(d => d.Jahr === previousYear);
 
 const growthData = dataForYear.map(current => {
@@ -356,7 +398,7 @@ const growthData = dataForYear.map(current => {
 });
 ```
 ```js
-//table
+//card + table
 html`
 <div class="grid grid-cols-2" >
   ${growthData.map(d => {
@@ -379,115 +421,124 @@ html`
 ```
 ```js
 //get geojson daten
-function filterStates(geojson) {
-  return {
-    ...geojson,
-    features: geojson.features.filter(feature => feature.properties.STT_NAME)
-  };
-}
-// Gefilterte GeoJSON-Daten für "states"
-const stateGeojson = filterStates(geojson);
+
+// Gefilterte GeoJSON-Daten für "states" ?????
+const stateGeojson = geojson;
 ```
+
+
 ```js
-//change ortname
-const fixCityName = name => {
-  let updatedName = name.replace(/_/g, '-');
-  if (updatedName === "Koenigsbau") updatedName = "Königsbau";
-  if (updatedName === "Fuerstenberg") updatedName = "Fürstenberg";
-  return updatedName;
-};
-
+//change ortname ?????
 const updatedStateGeojson = {
-  ...stateGeojson,
-  features: stateGeojson.features.map(feature => {
-    return {
-      ...feature,
-      properties: {
-        ...feature.properties,
-        STT_NAME: fixCityName(feature.properties.STT_NAME)
-      }
-    };
-  })
+  ...stateGeojson  
 };
-
 ```
 
 ```js
 //map
+// to calculate %% on the map
+const getGesamtstadt = groupedData.get("Gesamtstadt"); 
+const gesamtEinwohner_latestYear = getGesamtstadt ? getGesamtstadt.find(d => d.Jahr === latestYear)?.Einwohner : "NaN"; 
 
-const getGesamtstadt = groupedData.get("Gesamtstadt");
-const gesamtEinwohner2023 = getGesamtstadt ? getGesamtstadt.find(d => d.Jahr === "2023")?.Einwohner : "NaN";
+//get an array with data for 2023
+const filteredDataArray = clearData.filter(item => item.Jahr === latestYear);
 
-//get Einwohner by STT_NAME in stateGeojson
-const einwohner_map = updatedStateGeojson.features.map(feature => {
-  const ort_name = feature.properties.STT_NAME;
-  const populationData = groupedData.get(ort_name);
-
-  const population2023 = populationData ? populationData.find(d => d.Jahr === "2023")?.Einwohner : "NaN";
-  const percentage = population2023 !== "NaN" && gesamtEinwohner2023 !== "NaN"
-    ? ((population2023 / gesamtEinwohner2023) * 100).toFixed(2)
-    : "NaN";
-
-    return {
-      ort_name: ort_name,
-      einwohner: population2023,
-      percentage: percentage
-    };
-  }
-);
-
-// combined array
-const combined_Data = updatedStateGeojson.features.map(feature => {
-  const cityName = feature.properties.STT_NAME;
-  const einwohnerData = einwohner_map.find(d => d.ort_name === cityName);
-  return {
-    ...feature,
-    properties: {
-      ...feature.properties,
-      einwohner: einwohnerData ? einwohnerData.einwohner : "NaN",
-      percentage: einwohnerData ? einwohnerData.percentage : "NaN"
+// merged arrays geojson + clearData
+function mergeData(clearData, geojson) {  
+  const dataMap = {};
+  clearData.forEach(item => {
+    dataMap[item.STT_ID] = item;
+  });  
+  geojson.features.forEach(feature => {
+    const stt_nr = feature.properties.STT_NR;
+    const correspondingData = dataMap[stt_nr];
+    if (correspondingData) {
+      const populationPercent = (correspondingData.Einwohner / gesamtEinwohner_latestYear) * 100;
+      feature.properties = { ...feature.properties, ...correspondingData, populationPercent };
     }
-  };
-});
-
-//change "combined_Data" for Plot (from array to objekt) 
-const combined_Data_obj = {
-  type: "FeatureCollection",
-  features: combined_Data
-};
+  });
+  return geojson;
+}
+const mergedData = mergeData(filteredDataArray, geojson);
+```
+```js
+display(mergedData)
 ```
 ```js
 //map - plot
-Plot.plot({
-        height: 1200,
-        width: 900,
-        projection: {type: "identity", domain: combined_Data_obj},
+const map = Plot.plot({
+  height: 1200,
+  width: 900,  
+  x: {axis: null},
+  y: {axis: null},  
+  //projection: {type: "identity", domain: combined_Data_obj}, 
+  marks: [
+    Plot.geo(mergedData, {
+      fill: "#bdd4e5",
+      stroke: "white",
+      title: d => d.properties.STT_NR,
+      //fill: d => d.properties.color,          
+    }),    
+    Plot.text(mergedData.features, 
+    Plot.centroid(
+  {
+    text: (d) => [
+      `${d.properties.STT}`,
+      `${d.properties.Einwohner.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}` ,
+      `(${d.properties.populationPercent.toFixed(2).replace('.', ',')} %)`
+    ].join("\n"),  
 
-    marks: [
-        Plot.geo(combined_Data_obj, {
-        fill: "white",
-        stroke: "black",  
-        }),
-        Plot.text(combined_Data_obj.features, 
-          Plot.centroid(
-              {
-              text: (d) => [
-                  `${d.properties.STT_NAME}`,
-                  `${d.properties.einwohner}` ,
-                  `(${d.properties.percentage} %)`
-              ].join("\n"),
-              fontextAnchor: "middle",
-              fill: "red",
-              fontWeight: "bold",
-              fontSize: 12
-            }
-          )
-        )
-    ],
-    style: {  
-        transformOrigin: "center",
-        transform: "scale(1, -1)"
-    }}
-  )
+    fontextAnchor: "middle",
+    fill: "#000000",
+    fontWeight: "bold",
+    fontSize: 12    
+  }
+))],
+})
+
+```
+
+```js 
+
+html`
+<div class="grid grid-cols-2" >
+  <div class="card" id="infoBox">
+    
+  </div>
+  <div class="card">
+    ${document.body.appendChild(map)} 
+  </div>
+</div>`
+```
+```js
+
+```
+```js
+const infoBox = d3.select("#infoBox");
+d3.select(map).selectAll("path")
+  .data(mergedData.features) // Привязка данных к элементам path
+  
+  .on("mouseover", function(event, d) {
+    d3.select(this)
+      .transition()
+      .duration(300)
+      .ease(d3.easeLinear)
+      .attr("opacity", 0.7)
+      .attr("stroke-width", 3)
+      .style("cursor", "pointer");  // Change cursor to pointer on hover    
+  })  
+  .on("mouseout", function(event, d) {
+    d3.select(this)
+      .transition()
+      .duration(300)
+      .ease(d3.easeLinear)
+      .attr("opacity", 1)
+      .attr("stroke-width", 1);    
+  })
+  .on("click", function(event, d) {
+    infoBox
+      .style("display", "block")
+      .html(`ID: ${d.properties.STT_NR}`);      
+  });
 
 ```
