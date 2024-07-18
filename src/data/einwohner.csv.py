@@ -8,4 +8,8 @@
 #wide.to_csv(sys.stdout, index=False)
 
 with open('raw_data/EW_STT1995ff_cleaned.csv', 'r') as f:
-    print(f.read(), end='')
+   print(f.read(), end='')
+
+   
+
+    

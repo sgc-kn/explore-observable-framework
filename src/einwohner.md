@@ -1,11 +1,7 @@
-# Einwohner in Konstanz
-
-We load the data as defined in `src/data/pkel-test.csv.py`. This Python
-script extracts a relevant subset of `data/merged_speed.csv`.
 ```js
 html`
 <style type="text/css">
-  h1{
+  h1, h2, h3{
     max-width: none;
   }
   form.inputs-3a86ea-checkbox{
@@ -30,12 +26,12 @@ const geojson = FileAttachment("data/map.geojson").json();
 ```
 
 ```js
-display(data);
+//display(data);
 //display(map);
-display(geojson);
+//display(geojson);
 ```
 ```js
-Inputs.table(data)
+//Inputs.table(data)
 ```
 ```js
 const fontSize = 16
@@ -63,9 +59,6 @@ const sortedData = Array.from(groupedData).sort((a, b) => {
   return a[0].localeCompare(b[0]);
 });
 ```
-
-
-
 ```js
 // at the first place "Gesamtstadt"
 const combinedData = sortedData.flatMap(item => item[1]);
@@ -84,12 +77,15 @@ const years = data.map(item => {
 
 // Find the maximum year
 const latestYear = Math.max(...years).toString();
+
+const earliestYear = Math.min(...years).toString();
 //console.log(`Latest year: ${latestYear}`);
 ```
 ```js
 html`
 <div class="grid grid-cols-1" style="">
-  <h1>Bevölkerungsstatistik der Stadtteile von Konstanz (1995-2023)</h1>
+  <h1>Bevölkerungsstatistik der Stadtteile von Konstanz (${earliestYear}-${latestYear})</h1>
+  <h2> <i> - Veränderung der Bevölkerung in den Stadtteile seit ${earliestYear} </i> </h2>
 </div>
 `
 ```
@@ -208,6 +204,14 @@ color: values[0].color
 
 const defaultValue = checkboxEntries.filter(entry => defaultSelections.includes(entry.key));
 ```
+
+```js
+html`
+<div class="grid grid-cols-1" style="">
+  <h1></h1>
+  <h2> <i> - Prozentuale Veränderung der Bevölkerung in den Stadtteile im Vergleich zu ${earliestYear} </i> </h2>
+</div>`
+```
 ```js
 //get checkbox
 const check_orts = view(Inputs.checkbox(
@@ -249,7 +253,7 @@ const plot_checked = Plot.plot({
       text: (d) => [
         `Stadtteile: ${d.STT}`,
         `Jahr: ${new Date(d.Jahr).getFullYear()}`,
-        `Wachstum: ${d.Wachstum.toFixed(2)} %`,      
+        `Wachstum: ${d.Wachstum.toFixed(1)} %`,      
         `Einwohner: ${d.Einwohner.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`    
       ].join(",")
       })),
@@ -297,6 +301,14 @@ const checkboxes = document.querySelectorAll('input[type="checkbox"]');
 const isAnyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
 //document.getElementById('chart_check').style.display = isAnyChecked ? 'block' : 'none';
 ```
+```js
+html`
+<div class="grid grid-cols-1" style="">
+  <h1></h1>
+  <h2> <i> - Veränderung der Bevölkerung in den Stadtteile im Vergleich zu ${earliestYear} </i> </h2>
+</div>`
+```
+
 
 ```js
 //get select
@@ -324,10 +336,6 @@ const parsedData = select_ort_new.map(d => ({
 }));
 ```
 ```js
-
-```
-
-```js
 const einwohnerPlot =  Plot.plot({
   height: 350,
   width: 1400,
@@ -345,7 +353,7 @@ const einwohnerPlot =  Plot.plot({
     Plot.text(select_ort_new, {
       x: d => d.Jahr, 
       y: d => d.Einwohner, 
-      text: d => `${d.Wachstum.toFixed(2).replace('.', ',')}`, 
+      text: d => `${d.Wachstum.toFixed(1).replace('.', ',')}`, 
       textAnchor: "middle",
       dy: -15, 
       fill: d => d.Wachstum >= 0 ? "black" : "red", 
@@ -361,7 +369,7 @@ const filteredData = select_ort_new.map(d => ({
   Stadtteil: d.STT, 
   Jahr: d.Jahr, 
   Einwohner: d.Einwohner.toLocaleString('de-DE'), //put a dot at the thousandth number
-  "Wachstum%": d.Wachstum.toFixed(2).replace('.', ',')
+  "Wachstum%": d.Wachstum.toFixed(1).replace('.', ',')
 }));
 ```
 ```js
@@ -377,7 +385,7 @@ const filteredData_table = select_ort_new.map(d => ({
   Stadtteil: d.STT, 
   Jahr: d.Jahr, 
   Einwohner: d.Einwohner.toLocaleString('de-DE'), //put a dot at the thousandth number
-  "Wachstum%": d.Wachstum.toFixed(2).replace('.', ',')
+  "Wachstum%": d.Wachstum.toFixed(1).replace('.', ',')
 }));
 
 const previousYear = (parseInt(latestYear) - 1).toString();
@@ -425,15 +433,12 @@ html`
 // Gefilterte GeoJSON-Daten für "states" ?????
 const stateGeojson = geojson;
 ```
-
-
 ```js
 //change ortname ?????
 const updatedStateGeojson = {
   ...stateGeojson  
 };
 ```
-
 ```js
 //map
 // to calculate %% on the map
@@ -459,7 +464,7 @@ function mergeData(clearData, geojson) {
   });
   return geojson;
 }
-const mergedData = mergeData(filteredDataArray, geojson);
+const mergedData = mergeData(filteredDataArray, geojson); // merged arrays geojson + clearData
 ```
 ```js
 display(mergedData)
@@ -485,7 +490,7 @@ const map = Plot.plot({
     text: (d) => [
       `${d.properties.STT}`,
       `${d.properties.Einwohner.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}` ,
-      `(${d.properties.populationPercent.toFixed(2).replace('.', ',')} %)`
+      `(${d.properties.populationPercent.toFixed(1).replace('.', ',')} %)`
     ].join("\n"),  
 
     fontextAnchor: "middle",
@@ -495,16 +500,16 @@ const map = Plot.plot({
   }
 ))],
 })
-
 ```
 
 ```js 
-
 html`
-<div class="grid grid-cols-2" >
-  <div class="card" id="infoBox">
-    
-  </div>
+<div class="grid grid-cols-1">
+  <h1></h1>
+  <h2> <i>- Kennzahlen der Stadtteile im Jahr ${latestYear}</i></h2>
+</div>
+<div class="grid grid-cols-2" style="display: grid; grid-template-columns: 1.5fr 2.5fr; gap: 16px;">
+  <div class="card" id="infoBox"> </div>
   <div class="card">
     ${document.body.appendChild(map)} 
   </div>
@@ -515,9 +520,9 @@ html`
 ```
 ```js
 const infoBox = d3.select("#infoBox");
+
 d3.select(map).selectAll("path")
-  .data(mergedData.features) // Привязка данных к элементам path
-  
+  .data(mergedData.features)  
   .on("mouseover", function(event, d) {
     d3.select(this)
       .transition()
@@ -535,10 +540,33 @@ d3.select(map).selectAll("path")
       .attr("opacity", 1)
       .attr("stroke-width", 1);    
   })
-  .on("click", function(event, d) {
+  .on("click", function(event, d){
+    
     infoBox
       .style("display", "block")
-      .html(`ID: ${d.properties.STT_NR}`);      
+      .html(`
+        <table>
+        <tr>
+          <td>ID:</td>
+          <td>${d.properties.STT_NR}</td>           
+        </tr>
+        <tr>
+          <td><h1 style="color: ${yellowColor}"> ${d.properties.STT} </h1> </td>
+        </tr>
+        <tr>
+          <td>Gesamt der Einwohner:</td><td> ${d.properties.Einwohner.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")} </td>
+        </tr>
+        <tr> 
+          <td>Anteil der Einwohner:</td><td> ${d.properties.populationPercent.toFixed(2).replace('.', ',') }% </td>
+        </tr>
+        <tr>
+          <td>Wachstum im Vergleich zu ${earliestYear}:</td>
+          <td > ${d.properties.Wachstum.toFixed(2).replace('.', ',')}% </td>
+          
+        </tr>
+        </table>
+      `);      
   });
 
 ```
+
