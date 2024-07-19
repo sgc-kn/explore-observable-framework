@@ -1,24 +1,7 @@
-```js
-html`
-<style type="text/css">
-  h1, h2, h3{
-    max-width: none;
-  }
-  form.inputs-3a86ea-checkbox{
-    max-width: none;
-  }
-  .info-box {
-      position: absolute;
-      padding: 5px;
-      background: white;
-      border: 1px solid black;
-      top: 10px;
-      right: 10px;
-      display: none;
-  }  
-</style>
-`
-```
+# Einwohner in Konstanz
+
+<link rel="stylesheet" type="text/css" href="styles/einwohner.css">
+
 ```js
 const data = FileAttachment("data/einwohner.csv").csv();
 //const map = FileAttachment("data/map.csv").csv();
@@ -85,7 +68,7 @@ const earliestYear = Math.min(...years).toString();
 html`
 <div class="grid grid-cols-1" style="">
   <h1>Bevölkerungsstatistik der Stadtteile von Konstanz (${earliestYear}-${latestYear})</h1>
-  <h2> <i> - Veränderung der Bevölkerung in den Stadtteile seit ${earliestYear} </i> </h2>
+  <h2> <i> - Bevölkerungsentwicklung in den Stadtteile ab ${earliestYear} </i> </h2>
 </div>
 `
 ```
@@ -184,7 +167,7 @@ combinedData.forEach(d => {
 ```js
 //add color to the array with Einwohner
 combinedData.forEach(d => {
-d.color = colorScale(d.STT);
+  d.color = colorScale(d.STT);
 });
 ```
 ```js
@@ -209,7 +192,7 @@ const defaultValue = checkboxEntries.filter(entry => defaultSelections.includes(
 html`
 <div class="grid grid-cols-1" style="">
   <h1></h1>
-  <h2> <i> - Prozentuale Veränderung der Bevölkerung in den Stadtteile im Vergleich zu ${earliestYear} </i> </h2>
+  <h2> <i> - Prozentuale Bevölkerungsentwicklung in den Stadtteile im Vergleich zu ${earliestYear} </i> </h2>
 </div>`
 ```
 ```js
@@ -561,8 +544,7 @@ d3.select(map).selectAll("path")
         </tr>
         <tr>
           <td>Wachstum im Vergleich zu ${earliestYear}:</td>
-          <td > ${d.properties.Wachstum.toFixed(2).replace('.', ',')}% </td>
-          
+          <td > ${d.properties.Wachstum.toFixed(2).replace('.', ',')}% </td>          
         </tr>
         </table>
       `);      
