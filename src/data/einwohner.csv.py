@@ -10,6 +10,4 @@
 with open('raw_data/EW_STT1995ff_cleaned.csv', 'r') as f:
    print(f.read(), end='')
 
-   
 
-    

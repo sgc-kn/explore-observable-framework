@@ -1,23 +1,22 @@
 # Einwohner in Konstanz
 
-<link rel="stylesheet" type="text/css" href="styles/einwohner.css">
+<link rel="stylesheet" type="text/css" href="style/einwohner.css">
 
 ```js
 const data = FileAttachment("data/einwohner.csv").csv();
-//const map = FileAttachment("data/map.csv").csv();
+const map_csv = FileAttachment("data/map.csv").csv();
 const geojson = FileAttachment("data/map.geojson").json(); 
 ```
-
 ```js
 //display(data);
-//display(map);
+display(map_csv);
 //display(geojson);
 ```
 ```js
 //Inputs.table(data)
 ```
 ```js
-const fontSize = 16
+const fontSizelabel = 16
 const fontFamily = 'Arial, sans-serif'
 const yellowColor = '#efb118'
 ```
@@ -68,7 +67,7 @@ const earliestYear = Math.min(...years).toString();
 html`
 <div class="grid grid-cols-1" style="">
   <h1>Bevölkerungsstatistik der Stadtteile von Konstanz (${earliestYear}-${latestYear})</h1>
-  <h2> <i> - Bevölkerungsentwicklung in den Stadtteile ab ${earliestYear} </i> </h2>
+  <h2 class="category-title"> <i> - Bevölkerungsentwicklung in den Stadtteile ab ${earliestYear} </i> </h2>
 </div>
 `
 ```
@@ -77,7 +76,7 @@ html`
 const select_ort = view( 
   Inputs.select(
     d3.group(combinedData, (d) => d.STT),
-    {label: html`<h2>Stadtteile:</h2>`, unique: true, fontSize: `${fontSize}`}
+    {label: html`<div class="st-title">Stadtteile:</div>`, unique: true, fontSize: `${fontSizelabel}`}
   )
 );
 ```
@@ -99,12 +98,15 @@ const intermediateValue = (maxValue + minValue) / 2;
 html`
 <div class="grid grid-cols-2" style="display: grid; grid-template-columns: 1.5fr 2.5fr; gap: 16px;">
   <div class="card">
-    <h1 <span style="color: #efb118;">${ort}</h1>
-    <p style="font-size: 16px;">Die Gesamtzahl der Einwohner im Jahr ${latestYear}: <span style="color: #efb118; font-size: 18px;">${einwohner[0].Einwohner.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</span></p>
-    <p style="font-size: 16px;">Maximale Einwohnerzahl: <span style="color: #efb118; font-size: 18px;">${maxValue.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</span> im Jahr <span style="color: #efb118; font-size: 18px;">${maxValueJahr}</span></p>
-    <p style="font-size: 16px;">Manimale Einwohnerzahl : <span style="color: green; font-size: 18px;">${minValue.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")} </span>im Jahr <span style="color: green; font-size: 18px;"> ${minValueJahr}</span></p>
+    <h1 class="ort_name_card"> <span class="stadtteil_name">${ort}</span></h1>
+    <p class="field_name" >Die Gesamtzahl der Einwohner im Jahr ${latestYear}:  <span style="color: ${yellowColor};">${einwohner[0].Einwohner.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</span>
+    </p>
+    <p class="field_name" >Maximale Einwohnerzahl: 
+      <span style="color: ${yellowColor}; ">${maxValue.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</span> im Jahr <span style="color: ${yellowColor};">${maxValueJahr}</span>
+    </p>
+    <p class="field_name">Manimale Einwohnerzahl : <span style="color: green;">${minValue.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")} </span>im Jahr <span style="color: green;"> ${minValueJahr}</span></p>
   </div>
-  <div class="card grid-rowspan-2" style="font-size: 16px;">${plotEinwohner} </div>
+  <div class="card grid-rowspan-2" class="field_name">${plotEinwohner} </div>
 </div>
 `
 ```
@@ -113,17 +115,17 @@ html`
 const plotEinwohner = Plot.plot({  
   width: 850,
   margin: 60, 
-  title: "Title des Chartes",
+  title: "Bevölkerungsentwicklung in den Stadtteile ab 1995",
   marks: [
     Plot.ruleY([0], {stroke: "black"}),
-    Plot.axisX({fontSize: `${fontSize}`, tickRotate: -45, fontFamily: `${fontFamily}`}),
-    Plot.axisY({fontSize: `${fontSize}`, anchor: "right", ticks: 4, label: "Einwohner", fontFamily: `${fontFamily}`, tickFormat: d => d.toLocaleString('de-DE').replace(',', '.'), tickSize: 0
+    Plot.axisX({fontSize: `${fontSizelabel}`, tickRotate: -45, fontFamily: `${fontFamily}`}),
+    Plot.axisY({fontSize: `${fontSizelabel}`, anchor: "right", ticks: 4, label: "Einwohner", fontFamily: `${fontFamily}`, tickFormat: d => d.toLocaleString('de-DE').replace(',', '.'), tickSize: 0
     }),    
     Plot.lineY(select_ort, {x: "Jahr", y: "Einwohner", stroke: "STT", strokeWidth: 4}),
     Plot.ruleX(select_ort, Plot.pointerX({x: "Jahr", py: "Einwohner", stroke: "red"})),
     Plot.dot(select_ort, Plot.pointerX({x: "Jahr", y: "Einwohner", stroke: "red"})),
     Plot.text(select_ort, Plot.pointerX({px: "Jahr", py: "Einwohner", dy: -17, 
-    frameAnchor: "top-left", fontSize: `${fontSize}`, fontWeight: .1, strokeWidth: 2,
+    frameAnchor: "top-left", fontSize: `${fontSizelabel}`, fontWeight: .1, strokeWidth: 2,
     text: (d) => [
       `Stadtteile: ${d.STT}`,
       `Jahr: ${new Date(d.Jahr).getFullYear()}`, 
@@ -192,7 +194,7 @@ const defaultValue = checkboxEntries.filter(entry => defaultSelections.includes(
 html`
 <div class="grid grid-cols-1" style="">
   <h1></h1>
-  <h2> <i> - Prozentuale Bevölkerungsentwicklung in den Stadtteile im Vergleich zu ${earliestYear} </i> </h2>
+  <h2 class="category-title"> <i> - Prozentuale Bevölkerungsentwicklung in den Stadtteile im Vergleich zu ${earliestYear} </i> </h2>
 </div>`
 ```
 ```js
@@ -200,7 +202,7 @@ html`
 const check_orts = view(Inputs.checkbox(
   checkboxEntries,
   {
-    label: html`<h2>Stadtteile:</h2>`,
+    label: html`<div class="st-title">Stadtteile:</div>`,
     unique: true,
     format: (entry) => {
       return Object.assign(document.createElement('span'), {
@@ -225,14 +227,14 @@ const plot_checked = Plot.plot({
     margin: 60,  
     marks: [
       Plot.ruleY([0], {stroke: "black"}),
-      Plot.axisX({fontSize: `${fontSize}`, tickRotate: -45, fontFamily: `${fontFamily}`}),
-      Plot.axisY({fontSize: `${fontSize}`, anchor: "right", fontFamily: `${fontFamily}`, tickFormat: d => d.toLocaleString('de-DE').replace('.', ','), tickSize: 0
+      Plot.axisX({fontSize: `${fontSizelabel}`, tickRotate: -45, fontFamily: `${fontFamily}`}),
+      Plot.axisY({fontSize: `${fontSizelabel}`, anchor: "right", fontFamily: `${fontFamily}`, tickFormat: d => d.toLocaleString('de-DE').replace('.', ','), tickSize: 0
       }),
       Plot.lineY(check_orts_pr, {x: "Jahr", y: "Wachstum", stroke: "STT", strokeWidth: 3, stroke: d => colorScale(d.STT)}),   
       Plot.ruleX(check_orts_pr, Plot.pointerX({x: "Jahr", py: "Wachstum", stroke: "red"})),
       Plot.dot(check_orts_pr, Plot.pointerX({x: "Jahr", y: "Wachstum", stroke: "red"})),
       Plot.text(check_orts_pr, Plot.pointerX({px: "Jahr", py: "Wachstum", dy: -17, 
-      frameAnchor: "top-left", fontSize: `${fontSize}`, fontWeight: 0.1, strokeWidth: 2,
+      frameAnchor: "top-left", fontSize: `${fontSizelabel}`, fontWeight: 0.1, strokeWidth: 2,
       text: (d) => [
         `Stadtteile: ${d.STT}`,
         `Jahr: ${new Date(d.Jahr).getFullYear()}`,
@@ -240,19 +242,19 @@ const plot_checked = Plot.plot({
         `Einwohner: ${d.Einwohner.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`    
       ].join(",")
       })),
-      // Добавляем подписи названий к графику в одном месте для каждой линии
+      
       ...d3.groups(check_orts_pr, d => d.STT).map(([key, values], i) =>
         Plot.text(
-          [values[values.length - 1]], // выбираем последнюю точку для каждой группы
+          [values[values.length - 1]], 
           {
             x: "Jahr",
             y: "Wachstum",
             text: d => d.STT,
-            dx: 5, // смещение по X для отступа от точки
-            dy: i * 15 - 30, // смещение по Y для отступа от точки с учетом индекса группы
-            fontSize: `${fontSize}`,
+            dx: 5, 
+            dy: i * 15 - 50, 
+            fontSize: `${fontSizelabel}`,
             fontWeight: "bold",
-            fill: colorScale(key) // цвет текста соответствует цвету линии
+            fill: colorScale(key)
           }
         )
       ),
@@ -288,7 +290,7 @@ const isAnyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
 html`
 <div class="grid grid-cols-1" style="">
   <h1></h1>
-  <h2> <i> - Veränderung der Bevölkerung in den Stadtteile im Vergleich zu ${earliestYear} </i> </h2>
+  <h2 class="category-title"> <i> - Veränderung der Bevölkerung in den Stadtteile im Vergleich zu ${earliestYear} </i> </h2>
 </div>`
 ```
 
@@ -298,7 +300,7 @@ html`
 const select_ort_new = view( 
   Inputs.select(
     d3.group(combinedData, (d) => d.STT),
-    {label: html`<h2>Stadtteile:</h2>`, unique: true}
+    {label: html`<div class="st-title">Stadtteile:</div>`, unique: true}
   )
 );
 ```
@@ -360,7 +362,7 @@ const tableOptions = {
   sort: "Jahr",
   reverse: false,
   fontFamily: `${fontFamily}`,
-  fontSize: `${fontSize}`
+  fontSize: `${fontSizelabel}`
 };
 ```
 ```js
@@ -398,41 +400,38 @@ html`
     const growth = growthValue > 0 ? '↗︎' : ' ↘︎';
     return html`
       <div class="card">
-        <h1 style="color: #efb118"> ${d.Stadtteil} </h1>
-        <p>Die Gesamtzahl der Einwohner im Jahr ${d.Jahr}: <span style="color: #efb118; font-size: 18px;">${d.Einwohner}</span></p>
-        <p>Wachstum: <span style="color: ${growthColor}; font-size: 18px;"> ${d["Wachstum%"]}% ${growth}</span>
+        <h1 class="ort_name_card"> ${d.Stadtteil} </h1>
+        <p class="field_name">Die Gesamtzahl der Einwohner im Jahr ${d.Jahr}: <span style="color: ${yellowColor}; ">${d.Einwohner}</span></p>
+        <p class="field_name">Wachstum: <span style="color: ${growthColor}; "> ${d["Wachstum%"]}% ${growth}</span>
         </p>  
       </div>`
   })}
-      <div class="card" >    
+      <div class="card" class="field_name">    
         ${Inputs.table(filteredData_table, tableOptions)}
       </div>
 </div>
 `
 ```
 ```js
-//get geojson daten
-
-// Gefilterte GeoJSON-Daten für "states" ?????
-const stateGeojson = geojson;
-```
-```js
-//change ortname ?????
-const updatedStateGeojson = {
-  ...stateGeojson  
-};
-```
-```js
 //map
 // to calculate %% on the map
 const getGesamtstadt = groupedData.get("Gesamtstadt"); 
-const gesamtEinwohner_latestYear = getGesamtstadt ? getGesamtstadt.find(d => d.Jahr === latestYear)?.Einwohner : "NaN"; 
+const gesamtEinwohner_latestYear = getGesamtstadt ? getGesamtstadt.find(d => d.Jahr === latestYear)?.Einwohner : "NaN";
+
+//to get Shape__Area, Shape__Length from map_csv
+const mapWithArea = {};
+map_csv.forEach(item => {
+  mapWithArea[item.STT_NR] = {
+    Shape__Area: parseFloat(item.Shape__Area),
+    Shape__Length: parseFloat(item.Shape__Length)
+  };
+});
 
 //get an array with data for 2023
 const filteredDataArray = clearData.filter(item => item.Jahr === latestYear);
 
 // merged arrays geojson + clearData
-function mergeData(clearData, geojson) {  
+function mergeData(clearData, geojson, mapWithArea) {  
   const dataMap = {};
   clearData.forEach(item => {
     dataMap[item.STT_ID] = item;
@@ -440,14 +439,26 @@ function mergeData(clearData, geojson) {
   geojson.features.forEach(feature => {
     const stt_nr = feature.properties.STT_NR;
     const correspondingData = dataMap[stt_nr];
+    const additionalProps = mapWithArea[stt_nr];
+    
+    //to add Einwohner to the geojson
     if (correspondingData) {
-      const populationPercent = (correspondingData.Einwohner / gesamtEinwohner_latestYear) * 100;
+      const populationPercent = (correspondingData.Einwohner / gesamtEinwohner_latestYear) * 100; // %%
       feature.properties = { ...feature.properties, ...correspondingData, populationPercent };
     }
+    //to add Shape__Area, Shape__Length to the geojson
+    if (additionalProps) {
+      feature.properties = { ...feature.properties, ...additionalProps };
+      // Population density
+      const areaInSqKm = additionalProps.Shape__Area / 1_000_000; // to sq.km.
+      const populationDensity = correspondingData.Einwohner / areaInSqKm; // Einwohner pro sq.km.
+      feature.properties.areaInSqKm = areaInSqKm.toFixed(1).replace('.', ','); //add areaInSqKm to the geojson
+      feature.properties.populationDensity = populationDensity.toFixed(0); //add populationDensity to the geojson
+    } 
   });
-  return geojson;
+  return geojson;      
 }
-const mergedData = mergeData(filteredDataArray, geojson); // merged arrays geojson + clearData
+const mergedData = mergeData(filteredDataArray, geojson, mapWithArea); // merged arrays geojson + clearData
 ```
 ```js
 display(mergedData)
@@ -462,7 +473,7 @@ const map = Plot.plot({
   //projection: {type: "identity", domain: combined_Data_obj}, 
   marks: [
     Plot.geo(mergedData, {
-      fill: "#bdd4e5",
+      fill: "#a2c5dd",
       stroke: "white",
       title: d => d.properties.STT_NR,
       //fill: d => d.properties.color,          
@@ -473,7 +484,8 @@ const map = Plot.plot({
     text: (d) => [
       `${d.properties.STT}`,
       `${d.properties.Einwohner.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}` ,
-      `(${d.properties.populationPercent.toFixed(1).replace('.', ',')} %)`
+      `(${d.properties.populationPercent.toFixed(1).replace('.', ',')} %)`,
+      `(${d.properties.populationDensity} / km²)`
     ].join("\n"),  
 
     fontextAnchor: "middle",
@@ -489,7 +501,7 @@ const map = Plot.plot({
 html`
 <div class="grid grid-cols-1">
   <h1></h1>
-  <h2> <i>- Kennzahlen der Stadtteile im Jahr ${latestYear}</i></h2>
+  <h2 class="category-title"> <i>- Kennzahlen der Stadtteile im Jahr ${latestYear}</i></h2>
 </div>
 <div class="grid grid-cols-2" style="display: grid; grid-template-columns: 1.5fr 2.5fr; gap: 16px;">
   <div class="card" id="infoBox"> </div>
@@ -513,7 +525,7 @@ d3.select(map).selectAll("path")
       .ease(d3.easeLinear)
       .attr("opacity", 0.7)
       .attr("stroke-width", 3)
-      .style("cursor", "pointer");  // Change cursor to pointer on hover    
+      .style("cursor", "pointer");  // cursor: pointer by hover    
   })  
   .on("mouseout", function(event, d) {
     d3.select(this)
@@ -523,8 +535,7 @@ d3.select(map).selectAll("path")
       .attr("opacity", 1)
       .attr("stroke-width", 1);    
   })
-  .on("click", function(event, d){
-    
+  .on("click", function(event, d){    
     infoBox
       .style("display", "block")
       .html(`
@@ -534,19 +545,27 @@ d3.select(map).selectAll("path")
           <td>${d.properties.STT_NR}</td>           
         </tr>
         <tr>
-          <td><h1 style="color: ${yellowColor}"> ${d.properties.STT} </h1> </td>
+          <td><h1 class="ort_name_card"> ${d.properties.STT} </h1> </td>
         </tr>
         <tr>
-          <td>Gesamt der Einwohner:</td><td> ${d.properties.Einwohner.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")} </td>
+          <td>Gesamt der Einwohner im ${latestYear} :</td><td> ${d.properties.Einwohner.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")} </td>
         </tr>
         <tr> 
-          <td>Anteil der Einwohner:</td><td> ${d.properties.populationPercent.toFixed(2).replace('.', ',') }% </td>
+          <td>Anteil der Einwohner im ${latestYear}:</td><td> ${d.properties.populationPercent.toFixed(1).replace('.', ',') }% </td>
         </tr>
         <tr>
           <td>Wachstum im Vergleich zu ${earliestYear}:</td>
-          <td > ${d.properties.Wachstum.toFixed(2).replace('.', ',')}% </td>          
+          <td > ${d.properties.Wachstum.toFixed(1).replace('.', ',')}% </td>          
         </tr>
-        </table>
+        <tr>
+          <td>Fläche, km²:</td>
+          <td>${d.properties.areaInSqKm} </td>          
+        </tr>
+        <tr>
+          <td>Bevölkerungsdichte im ${latestYear}:</td>
+          <td>${d.properties.populationDensity} </td>          
+        </tr>
+        </table> 
       `);      
   });
 

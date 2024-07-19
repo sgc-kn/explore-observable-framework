@@ -1,0 +1,13 @@
+body {
+  font-family: "Roboto Slab", serif;
+}
+body #observablehq-center #observablehq-main .observablehq--block .grid .card h1 {
+  max-width: none;
+}
+body #observablehq-center #observablehq-main .observablehq--block .grid .card .ort_name_card {
+  font-size: 27px;
+  color: #efb118;
+  font-family: "Roboto Slab", serif;
+}
+
+/*# sourceMappingURL=index.css.map */
