@@ -1,72 +1,40 @@
 # Einwohner in Konstanz
-
 <link rel="stylesheet" type="text/css" href="style/einwohner.css">
 
 ```js
-const data = FileAttachment("data/einwohner.csv").csv();
-const map_csv = FileAttachment("data/map.csv").csv();
-const geojson = FileAttachment("data/map.geojson").json(); 
-```
-```js
-//display(data);
-display(map_csv);
-//display(geojson);
-```
-```js
-//Inputs.table(data)
-```
-```js
-const fontSizelabel = 16
-const fontFamily = 'Arial, sans-serif'
-const yellowColor = '#efb118'
-```
-```js
-// string to number
-const clearData = data.map(item => {  
-  return {
-    ...item,
-    Einwohner: item.Einwohner ? Number(item.Einwohner) : "NaN",
-    //Jahr: item.Jahr && !isNaN(item.Jahr) ? parseInt(item.Jahr, 10) : "NaN",
-    Wachstum: item.Wachstum ? parseFloat(item.Wachstum) : "NaN"    
-  };
-});
+import { data, map_csv, geojson, fontSizelabel, fontFamily, yellowColor, clearData, groupedData, sortedData, combinedData, latestYear, earliestYear } from "./components/data.js";
+import { map, mergedData, filteredDataArray, defaultData } from "./components/map.js";
 ```
 
 ```js
-// at the first place "Gesamtstadt"
-const groupedData = d3.group(clearData, d => d.STT);
-const sortedData = Array.from(groupedData).sort((a, b) => {
-  if (a[0] === "Gesamtstadt") return -1;
-  if (b[0] === "Gesamtstadt") return 1;
-  return a[0].localeCompare(b[0]);
-});
+//map
+html`<div class="grid grid-cols-1">
+      <h1></h1>
+      <h2 class="category-title"> <i>- Kennzahlen der Stadtteile im Jahr ${latestYear}</i></h2>
+    </div>
+    <div class="grid grid-cols-2" style="display: grid; grid-template-columns: 1.5fr 2.5fr; gap: 16px;">
+      <div class="card" id="infoBox"> </div>
+      <div class="card">
+        ${document.body.appendChild(map)} 
+      </div>
+    </div>`
+
 ```
 ```js
-// at the first place "Gesamtstadt"
-const combinedData = sortedData.flatMap(item => item[1]);
+display(mergedData)
+display(filteredDataArray)
+display(defaultData)
+
+
 ```
+
 ```js
- //get last year (for example "2023")
-//const latestYear = Math.max(...data.map(item => parseInt(item.Jahr, 10))).toString();
-// 
-const years = data.map(item => {
-  const year = parseInt(item.Jahr, 10);
-  if (isNaN(year)) {
-    console.error(`Invalid year value: ${item.Jahr}`);
-  }
-  return year;
-}).filter(year => !isNaN(year)); // Filter out any invalid years
-
-// Find the maximum year
-const latestYear = Math.max(...years).toString();
-
-const earliestYear = Math.min(...years).toString();
-//console.log(`Latest year: ${latestYear}`);
+//<h1>Bevölkerungsstatistik der Stadtteile von Konstanz (${earliestYear}-${latestYear})</h1>
 ```
 ```js
 html`
 <div class="grid grid-cols-1" style="">
-  <h1>Bevölkerungsstatistik der Stadtteile von Konstanz (${earliestYear}-${latestYear})</h1>
+  <h1></h1>
   <h2 class="category-title"> <i> - Bevölkerungsentwicklung in den Stadtteile ab ${earliestYear} </i> </h2>
 </div>
 `
@@ -99,12 +67,20 @@ html`
 <div class="grid grid-cols-2" style="display: grid; grid-template-columns: 1.5fr 2.5fr; gap: 16px;">
   <div class="card">
     <h1 class="ort_name_card"> <span class="stadtteil_name">${ort}</span></h1>
-    <p class="field_name" >Die Gesamtzahl der Einwohner im Jahr ${latestYear}:  <span style="color: ${yellowColor};">${einwohner[0].Einwohner.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</span>
-    </p>
-    <p class="field_name" >Maximale Einwohnerzahl: 
-      <span style="color: ${yellowColor}; ">${maxValue.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</span> im Jahr <span style="color: ${yellowColor};">${maxValueJahr}</span>
-    </p>
-    <p class="field_name">Manimale Einwohnerzahl : <span style="color: green;">${minValue.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")} </span>im Jahr <span style="color: green;"> ${minValueJahr}</span></p>
+    <table>
+      <tr>
+        <td ><span class="field_name">Die Gesamtzahl der Einwohner im Jahr ${latestYear}: </span></td>
+        <td><span style="color: ${yellowColor}; font-size: ${fontSizelabel}px;">${einwohner[0].Einwohner.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</span></td>
+      </tr>
+      <tr>
+        <td><span class="field_name" >Maximale Einwohnerzahl im Jahr <span style="color: ${yellowColor};">${maxValueJahr}</span>: </span></td>
+        <td><span style="color: ${yellowColor}; font-size: ${fontSizelabel}px;">${maxValue.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</span></td>
+      </tr>
+      <tr>
+        <td><span class="field_name">Manimale Einwohnerzahl im Jahr <span style="color: green; font-size: ${fontSizelabel}px;"> ${minValueJahr} </span>:</span></td>
+        <td><span style="color: green; font-size: ${fontSizelabel}px;">${minValue.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")} </span></td>
+      </tr>
+    </table>
   </div>
   <div class="card grid-rowspan-2" class="field_name">${plotEinwohner} </div>
 </div>
@@ -155,24 +131,25 @@ const plotEinwohner = Plot.plot({
   }},
 )
 ```
+
+```js
+html`
+<div class="grid grid-cols-1" style="">
+  <h1></h1>
+  <h2 class="category-title"> <i> - Prozentuale Bevölkerungsentwicklung in den Stadtteile im Vergleich zu ${earliestYear} </i> </h2>
+</div>`
+```
+
 ```js
 //color for charts
 const colorScale = d3.scaleOrdinal(d3.schemeCategory10)
   .domain(d3.group(combinedData, d => d.STT).keys());
-```
-```js
+
 //add color to the array with Einwohner
 combinedData.forEach(d => {
   d.color = colorScale(d.STT);
 });
-```
-```js
-//add color to the array with Einwohner
-combinedData.forEach(d => {
-  d.color = colorScale(d.STT);
-});
-```
-```js
+
 //set default value
 //group by STT
 const groupedData_new = d3.group(combinedData, (d) => d.STT);
@@ -188,14 +165,6 @@ color: values[0].color
 }));
 
 const defaultValue = checkboxEntries.filter(entry => defaultSelections.includes(entry.key));
-```
-
-```js
-html`
-<div class="grid grid-cols-1" style="">
-  <h1></h1>
-  <h2 class="category-title"> <i> - Prozentuale Bevölkerungsentwicklung in den Stadtteile im Vergleich zu ${earliestYear} </i> </h2>
-</div>`
 ```
 ```js
 //get checkbox
@@ -214,11 +183,16 @@ const check_orts = view(Inputs.checkbox(
   }
 ));
 ```
-
 ```js
 let arr = check_orts.map(item => item.values);
 const check_orts_pr = arr.flat(); //transform the data
 //check_orts_pr = defaultSelections.flatMap(key => groupedData_new.get(key));
+
+
+//display chart ????? 
+const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+const isAnyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+//document.getElementById('chart_check').style.display = isAnyChecked ? 'block' : 'none';
 ```
 ```js
 //get chart with all   
@@ -273,19 +247,16 @@ const plot_checked = Plot.plot({
   },
 )
 ```
+
 ```js
+//checkbox 
 html`
     <div id="chart_check"  class="grid grid-cols-1">
       <div class="card grid-rowspan-2">${plot_checked}</div>
     </div>`
 ```
 
-```js
-//display chart ????? 
-const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-const isAnyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
-//document.getElementById('chart_check').style.display = isAnyChecked ? 'block' : 'none';
-```
+
 ```js
 html`
 <div class="grid grid-cols-1" style="">
@@ -401,173 +372,24 @@ html`
     return html`
       <div class="card">
         <h1 class="ort_name_card"> ${d.Stadtteil} </h1>
-        <p class="field_name">Die Gesamtzahl der Einwohner im Jahr ${d.Jahr}: <span style="color: ${yellowColor}; ">${d.Einwohner}</span></p>
-        <p class="field_name">Wachstum: <span style="color: ${growthColor}; "> ${d["Wachstum%"]}% ${growth}</span>
+        <table>
+          <tr>
+            <td><span class="field_name">Die Gesamtzahl der Einwohner im Jahr ${d.Jahr}: </span></td>
+            <td><span style="color: ${yellowColor}; font-size: ${fontSizelabel}px;">${d.Einwohner}</span></td>
+          </tr>
+          <tr>
+            <td><span class="field_name">Wachstum: </span></td>
+            <td><span style="color: ${growthColor}; font-size: ${fontSizelabel}px;"> ${d["Wachstum%"]}% ${growth}</span></td>
+          </tr>
+        </table>      
+         
         </p>  
       </div>`
   })}
-      <div class="card" class="field_name">    
+      <div class="card" class="tableStyle">    
         ${Inputs.table(filteredData_table, tableOptions)}
       </div>
 </div>
 `
-```
-```js
-//map
-// to calculate %% on the map
-const getGesamtstadt = groupedData.get("Gesamtstadt"); 
-const gesamtEinwohner_latestYear = getGesamtstadt ? getGesamtstadt.find(d => d.Jahr === latestYear)?.Einwohner : "NaN";
-
-//to get Shape__Area, Shape__Length from map_csv
-const mapWithArea = {};
-map_csv.forEach(item => {
-  mapWithArea[item.STT_NR] = {
-    Shape__Area: parseFloat(item.Shape__Area),
-    Shape__Length: parseFloat(item.Shape__Length)
-  };
-});
-
-//get an array with data for 2023
-const filteredDataArray = clearData.filter(item => item.Jahr === latestYear);
-
-// merged arrays geojson + clearData
-function mergeData(clearData, geojson, mapWithArea) {  
-  const dataMap = {};
-  clearData.forEach(item => {
-    dataMap[item.STT_ID] = item;
-  });  
-  geojson.features.forEach(feature => {
-    const stt_nr = feature.properties.STT_NR;
-    const correspondingData = dataMap[stt_nr];
-    const additionalProps = mapWithArea[stt_nr];
-    
-    //to add Einwohner to the geojson
-    if (correspondingData) {
-      const populationPercent = (correspondingData.Einwohner / gesamtEinwohner_latestYear) * 100; // %%
-      feature.properties = { ...feature.properties, ...correspondingData, populationPercent };
-    }
-    //to add Shape__Area, Shape__Length to the geojson
-    if (additionalProps) {
-      feature.properties = { ...feature.properties, ...additionalProps };
-      // Population density
-      const areaInSqKm = additionalProps.Shape__Area / 1_000_000; // to sq.km.
-      const populationDensity = correspondingData.Einwohner / areaInSqKm; // Einwohner pro sq.km.
-      feature.properties.areaInSqKm = areaInSqKm.toFixed(1).replace('.', ','); //add areaInSqKm to the geojson
-      feature.properties.populationDensity = populationDensity.toFixed(0); //add populationDensity to the geojson
-    } 
-  });
-  return geojson;      
-}
-const mergedData = mergeData(filteredDataArray, geojson, mapWithArea); // merged arrays geojson + clearData
-```
-```js
-display(mergedData)
-```
-```js
-//map - plot
-const map = Plot.plot({
-  height: 1200,
-  width: 900,  
-  x: {axis: null},
-  y: {axis: null},  
-  //projection: {type: "identity", domain: combined_Data_obj}, 
-  marks: [
-    Plot.geo(mergedData, {
-      fill: "#a2c5dd",
-      stroke: "white",
-      title: d => d.properties.STT_NR,
-      //fill: d => d.properties.color,          
-    }),    
-    Plot.text(mergedData.features, 
-    Plot.centroid(
-  {
-    text: (d) => [
-      `${d.properties.STT}`,
-      `${d.properties.Einwohner.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}` ,
-      `(${d.properties.populationPercent.toFixed(1).replace('.', ',')} %)`,
-      `(${d.properties.populationDensity} / km²)`
-    ].join("\n"),  
-
-    fontextAnchor: "middle",
-    fill: "#000000",
-    fontWeight: "bold",
-    fontSize: 12    
-  }
-))],
-})
-```
-
-```js 
-html`
-<div class="grid grid-cols-1">
-  <h1></h1>
-  <h2 class="category-title"> <i>- Kennzahlen der Stadtteile im Jahr ${latestYear}</i></h2>
-</div>
-<div class="grid grid-cols-2" style="display: grid; grid-template-columns: 1.5fr 2.5fr; gap: 16px;">
-  <div class="card" id="infoBox"> </div>
-  <div class="card">
-    ${document.body.appendChild(map)} 
-  </div>
-</div>`
-```
-```js
-
-```
-```js
-const infoBox = d3.select("#infoBox");
-
-d3.select(map).selectAll("path")
-  .data(mergedData.features)  
-  .on("mouseover", function(event, d) {
-    d3.select(this)
-      .transition()
-      .duration(300)
-      .ease(d3.easeLinear)
-      .attr("opacity", 0.7)
-      .attr("stroke-width", 3)
-      .style("cursor", "pointer");  // cursor: pointer by hover    
-  })  
-  .on("mouseout", function(event, d) {
-    d3.select(this)
-      .transition()
-      .duration(300)
-      .ease(d3.easeLinear)
-      .attr("opacity", 1)
-      .attr("stroke-width", 1);    
-  })
-  .on("click", function(event, d){    
-    infoBox
-      .style("display", "block")
-      .html(`
-        <table>
-        <tr>
-          <td>ID:</td>
-          <td>${d.properties.STT_NR}</td>           
-        </tr>
-        <tr>
-          <td><h1 class="ort_name_card"> ${d.properties.STT} </h1> </td>
-        </tr>
-        <tr>
-          <td>Gesamt der Einwohner im ${latestYear} :</td><td> ${d.properties.Einwohner.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")} </td>
-        </tr>
-        <tr> 
-          <td>Anteil der Einwohner im ${latestYear}:</td><td> ${d.properties.populationPercent.toFixed(1).replace('.', ',') }% </td>
-        </tr>
-        <tr>
-          <td>Wachstum im Vergleich zu ${earliestYear}:</td>
-          <td > ${d.properties.Wachstum.toFixed(1).replace('.', ',')}% </td>          
-        </tr>
-        <tr>
-          <td>Fläche, km²:</td>
-          <td>${d.properties.areaInSqKm} </td>          
-        </tr>
-        <tr>
-          <td>Bevölkerungsdichte im ${latestYear}:</td>
-          <td>${d.properties.populationDensity} </td>          
-        </tr>
-        </table> 
-      `);      
-  });
-
 ```
 

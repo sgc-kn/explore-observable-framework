@@ -1,77 +1,172 @@
-import { groupedData } from "../einwohner"
-//map
+import * as Plot from "npm:@observablehq/plot";
+import * as d3 from "npm:d3";
+import { map_csv, geojson, clearData, groupedData, latestYear, earliestYear } from "./data.js";
 
-const getGesamtstadt = groupedData.get("Gesamtstadt");
-const gesamtEinwohner2023 = getGesamtstadt ? getGesamtstadt.find(d => d.Jahr === "2023")?.Einwohner : "NaN";
+//mapmergedData
 
-//get Einwohner by STT_NAME in stateGeojson
-const einwohner_map = updatedStateGeojson.features.map(feature => {
-  const ort_name = feature.properties.STT_NAME;
-  const populationData = groupedData.get(ort_name);
+// to calculate %% on the map
+const getGesamtstadt = groupedData.get("Gesamtstadt"); 
+const gesamtEinwohner_latestYear = getGesamtstadt ? getGesamtstadt.find(d => d.Jahr === latestYear)?.Einwohner : "NaN";
 
-  const population2023 = populationData ? populationData.find(d => d.Jahr === "2023")?.Einwohner : "NaN";
-  const percentage = population2023 !== "NaN" && gesamtEinwohner2023 !== "NaN"
-    ? ((population2023 / gesamtEinwohner2023) * 100).toFixed(2)
-    : "NaN";
-
-    return {
-      ort_name: ort_name,
-      einwohner: population2023,
-      percentage: percentage
-    };
-  }
-);
-
-// combined array
-const combined_Data = updatedStateGeojson.features.map(feature => {
-  const cityName = feature.properties.STT_NAME;
-  const einwohnerData = einwohner_map.find(d => d.ort_name === cityName);
-  return {
-    ...feature,
-    properties: {
-      ...feature.properties,
-      einwohner: einwohnerData ? einwohnerData.einwohner : "NaN",
-      percentage: einwohnerData ? einwohnerData.percentage : "NaN"
-    }
+//to get Shape__Area, Shape__Length from map_csv
+const mapWithArea = {};
+map_csv.forEach(item => {
+  mapWithArea[item.STT_NR] = {
+    Shape__Area: parseFloat(item.Shape__Area),
+    Shape__Length: parseFloat(item.Shape__Length)
   };
 });
 
-//change "combined_Data" for Plot (from array to objekt) 
-const combined_Data_obj = {
-  type: "FeatureCollection",
-  features: combined_Data
-};
+//get an array with data for 2023
+export const filteredDataArray = clearData.filter(item => item.Jahr === latestYear);
 
-
-export default function PlotMap(combined_Data_obj) {
-    return Plot.plot({
-        height: 1200,
-        width: 900,
-        projection: {type: "identity", domain: combined_Data_obj},
-
-    marks: [
-        Plot.geo(combined_Data_obj, {
-        fill: "white",
-        stroke: "black",  
-        }),
-        Plot.text(combined_Data_obj.features, 
-        Plot.centroid(
-            {
-            text: (d) => [
-                `${d.properties.STT_NAME}`,
-                `${d.properties.einwohner}` ,
-                `(${d.properties.percentage} %)`
-            ].join("\n"),
-            fontextAnchor: "middle",
-            fill: "red",
-            fontWeight: "bold",
-            fontSize: 12,     
-            // transform: "scale(-1, -1)"
-            }
-        ))
-    ],
-    style: {  
-        transformOrigin: "center",
-        transform: "scale(1, -1)"
-    }})
+// merged arrays geojson + clearData
+function mergeData(clearData, geojson, mapWithArea) {  
+  const dataMap = {};
+  clearData.forEach(item => {
+    dataMap[item.STT_ID] = item;
+  });  
+  geojson.features.forEach(feature => {
+    const stt_nr = feature.properties.STT_NR;
+    const correspondingData = dataMap[stt_nr];
+    const additionalProps = mapWithArea[stt_nr];
+    
+    //to add Einwohner to the geojson
+    if (correspondingData) {
+      const populationPercent = (correspondingData.Einwohner / gesamtEinwohner_latestYear) * 100; // %%
+      feature.properties = { ...feature.properties, ...correspondingData, populationPercent };
+    }
+    //to add Shape__Area, Shape__Length to the geojson
+    if (additionalProps) {
+      feature.properties = { ...feature.properties, ...additionalProps };
+      // Population density
+      const areaInSqKm = additionalProps.Shape__Area / 1_000_000; // to sq.km.
+      const populationDensity = correspondingData.Einwohner / areaInSqKm; // Einwohner pro sq.km.
+      feature.properties.areaInSqKm = areaInSqKm.toFixed(1).replace('.', ','); //add areaInSqKm to the geojson
+      feature.properties.populationDensity = populationDensity.toFixed(0); //add populationDensity to the geojson
+    } 
+  });
+  return geojson;      
 }
+export const mergedData = mergeData(filteredDataArray, geojson, mapWithArea); // merged arrays geojson + clearData
+
+
+//map - plot
+export const map = Plot.plot({
+  height: 1200,
+  width: 900,  
+  x: {axis: null},
+  y: {axis: null},  
+  //projection: {type: "identity", domain: combined_Data_obj}, 
+  marks: [
+    Plot.geo(mergedData, {
+      fill: "#a2c5dd",
+      stroke: "white",
+      title: d => d.properties.STT_NR,
+      //fill: d => d.properties.color,          
+    }),    
+    Plot.text(mergedData.features, 
+    Plot.centroid(
+  {
+    text: (d) => [
+      `${d.properties.STT}`,
+      `${d.properties.Einwohner.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}` ,
+      `(${d.properties.populationPercent.toFixed(1).replace('.', ',')} %)`,
+      `(${d.properties.populationDensity} / km²)`
+    ].join("\n"),  
+
+    fontextAnchor: "middle",
+    fill: "#000000",
+    fontWeight: "bold",
+    fontSize: 12    
+  }
+))],
+})
+
+//get default value with STT_ID === "000" Gesamtstadt
+export const defaultData = filteredDataArray.find(item => item.STT_ID === "000");
+function showInfo(defaultData){ 
+  const infoBox = d3.select("#infoBox");
+  infoBox
+    .style("display", "block")
+    .html(`
+      <table>
+      <tr>
+        <td>ID:</td>
+        <td>${defaultData.STT_ID}</td>           
+      </tr> 
+      <tr>
+        <td><h1 class="ort_name_card"> ${defaultData.STT} </h1> </td>
+      </tr>
+      <tr>
+        <td>Gesamt der Einwohner im ${latestYear} :</td><td> ${defaultData.Einwohner.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")} </td>
+      </tr>        
+      <tr>
+        <td>Wachstum im Vergleich zu ${earliestYear}:</td>
+        <td > ${defaultData.Wachstum.toFixed(1).replace('.', ',')}% </td>          
+      </tr> 
+      </table>
+    `);
+}
+//display default value with STT_ID === "000" Gesamtstadt
+setTimeout(function (){  
+  showInfo(defaultData);
+}, 100)
+
+
+d3.select(map).selectAll("path")
+  .data(mergedData.features)  
+  .on("mouseover", function(event, d) {
+    d3.select(this)
+      .transition()
+      .duration(300)
+      .ease(d3.easeLinear)
+      .attr("opacity", 0.7)
+      .attr("stroke-width", 3)
+      .style("cursor", "pointer");  // cursor: pointer by hover    
+  })  
+  .on("mouseout", function(event, d) {
+    d3.select(this)
+      .transition()
+      .duration(300)
+      .ease(d3.easeLinear)
+      .attr("opacity", 1)
+      .attr("stroke-width", 1);    
+  })
+  .on("click", function(event, d){
+    const infoBox = d3.select("#infoBox");
+    infoBox
+      .style("display", "block")
+      .html(`
+        <table>
+        <tr>
+          <td>ID:</td>
+          <td>${d.properties.STT_NR}</td>           
+        </tr> 
+        <tr>
+          <td><h1 class="ort_name_card"> ${d.properties.STT} </h1> </td>
+        </tr>
+        <tr>
+          <td>Gesamt der Einwohner im ${latestYear} :</td><td> ${d.properties.Einwohner.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")} </td>
+        </tr>
+        <tr> 
+          <td>Anteil der Einwohner im ${latestYear}:</td><td> ${d.properties.populationPercent.toFixed(1).replace('.', ',') }% </td>
+        </tr>
+        <tr>
+          <td>Wachstum im Vergleich zu ${earliestYear}:</td>          
+            <td > ${d.properties.Wachstum.toFixed(1).replace('.', ',')}% </td>
+        </tr>
+        <tr>
+          <td>Fläche, km²:</td>
+          <td>${d.properties.areaInSqKm} </td>          
+        </tr>
+        <tr>
+          <td>Bevölkerungsdichte im ${latestYear}:</td>
+          <td>${d.properties.populationDensity} </td>          
+        </tr>
+        </table>
+      `);
+  });  
+ 
+
+  
