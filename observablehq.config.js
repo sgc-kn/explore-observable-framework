@@ -1,7 +1,11 @@
 // See https://observablehq.com/framework/config for documentation.
+const now = new Date();
+const date = now.toLocaleDateString('de-DE');
+const time = now.toLocaleTimeString('de-DE', {hour: '2-digit', minute:'2-digit'});
+
 export default {
   // The project’s title; used in the sidebar and webpage titles.
-  title: "SGC Observable Framework Test",
+  title: "Stadtdaten Konstanz",
 
   // The pages and sections in the sidebar. If you don’t specify this option,
   // all pages will be listed in alphabetical order. Listing pages explicitly
@@ -17,7 +21,10 @@ export default {
   // ],
 
   // Content to add to the head of the page, e.g. for a favicon:
-  head: '<link rel="icon" href="observable.png" type="image/png" sizes="32x32">',
+  head: `
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+    <link rel="icon" type="image/png" href="/assets/favicon.png">
+  `,
 
   // The path to the source root.
   root: "src",
@@ -34,5 +41,8 @@ export default {
   // linkify: true, // convert URLs in Markdown to links
   // typographer: false, // smart quotes and other typographic improvements
   // cleanUrls: true, // drop .html from URLs
-  cleanUrls: false, // keep .html in URLs & simplify hosting
+
+  pager: false,
+  footer: `Erstellt mit <a href="observablehq.com">Observable</a> am ${date} um ${time} Uhr.`,
+  cleanUrls: false,
 };

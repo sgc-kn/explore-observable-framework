@@ -3,9 +3,8 @@ toc: false
 ---
 
 <div class="hero">
-  <h1>SGC Observable Framework Test</h1>
-  <h2>Welcome to your new project! Edit&nbsp;<code style="font-size: 90%;">src/index.md</code> to change this page.</h2>
-  <a href="https://observablehq.com/framework/getting-started">Get started<span style="display: inline-block; margin-left: 0.25rem;">↗︎</span></a>
+  <h1>Stadtdaten Konstanz</h1>
+  <h2>Willkommen bei unseren Dashboards!</h2>
 </div>
 
 <div class="grid grid-cols-2" style="grid-auto-rows: 504px;">
