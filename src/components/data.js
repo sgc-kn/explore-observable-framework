@@ -1,11 +1,10 @@
 import {FileAttachment} from "npm:@observablehq/stdlib";
 import * as d3 from "npm:d3";
 
-
 export const data = await FileAttachment("../data/einwohner.csv").csv();
 export const map_csv = await FileAttachment("../data/map.csv").csv();
 export const geojson = await FileAttachment("../data/map.geojson").json(); 
-
+export const familienstand_csv = await FileAttachment("../data/familienstand.csv").csv();
 
 export const fontSizelabel = 16
 export const fontFamily = 'Arial, sans-serif'
@@ -22,13 +21,13 @@ export const clearData = data.map(item => {
 });
 //group by STT
 export const groupedData = d3.group(clearData, d => d.STT);
-
 // at the first place "Gesamtstadt"
 export const sortedData = Array.from(groupedData).sort((a, b) => {
   if (a[0] === "Gesamtstadt") return -1;
   if (b[0] === "Gesamtstadt") return 1;
   return a[0].localeCompare(b[0]);
 });
+
 // at the first place "Gesamtstadt"
 export const combinedData = sortedData.flatMap(item => item[1]);
 
@@ -40,10 +39,11 @@ const years = data.map(item => {
       console.error(`Invalid year value: ${item.Jahr}`);
     }
     return year;
-  }).filter(year => !isNaN(year)); // Filter out any invalid years
+}).filter(year => !isNaN(year)); // Filter out any invalid years
   
-// Find the maximum year
+// Find the maximum year (z.B. '2023')
 export const latestYear = Math.max(...years).toString();
-// Find the first year
+//vorheriges Jahr aus letztes Jahr (z.B. '2022')
+export const previousYear = (parseInt(latestYear, 10) - 1).toString();
+// Find the first year (z.B. '1995')
 export const earliestYear = Math.min(...years).toString();
-

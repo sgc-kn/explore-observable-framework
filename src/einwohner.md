@@ -2,8 +2,60 @@
 <link rel="stylesheet" type="text/css" href="style/einwohner.css">
 
 ```js
-import { data, map_csv, geojson, fontSizelabel, fontFamily, yellowColor, clearData, groupedData, sortedData, combinedData, latestYear, earliestYear } from "./components/data.js";
+import { data, map_csv, geojson, fontSizelabel, fontFamily, yellowColor, clearData, groupedData, sortedData, combinedData, latestYear, earliestYear} from "./components/data.js";
 import { map, mergedData, filteredDataArray, defaultData } from "./components/map.js";
+import { initializeModal, familienStand_plot, familienStand_plot_2 } from "./components/familienstand.js";
+
+```
+```js
+html` <div id="familienStand_plot"></div>`
+```
+```js
+html` <div id="familienStand_table"></div>`
+```
+
+```js
+
+```
+```js
+html`<div id="myModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <div id="modalTableContainer"></div>
+    <div id="familienStand_plot"></div>
+  </div>
+</div>`
+```
+```js
+/*
+//initializeModal(table);
+//document.getElementById("familienStand_plot").appendChild(plot);
+  // Получаем элементы
+  var modal = document.getElementById("myModal");
+  var btn = document.getElementById("myBtn");
+  var span = document.getElementsByClassName("close")[0];
+  var modalTableContainer = document.getElementById("modalTableContainer");
+ // var familienStand_plot = document.getElementById("familienStand_plot");
+  
+  modalTableContainer.appendChild(table);
+  familienStand_plot.appendChild(familienStand_plot);
+  // Когда пользователь кликает на кнопку, открываем модальное окно
+  d3.select("#myBtn").on("click", function(event) {
+    event.preventDefault(); // Предотвращаем стандартное поведение ссылки
+    modal.style.display = "block";    
+  });
+
+  // Когда пользователь кликает на <span> (x), закрываем модальное окно
+  d3.select(".close").on("click", function() {
+    modal.style.display = "none";    
+  });
+
+  // Когда пользователь кликает вне модального окна, закрываем его
+  window.onclick = function(event) {
+    if (event.target == modal) {
+      modal.style.display = "none";      
+    }
+  }; */
 ```
 
 ```js
@@ -18,14 +70,11 @@ html`<div class="grid grid-cols-1">
         ${document.body.appendChild(map)} 
       </div>
     </div>`
-
 ```
 ```js
 display(mergedData)
-display(filteredDataArray)
-display(defaultData)
-
-
+//display(groupedData)
+//display(defaultData)
 ```
 
 ```js
@@ -383,13 +432,16 @@ html`
           </tr>
         </table>      
          
-        </p>  
+        </p>
       </div>`
   })}
-      <div class="card" class="tableStyle">    
-        ${Inputs.table(filteredData_table, tableOptions)}
+    <span>
+      <div class="card" class="tableStyle">       
+        ${Inputs.table(filteredData_table, tableOptions)}        
       </div>
+    <span>  
 </div>
 `
 ```
+
 
