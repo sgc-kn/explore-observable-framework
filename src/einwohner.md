@@ -8,6 +8,7 @@ import { initializeModal, familienStand_plot, familienStand_plot_2, closeModal, 
 
 ```
 ```js
+//open / close Modal Window
 document.getElementById('closeModalWind').addEventListener('click', closeModal);
 document.getElementById('toggle_info_link').addEventListener('click', function(event) {
   event.preventDefault(); // Prevent the default link behavior
@@ -31,35 +32,7 @@ html`<div id="myModal" class="modal">
 ```
 
 ```js
-/*
-//initializeModal(table);
-//document.getElementById("familienStand_plot").appendChild(plot);
-  // Получаем элементы
-  var modal = document.getElementById("myModal");
-  var btn = document.getElementById("myBtn");
-  var span = document.getElementsByClassName("close")[0];
-  var modalTableContainer = document.getElementById("modalTableContainer");
- // var familienStand_plot = document.getElementById("familienStand_plot");
-  
-  modalTableContainer.appendChild(table);
-  familienStand_plot.appendChild(familienStand_plot);
-  // Когда пользователь кликает на кнопку, открываем модальное окно
-  d3.select("#myBtn").on("click", function(event) {
-    event.preventDefault(); // Предотвращаем стандартное поведение ссылки
-    modal.style.display = "block";    
-  });
 
-  // Когда пользователь кликает на <span> (x), закрываем модальное окно
-  d3.select(".close").on("click", function() {
-    modal.style.display = "none";    
-  });
-
-  // Когда пользователь кликает вне модального окна, закрываем его
-  window.onclick = function(event) {
-    if (event.target == modal) {
-      modal.style.display = "none";      
-    }
-  }; */
 ```
 
 ```js

@@ -155,7 +155,6 @@ setTimeout(function (){
   showInfo(defaultData);
 }, 100)
 
-
 d3.select(map).selectAll("path")
   .data(mergedData.features)  
   .on("mouseover", function(event, d) {
@@ -179,9 +178,9 @@ d3.select(map).selectAll("path")
     const infoBox = d3.select("#infoBox");
     //get STT_NR and 
     const sttId = d.properties.STT_NR;
-    updateSttId(sttId);
+    
     infoBox
-      .style("display", "block")
+      .style("display", "block")  
       .html(`
         <table>
           <tr>
@@ -210,9 +209,14 @@ d3.select(map).selectAll("path")
             <td>${d.properties.populationDensity} </td>          
           </tr>
           <tr>
-            <td><a href="#" id="familienstand_link">Familienstand:</a></td>
+            <td><a href="#" id="familienstand_link" data-stt-id="${sttId}">Familienstand:</a></td>
             <td>...</td>          
           </tr>
         </table>
       `);
+      d3.select("#familienstand_link").on("click", function(event) {
+        event.preventDefault(); // Предотвращаем переход по ссылке
+        const linkSttId = d3.select(this).attr("data-stt-id");
+        updateSttId(linkSttId);
+    });
 });
