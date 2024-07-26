@@ -143,7 +143,7 @@ function showInfo(defaultData){
         <td > ${defaultData.Wachstum.toFixed(1).replace('.', ',')}% </td>          
       </tr>
       <tr>
-        <td><a href="#" id="myBtn" >Familienstand im ${latestYear} </a>:</td>
+        <td><a href="#" id="myBtn">Familienstand im ${latestYear} </a>:</td>
         <td> Familienstand </td>          
       </tr> 
       </table>
@@ -178,7 +178,7 @@ d3.select(map).selectAll("path")
   .on("click", function(event, d){
     const infoBox = d3.select("#infoBox");
     //get STT_NR and 
-    const sttId = d.properties.STT_NR;   
+    const sttId = d.properties.STT_NR;
     updateSttId(sttId);
     infoBox
       .style("display", "block")
@@ -210,10 +210,9 @@ d3.select(map).selectAll("path")
             <td>${d.properties.populationDensity} </td>          
           </tr>
           <tr>
-            <td><a href="#" id="status-link">Familienstand:</a></td>
-            <td></td>          
+            <td><a href="#" id="familienstand_link">Familienstand:</a></td>
+            <td>...</td>          
           </tr>
         </table>
       `);
 });
-

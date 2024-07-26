@@ -4,28 +4,32 @@
 ```js
 import { data, map_csv, geojson, fontSizelabel, fontFamily, yellowColor, clearData, groupedData, sortedData, combinedData, latestYear, earliestYear} from "./components/data.js";
 import { map, mergedData, filteredDataArray, defaultData } from "./components/map.js";
-import { initializeModal, familienStand_plot, familienStand_plot_2 } from "./components/familienstand.js";
+import { initializeModal, familienStand_plot, familienStand_plot_2, closeModal, openAdditinaInfo} from "./components/familienstand.js";
 
 ```
 ```js
-html` <div id="familienStand_plot"></div>`
-```
-```js
-html` <div id="familienStand_table"></div>`
-```
-
-```js
-
+document.getElementById('closeModalWind').addEventListener('click', closeModal);
+document.getElementById('toggle_info_link').addEventListener('click', function(event) {
+  event.preventDefault(); // Prevent the default link behavior
+  openAdditinaInfo();
+});
 ```
 ```js
 html`<div id="myModal" class="modal">
   <div class="modal-content">
-    <span class="close">&times;</span>
-    <div id="modalTableContainer"></div>
-    <div id="familienStand_plot"></div>
+    <span class="close" id="closeModalWind">&times;</span>
+    <div id="modalTableContainer">
+      <div id="familienStand_plot" class="card"></div>      
+      <div id="additional_info"> 
+        <a href="#" id="toggle_info_link"> Mehr erfahren <span>&raquo;</span> </a>
+        <div id="familienStand_table" class="card"></div>
+      </div>
+    </div>
   </div>
 </div>`
+
 ```
+
 ```js
 /*
 //initializeModal(table);
@@ -180,7 +184,6 @@ const plotEinwohner = Plot.plot({
   }},
 )
 ```
-
 ```js
 html`
 <div class="grid grid-cols-1" style="">
@@ -188,7 +191,6 @@ html`
   <h2 class="category-title"> <i> - Prozentuale Bevölkerungsentwicklung in den Stadtteile im Vergleich zu ${earliestYear} </i> </h2>
 </div>`
 ```
-
 ```js
 //color for charts
 const colorScale = d3.scaleOrdinal(d3.schemeCategory10)
@@ -296,7 +298,6 @@ const plot_checked = Plot.plot({
   },
 )
 ```
-
 ```js
 //checkbox 
 html`
@@ -304,8 +305,6 @@ html`
       <div class="card grid-rowspan-2">${plot_checked}</div>
     </div>`
 ```
-
-
 ```js
 html`
 <div class="grid grid-cols-1" style="">

@@ -91,3 +91,6 @@ form.inputs-3a86ea-checkbox {
     cursor: pointer;
 }
 /*----------// for Modal Window---------*/
+#familienStand_table{
+    display: none;
+}
