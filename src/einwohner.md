@@ -16,37 +16,33 @@ document.getElementById('toggle_info_link').addEventListener('click', function(e
 });
 ```
 ```js
-html`<div id="myModal" class="modal">
-  <div class="modal-content">
-    <span class="close" id="closeModalWind">&times;</span>
-    <div id="modalTableContainer">
-      <div id="familienStand_plot" class="card"></div>      
-      <div id="additional_info"> 
-        <a href="#" id="toggle_info_link"> Mehr erfahren <span>&raquo;</span> </a>
-        <div id="familienStand_table" class="card"></div>
-      </div>
-    </div>
-  </div>
-</div>`
-
 ```
-
-```js
-
-```
-
 ```js
 //map
-html`<div class="grid grid-cols-1">
-      <h1></h1>
-      <h2 class="category-title"> <i>- Kennzahlen der Stadtteile im Jahr ${latestYear}</i></h2>
-    </div>
-    <div class="grid grid-cols-2" style="display: grid; grid-template-columns: 1.5fr 2.5fr; gap: 16px;">
-      <div class="card" id="infoBox"> </div>
-      <div class="card">
-        ${document.body.appendChild(map)} 
+html`<div class="container">
+      <div class="grid grid-cols-1">
+        <h1></h1>
+        <h2 class="category-title"> <i>- Kennzahlen der Stadtteile im Jahr ${latestYear}</i></h2>
       </div>
-    </div>`
+      <div class="grid grid-cols-2">
+        <div class="card" id="infoBox"> </div>
+        <div class="card">
+          ${document.body.appendChild(map)} 
+        </div>
+        <div id="myModal">        
+          <span class="close" id="closeModalWind">&times;</span>
+          <div id="modalTableContainer" class="grid grid-cols-1">
+            <div id="familienStand_plot" class="card"></div>      
+              <div id="additional_info" > 
+                <a href="#" id="toggle_info_link"> Mehr erfahren <span>&raquo;</span> </a>
+                <div id="familienStand_table" class="card"></div>
+              </div>
+            </div>
+          </div>      
+        </div>
+      </div>
+    
+      `
 ```
 ```js
 display(mergedData)
@@ -90,7 +86,7 @@ const intermediateValue = (maxValue + minValue) / 2;
 ```
 ```js
 html`
-<div class="grid grid-cols-2" style="display: grid; grid-template-columns: 1.5fr 2.5fr; gap: 16px;">
+<div class="grid grid-cols-2">
   <div class="card">
     <h1 class="ort_name_card"> <span class="stadtteil_name">${ort}</span></h1>
     <table>
