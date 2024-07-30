@@ -6,7 +6,7 @@ import { updateSttId } from './emitter.js';
 import {dataArrayForKey000} from './familienstand.js'
 
 // to calculate %% on the map
-const getGesamtstadt = groupedData.get("Gesamtstadt"); 
+const getGesamtstadt = groupedData.get("Gesamtstadt");
 const gesamtEinwohner_latestYear = getGesamtstadt ? getGesamtstadt.find(d => d.Jahr === latestYear)?.Einwohner : "NaN";
 
 //to get Shape__Area, Shape__Length from map_csv
@@ -18,14 +18,14 @@ map_csv.forEach(item => {
   };
 });
 
-//get an array with data for latestYear (z.B. '2023') 
+//get an array with data for latestYear (z.B. '2023')
 export const filtered_DA_latestYear = clearData.filter(item => item.Jahr === latestYear);
 //get an array with data for latestYear (z.B. '2022')
 export const filtered_DA_previousYear = clearData.filter(item => item.Jahr === previousYear);
 // Merge the arrays
 const mergedFilteredData = [ ...filtered_DA_latestYear, ...filtered_DA_previousYear];
 
-/*//merged 
+/*//merged
 function mergeDaten(targetArray, targetID, filteredData_Gesamtstadt_latestYear, filteredData_Gesamtstadt_previousYear) {
   return targetArray.map(item => {
     if (item.STT_ID === targetID) {
@@ -45,9 +45,9 @@ console.log('targetObject', result)
 
 
 // merged arrays geojson + clearData
-function mergeData(clearData, geojson, mapWithArea) {  
+function mergeData(clearData, geojson, mapWithArea) {
   const dataMap = {};
-  
+
   //group by STT_ID and Jahr, and adding to the dataMap
   clearData.forEach(item => {
     if (!dataMap[item.STT_ID]) {
@@ -58,14 +58,14 @@ function mergeData(clearData, geojson, mapWithArea) {
     }
     dataMap[item.STT_ID][item.Jahr].push(item);
   });
-  
+
   //searching STT_NR in geojson.features and matching with dataMap
   geojson.features.forEach(feature => {
     const stt_nr = feature.properties.STT_NR;
     const correspondingDataLatestYear = dataMap[stt_nr] ? dataMap[stt_nr][latestYear] : null;
     const correspondingDataPreviousYear = dataMap[stt_nr] ? dataMap[stt_nr][previousYear] : null;
     const additionalProps = mapWithArea[stt_nr];
-    
+
     const combinedData = {};
     // Добавить данные за последний год, если они есть
     if (correspondingDataLatestYear) {
@@ -75,7 +75,7 @@ function mergeData(clearData, geojson, mapWithArea) {
         });
       });
     }
-    
+
     // Добавить данные за предыдущий год, если они есть
     if (correspondingDataPreviousYear) {
       correspondingDataPreviousYear.forEach(item => {
@@ -84,12 +84,12 @@ function mergeData(clearData, geojson, mapWithArea) {
         });
       });
     }
-    
+
     // Добавить объединенные данные в свойства feature
     if (Object.keys(combinedData).length > 0) {
       const populationPercent = (combinedData.Einwohner_latestYear / gesamtEinwohner_latestYear) * 100; // %%
       feature.properties = { ...feature.properties, ...combinedData, populationPercent };
-    } 
+    }
     //to add Shape__Area, Shape__Length to the geojson
     if (additionalProps) {
       feature.properties = { ...feature.properties, ...additionalProps };
@@ -98,9 +98,9 @@ function mergeData(clearData, geojson, mapWithArea) {
       const populationDensity = correspondingDataLatestYear ? correspondingDataLatestYear[0].Einwohner / areaInSqKm : 0; // Einwohner pro sq.km.
       feature.properties.areaInSqKm = areaInSqKm.toFixed(1).replace('.', ','); //adding areaInSqKm to the geojson
       feature.properties.populationDensity = populationDensity.toFixed(0); //adding populationDensity to the geojson
-    }    
+    }
   });
-  return geojson;      
+  return geojson;
 }
 export const mergedData = mergeData(mergedFilteredData, geojson, mapWithArea); // merged arrays geojson + clearData
 //console.log('mergedData', mergedData)
@@ -108,18 +108,18 @@ export const mergedData = mergeData(mergedFilteredData, geojson, mapWithArea); /
 //map - plot
 export const map = Plot.plot({
   height: 1200,
-  width: 900,  
+  width: 900,
   x: {axis: null},
-  y: {axis: null},  
-  //projection: {type: "identity", domain: combined_Data_obj}, 
+  y: {axis: null},
+  //projection: {type: "identity", domain: combined_Data_obj},
   marks: [
     Plot.geo(mergedData, {
       fill: "#a2c5dd",
       stroke: "white",
       title: d => `${d.properties.STT_NAME} \n ${d.properties.Einwohner_latestYear.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`,
-      //fill: d => d.properties.color,          
-    }),    
-    Plot.text(mergedData.features, 
+      //fill: d => d.properties.color,
+    }),
+    Plot.text(mergedData.features,
     Plot.centroid(
   {
     text: (d) => [
@@ -127,12 +127,12 @@ export const map = Plot.plot({
       `${d.properties.Einwohner_latestYear.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}` ,
       `(${d.properties.populationPercent.toFixed(1).replace('.', ',')} %)`,
       `(${d.properties.populationDensity} / km²)`
-    ].join("\n"),  
+    ].join("\n"),
 
     fontextAnchor: "middle",
     fill: "#000000",
     fontWeight: "bold",
-    fontSize: 12    
+    fontSize: 12
   }
 ))],
 })
@@ -150,21 +150,21 @@ const bevölkerungsdichte_Konstanz = (combinedObject_dfV.Einwohner / fläche).to
 console.log('bevölkerungsdichte', bevölkerungsdichte_Konstanz)
 
 
-function showInfo(combinedObject_dfV){ 
+function showInfo(combinedObject_dfV){
   const infoBox = d3.select("#infoBox");
   infoBox
     .style("display", "block")
     .html(`
-      <table>      
+      <table>
       <tr>
         <td><h1 class="ort_name_card"> ${combinedObject_dfV.STT} </h1> </td>
       </tr>
       <tr>
         <td>Gesamt der Einwohner:</td><td> ${combinedObject_dfV.Einwohner.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")} </td>
-      </tr>        
+      </tr>
       <tr>
         <td>Wachstum im Vergleich zu ${previousYear}:</td>
-        <td > ${combinedObject_dfV.Wachstum.toFixed(1).replace('.', ',')}% </td>          
+        <td > ${combinedObject_dfV.Wachstum.toFixed(1).replace('.', ',')}% </td>
       </tr>
       <tr>
         <td>Fläche, km²:</td>
@@ -176,26 +176,26 @@ function showInfo(combinedObject_dfV){
       </tr>
       <tr>
         <td>
-          <a href="#" id="familienstand_link_dv" data-stt-id="000" >Familienstand</a>          
+          <a href="#" id="familienstand_link_dv" data-stt-id="000" >Familienstand</a>
         </td>
         <td></td>
-      </tr> 
+      </tr>
       </table>
     `);
     d3.select("#familienstand_link_dv").on("click", function(event) {
-      event.preventDefault(); 
+      event.preventDefault();
       const linkSttId = d3.select(this).attr("data-stt-id");
       updateSttId(linkSttId);
     });
 }
 
 //display default value with STT_ID === "000" Gesamtstadt
-setTimeout(function (){  
+setTimeout(function (){
   showInfo(defaultData);
 }, 100)
 
 d3.select(map).selectAll("path")
-  .data(mergedData.features)  
+  .data(mergedData.features)
   .on("mouseover", function(event, d) {
     d3.select(this)
       .transition()
@@ -203,53 +203,53 @@ d3.select(map).selectAll("path")
       .ease(d3.easeLinear)
       .attr("opacity", 0.7)
       .attr("stroke-width", 3)
-      .style("cursor", "pointer");  // cursor: pointer by hover    
-  })  
+      .style("cursor", "pointer");  // cursor: pointer by hover
+  })
   .on("mouseout", function(event, d) {
     d3.select(this)
       .transition()
       .duration(300)
       .ease(d3.easeLinear)
       .attr("opacity", 1)
-      .attr("stroke-width", 1);    
+      .attr("stroke-width", 1);
   })
   .on("click", function(event, d){
     const infoBox = d3.select("#infoBox");
-    //get STT_NR and 
+    //get STT_NR and
     const sttId = d.properties.STT_NR;
-    
+
     infoBox
-      .style("display", "block")  
+      .style("display", "block")
       .html(`
         <table>
           <tr>
             <td>ID:</td>
             <td>${d.properties.STT_NR}</td>
-          </tr> 
+          </tr>
           <tr>
             <td><h1 class="ort_name_card"> ${d.properties.STT_NAME} </h1> </td>
           </tr>
           <tr>
             <td>Gesamt der Einwohner im Jahr ${latestYear} :</td><td> ${d.properties.Einwohner_latestYear.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")} </td>
           </tr>
-          <tr> 
+          <tr>
             <td>Anteil der Einwohner im Jahr ${latestYear}:</td><td> ${d.properties.populationPercent.toFixed(1).replace('.', ',') }% </td>
           </tr>
           <tr>
-            <td>Wachstum im Vergleich zu ${previousYear}:</td>          
+            <td>Wachstum im Vergleich zu ${previousYear}:</td>
               <td > ${d.properties.Wachstum_previousYear.toFixed(1).replace('.', ',')}% </td>
           </tr>
           <tr>
             <td>Fläche, km²:</td>
-            <td>${d.properties.areaInSqKm} </td>          
+            <td>${d.properties.areaInSqKm} </td>
           </tr>
           <tr>
             <td>Bevölkerungsdichte im Jahr ${latestYear}:</td>
-            <td>${d.properties.populationDensity} </td>          
+            <td>${d.properties.populationDensity} </td>
           </tr>
           <tr>
             <td><a href="#" id="familienstand_link" data-stt-id="${sttId}">Familienstand:</a></td>
-            <td>...</td>          
+            <td>...</td>
           </tr>
         </table>
       `);

@@ -3,7 +3,7 @@ import * as d3 from "npm:d3";
 
 export const data = await FileAttachment("../data/einwohner.csv").csv();
 export const map_csv = await FileAttachment("../data/map.csv").csv();
-export const geojson = await FileAttachment("../data/map.geojson").json(); 
+export const geojson = await FileAttachment("../data/stadtteile.geojson").json();
 export const familienstand_csv = await FileAttachment("../data/familienstand.csv").csv();
 
 export const fontSizelabel = 16
@@ -11,12 +11,12 @@ export const fontFamily = 'Arial, sans-serif'
 export const yellowColor = '#efb118'
 
 // string to number
-export const clearData = data.map(item => {  
+export const clearData = data.map(item => {
     return {
       ...item,
       Einwohner: item.Einwohner ? Number(item.Einwohner) : "NaN",
       //Jahr: item.Jahr && !isNaN(item.Jahr) ? parseInt(item.Jahr, 10) : "NaN",
-      Wachstum: item.Wachstum ? parseFloat(item.Wachstum) : "NaN"    
+      Wachstum: item.Wachstum ? parseFloat(item.Wachstum) : "NaN"
     };
 });
 //group by STT
@@ -40,10 +40,12 @@ const years = data.map(item => {
     }
     return year;
 }).filter(year => !isNaN(year)); // Filter out any invalid years
-  
+
 // Find the maximum year (z.B. '2023')
 export const latestYear = Math.max(...years).toString();
+
 //vorheriges Jahr aus letztes Jahr (z.B. '2022')
 export const previousYear = (parseInt(latestYear, 10) - 1).toString();
+
 // Find the first year (z.B. '1995')
 export const earliestYear = Math.min(...years).toString();
