@@ -3,10 +3,12 @@
 
 ```js
 import { data, map_csv, geojson, fontSizelabel, fontFamily, yellowColor, clearData, groupedData, sortedData, combinedData, latestYear, earliestYear} from "./components/data.js";
-import { map, mergedData, filteredDataArray, defaultData } from "./components/map.js";
+import { map, mergedData, filteredDataArray, defaultData, combinedObject_dfV } from "./components/map.js";
 import { initializeModal, familienStand_plot, familienStand_plot_2, closeModal, openAdditinaInfo} from "./components/familienstand.js";
-
 ```
+```js
+```
+
 ```js
 //open / close Modal Window
 document.getElementById('closeModalWind').addEventListener('click', closeModal);
@@ -16,6 +18,21 @@ document.getElementById('toggle_info_link').addEventListener('click', function(e
 });
 ```
 ```js
+html`<div id="myModal" class="modal">
+  <div class="modal-content">
+    <span class="close" id="closeModalWind">&times;</span>
+    <div id="modalTableContainer">
+      <div id="familienStand_plot" class="card"></div>      
+      <div id="additional_info">        
+        <a href="#" id="toggle_info_link"> Mehr erfahren <span>&raquo;</span> </a>
+        <div id="familienStand_table" class="card"></div>  
+      </div>
+    </div>
+  </div>
+</div>`
+```
+```js
+//display(combinedObject_dfV)
 ```
 ```js
 //map
@@ -29,20 +46,8 @@ html`<div class="container">
         <div class="card">
           ${document.body.appendChild(map)} 
         </div>
-        <div id="myModal">        
-          <span class="close" id="closeModalWind">&times;</span>
-          <div id="modalTableContainer" class="grid grid-cols-1">
-            <div id="familienStand_plot" class="card"></div>      
-              <div id="additional_info" > 
-                <a href="#" id="toggle_info_link"> Mehr erfahren <span>&raquo;</span> </a>
-                <div id="familienStand_table" class="card"></div>
-              </div>
-            </div>
-          </div>      
-        </div>
       </div>
-    
-      `
+    </div>`
 ```
 ```js
 display(mergedData)
@@ -104,7 +109,7 @@ html`
       </tr>
     </table>
   </div>
-  <div class="card grid-rowspan-2" class="field_name">${plotEinwohner} </div>
+  <div class="card" class="field_name">${plotEinwohner} </div>
 </div>
 `
 ```
@@ -318,7 +323,8 @@ const einwohnerPlot =  Plot.plot({
   marks: [
     Plot.rectY(select_ort_new, 
       { x: "Jahr", y: "Einwohner", fill: "steelblue",  
-      title: d => `Einwohner: ${d.Einwohner.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}` }),
+      title: d => `Einwohner: ${d.Einwohner.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}` 
+      }),
     //Plot.dot(select_ort_new, { x: "Jahr", y: "Einwohner", stroke: "red", fill: "white", r: 6, thresholds: 20, title: d => `Einwohner: ${d.Einwohner}` }),
     Plot.axisX({fontSize: 20, tickRotate: -45, fontFamily: `${fontFamily}`}),
     Plot.axisY({fontSize: 20, anchor: "right", fontFamily: `${fontFamily}`, tickFormat: d => d.toLocaleString('de-DE').replace(',', '.'), tickSize: 0}), 

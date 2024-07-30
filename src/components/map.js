@@ -2,7 +2,8 @@ import * as Plot from "npm:@observablehq/plot";
 import * as d3 from "npm:d3";
 import { select } from "d3-selection";
 import { map_csv, geojson, clearData, groupedData, latestYear, previousYear } from "./data.js";
-import { updateSttId } from './emitter.js'; 
+import { updateSttId } from './emitter.js';
+import {dataArrayForKey000} from './familienstand.js'
 
 // to calculate %% on the map
 const getGesamtstadt = groupedData.get("Gesamtstadt"); 
@@ -22,7 +23,26 @@ export const filtered_DA_latestYear = clearData.filter(item => item.Jahr === lat
 //get an array with data for latestYear (z.B. '2022')
 export const filtered_DA_previousYear = clearData.filter(item => item.Jahr === previousYear);
 // Merge the arrays
-const mergedFilteredData = [...filtered_DA_latestYear, ...filtered_DA_previousYear];
+const mergedFilteredData = [ ...filtered_DA_latestYear, ...filtered_DA_previousYear];
+
+/*//merged 
+function mergeDaten(targetArray, targetID, filteredData_Gesamtstadt_latestYear, filteredData_Gesamtstadt_previousYear) {
+  return targetArray.map(item => {
+    if (item.STT_ID === targetID) {
+      if (item.Jahr === latestYear) {
+        return { ...item, filteredData_Gesamtstadt_latestYear };
+      }
+      if (item.Jahr === previousYear) {
+        return { ...item, filteredData_Gesamtstadt_previousYear };
+      }
+    }
+    return item;
+  });
+}
+const result = mergeDaten(mergedFilteredData, '000', filteredData_Gesamtstadt_latestYear, filteredData_Gesamtstadt_previousYear);
+console.log('targetObject', result)
+*/
+
 
 // merged arrays geojson + clearData
 function mergeData(clearData, geojson, mapWithArea) {  
@@ -82,7 +102,6 @@ function mergeData(clearData, geojson, mapWithArea) {
   });
   return geojson;      
 }
-
 export const mergedData = mergeData(mergedFilteredData, geojson, mapWithArea); // merged arrays geojson + clearData
 //console.log('mergedData', mergedData)
 
@@ -118,36 +137,56 @@ export const map = Plot.plot({
 ))],
 })
 
-
 //get default value with STT_ID === "000" Gesamtstadt
 export const defaultData = filtered_DA_latestYear.find(item => item.STT_ID === "000");
+//get arrays for default value Gesamtstadt (id=000, ex. jahr=2023, 2022)
+const filteredData_Gesamtstadt_latestYear = dataArrayForKey000.filter(item => item.Jahr === latestYear);
 
-function showInfo(defaultData){ 
+//export const defaultData_ = [defaultData];
+export const combinedObject_dfV = Object.assign([], ...filteredData_Gesamtstadt_latestYear, defaultData);
+
+const fläche = 55.65;
+const bevölkerungsdichte_Konstanz = (combinedObject_dfV.Einwohner / fläche).toFixed(0);
+console.log('bevölkerungsdichte', bevölkerungsdichte_Konstanz)
+
+
+function showInfo(combinedObject_dfV){ 
   const infoBox = d3.select("#infoBox");
   infoBox
     .style("display", "block")
     .html(`
-      <table>
+      <table>      
       <tr>
-        <td>ID:</td>
-        <td>${defaultData.STT_ID}</td>           
-      </tr> 
-      <tr>
-        <td><h1 class="ort_name_card"> ${defaultData.STT} </h1> </td>
+        <td><h1 class="ort_name_card"> ${combinedObject_dfV.STT} </h1> </td>
       </tr>
       <tr>
-        <td>Gesamt der Einwohner im ${latestYear} :</td><td> ${defaultData.Einwohner.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")} </td>
+        <td>Gesamt der Einwohner:</td><td> ${combinedObject_dfV.Einwohner.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")} </td>
       </tr>        
       <tr>
         <td>Wachstum im Vergleich zu ${previousYear}:</td>
-        <td > ${defaultData.Wachstum.toFixed(1).replace('.', ',')}% </td>          
+        <td > ${combinedObject_dfV.Wachstum.toFixed(1).replace('.', ',')}% </td>          
       </tr>
       <tr>
-        <td><a href="#" id="myBtn">Familienstand im ${latestYear} </a>:</td>
-        <td> Familienstand </td>          
+        <td>Fläche, km²:</td>
+        <td> 55,65 </td>
+      </tr>
+      <tr>
+        <td>Bevölkerungsdichte:</td>
+        <td> ${bevölkerungsdichte_Konstanz} </td>
+      </tr>
+      <tr>
+        <td>
+          <a href="#" id="familienstand_link_dv" data-stt-id="000" >Familienstand</a>          
+        </td>
+        <td></td>
       </tr> 
       </table>
     `);
+    d3.select("#familienstand_link_dv").on("click", function(event) {
+      event.preventDefault(); 
+      const linkSttId = d3.select(this).attr("data-stt-id");
+      updateSttId(linkSttId);
+    });
 }
 
 //display default value with STT_ID === "000" Gesamtstadt
@@ -185,16 +224,16 @@ d3.select(map).selectAll("path")
         <table>
           <tr>
             <td>ID:</td>
-            <td>${d.properties.STT_NR}</td>           
+            <td>${d.properties.STT_NR}</td>
           </tr> 
           <tr>
             <td><h1 class="ort_name_card"> ${d.properties.STT_NAME} </h1> </td>
           </tr>
           <tr>
-            <td>Gesamt der Einwohner im ${latestYear} :</td><td> ${d.properties.Einwohner_latestYear.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")} </td>
+            <td>Gesamt der Einwohner im Jahr ${latestYear} :</td><td> ${d.properties.Einwohner_latestYear.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")} </td>
           </tr>
           <tr> 
-            <td>Anteil der Einwohner im ${latestYear}:</td><td> ${d.properties.populationPercent.toFixed(1).replace('.', ',') }% </td>
+            <td>Anteil der Einwohner im Jahr ${latestYear}:</td><td> ${d.properties.populationPercent.toFixed(1).replace('.', ',') }% </td>
           </tr>
           <tr>
             <td>Wachstum im Vergleich zu ${previousYear}:</td>          
@@ -205,7 +244,7 @@ d3.select(map).selectAll("path")
             <td>${d.properties.areaInSqKm} </td>          
           </tr>
           <tr>
-            <td>Bevölkerungsdichte im ${latestYear}:</td>
+            <td>Bevölkerungsdichte im Jahr ${latestYear}:</td>
             <td>${d.properties.populationDensity} </td>          
           </tr>
           <tr>
@@ -218,5 +257,5 @@ d3.select(map).selectAll("path")
         event.preventDefault(); // Предотвращаем переход по ссылке
         const linkSttId = d3.select(this).attr("data-stt-id");
         updateSttId(linkSttId);
-    });
+      });
 });
