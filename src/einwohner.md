@@ -7,7 +7,7 @@ toc: false
 ```js
 const einwohner_csv = FileAttachment("data/einwohner.csv").csv();
 const map_csv = FileAttachment("data/map.csv").csv();
-const stadtteile_geojson = FileAttachment("data/stadtteile.geojson").json();
+const stadtteile_geojson = FileAttachment("data/stadtteile.geo.json").json();
 const familienstand_csv = FileAttachment("data/familienstand.csv").csv();
 ```
 
