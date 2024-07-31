@@ -21,7 +21,6 @@ import {
 } from "./components/data.js";
 
 import {
-  map,
   mergedData,
   filteredDataArray,
   defaultData,
@@ -48,41 +47,63 @@ const familienstand_csv = FileAttachment("data/familienstand.csv").csv();
 
 <h2></h2>
 
-## Kennzahlen der Stadtteile im Jahr ${latestYear}
+<!-- ## Kennzahlen der Stadtteile im Jahr ${latestYear} -->
 
 ```js
-Plot.plot({
-  // height: 'auto',
+const stadtteil_check_input = Inputs.toggle({
+  label: "Filtern aktivieren",
+  value: false,
+});
+const stadtteil_check = Generators.input(stadtteil_check_input);
+```
+
+```js
+const stadtteil_select_input = Inputs.select(
+  (stadtteil_check) ? stadtteile_geojson.features : [ 'Gesamte Stadt' ],
+  {
+    label: "Stadtteil:",
+    format: (x) => (stadtteil_check) ? x.properties.STT_NAME : x,
+    disabled: !stadtteil_check,
+  }
+);
+const stadtteil_select = Generators.input(stadtteil_select_input);
+```
+
+```js
+const map = Plot.plot({
   width,
-  // x: { axis: null },
-  // y: { axis: null },
-  // projection: 'mercator',
+  projection: {
+    type: "mercator",
+    domain: stadtteile_geojson,
+  },
   marks: [
     Plot.geo(stadtteile_geojson, {
-      // fill: "#a2c5dd",
-      // stroke: "white",
-      // title: d => d.properties.STT_NAME,
-      // fill: d => d.properties.color,
+      fill: (x) => (
+        (!stadtteil_check ||
+          (x.properties.STT == stadtteil_select.properties.STT)
+        )
+        ? "var(--theme-foreground-focus)"
+        : "var(--theme-foreground-muted)"
+      ),
+      stroke: "var(--theme-background)",
+      strokeWidth: 2,
     }),
-    Plot.text(
-      stadtteile_geojson.features,
-      Plot.centroid({
-         text: (d) => [
-           d.properties.STT_NAME,
-           // d.properties.Einwohner_latestYear.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, "."),
-           // d.properties.populationPercent.toFixed(1).replace('.', ',') + '%',
-           // d.properties.populationDensity + ' / km²'
-         ].join("\n"),
-
-         fontextAnchor: "middle",
-         fill: "#000000",
-         fontWeight: "bold",
-         fontSize: 12,
-       })
-     )
   ],
 })
 ```
+
+<div class="grid grid-cols-2">
+  <div class="card">
+    <h2>Stadtteile</h2>
+    <h3>Dieses Dashboard kann auf Stadtteile gefiltert werden.</h3>
+    ${stadtteil_check_input}
+    ${stadtteil_select_input}
+    ${map}
+  </div>
+  <div class="card">
+  Hello World
+  </div>
+</div>
 
 <div class="grid grid-cols-2">
   <div class="card" id="infoBox"> </div>
@@ -90,6 +111,8 @@ Plot.plot({
     ${map}
   </div>
 </div>
+
+<!-- end of Patrik's edits -->
 
 ```js
 display(mergedData)

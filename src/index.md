@@ -3,7 +3,6 @@ toc: false
 ---
 
 <div class="hero">
-  <img src="logo-konstanz-2024.png" />
   <h1>Stadtdaten Konstanz</h1>
   <h2>Willkommen bei unseren Dashboards!</h2>
 </div>
