@@ -5,10 +5,10 @@ toc: false
 ---
 
 ```js
-const einwohner_csv = FileAttachment("data/einwohner.csv").csv();
-const map_csv = FileAttachment("data/map.csv").csv();
 const stadtteile_geojson = FileAttachment("data/stadtteile.geo.json").json();
-const familienstand_csv = FileAttachment("data/familienstand.csv").csv();
+const einwohner_csv = FileAttachment("data/einwohner.csv").csv({typed: true});
+// const map_csv = FileAttachment("data/map.csv").csv();
+// const familienstand_csv = FileAttachment("data/familienstand.csv").csv();
 ```
 
 # Einwohner in Konstanz
@@ -17,7 +17,7 @@ const familienstand_csv = FileAttachment("data/familienstand.csv").csv();
 
 ```js
 const stadtteil_check_input = Inputs.toggle({
-  label: "Filtern aktivieren",
+  label: "Filter aktivieren",
   value: false,
 });
 const stadtteil_check = Generators.input(stadtteil_check_input);
@@ -36,26 +36,63 @@ const stadtteil_select = Generators.input(stadtteil_select_input);
 ```
 
 ```js
-const map = Plot.plot({
-  width,
-  projection: {
-    type: "mercator",
-    domain: stadtteile_geojson,
-  },
-  marks: [
-    Plot.geo(stadtteile_geojson, {
-      fill: (x) => (
-        (!stadtteil_check ||
-          (x.properties.STT == stadtteil_select.properties.STT)
-        )
-        ? "var(--theme-foreground-focus)"
-        : "var(--theme-foreground-muted)"
-      ),
-      stroke: "var(--theme-background)",
-      strokeWidth: 2,
-    }),
-  ],
-})
+const id = stadtteil_check ?
+    stadtteil_select.properties.STT_ID : 0 ;
+const stt = stadtteil_check ?
+    `Stadtteil ${stadtteil_select.properties.STT_NAME}` :
+    stadtteil_select;
+```
+
+```js
+function map_plot(width) {
+  return Plot.plot({
+    width,
+    projection: {
+      type: "mercator",
+      domain: stadtteile_geojson,
+    },
+    marks: [
+      Plot.geo(stadtteile_geojson, {
+        fill: (x) => (
+          (!stadtteil_check ||
+            (x.properties.STT == stadtteil_select.properties.STT)
+          )
+          ? "var(--theme-foreground-focus)"
+          : "var(--theme-foreground-muted)"
+        ),
+        stroke: "var(--theme-background)",
+        strokeWidth: 1.5,
+      }),
+    ],
+  })
+}
+```
+
+```js
+const ts_data = d3.filter(einwohner_csv, (r) => r.STT_ID == id);
+
+const caption = `
+  Ich glaube hier sollten wir noch ein paar Worte verlieren. Was sind
+  die Achsen? Wo kommen die Daten her? Kann man die irgendwo downloaded?
+  Etc...
+  `
+
+function ts_plot(width) {
+  return Plot.plot({
+    width,
+    title: "Einwohnerentwicklung",
+    caption,
+    subtitle: stt,
+    marks: [
+      Plot.lineY(ts_data, {
+        x: "Jahr",
+        y: "Einwohner",
+        stroke: "var(--theme-foreground-focus)",
+      }),
+      Plot.crosshairX(ts_data, {x: "Jahr", y: "Einwohner"}),
+    ],
+  });
+}
 ```
 
 ```js
@@ -68,13 +105,18 @@ const maxYear = Math.max(...einwohner_csv.map((x) => x.Jahr));
     <h3>Dieses Dashboard kann auf Stadtteile gefiltert werden.</h3>
     ${stadtteil_check_input}
     ${stadtteil_select_input}
-    ${map}
+    ${resize((width) => map_plot(width))}
   </div>
   <div class="card">
     <h2>Kennzahlen für das Jahr ${maxYear}</h2>
-    <h3>${stadtteil_check ?
-    `Stadtteil ${stadtteil_select.properties.STT_NAME}` : stadtteil_select}</h3>
+    <h3>${stt}</h3>
 
     ToDo
+  </div>
+</div>
+
+<div class="grid grid-cols-1">
+  <div class="card">
+    ${resize((width) => ts_plot(width))}
   </div>
 </div>
