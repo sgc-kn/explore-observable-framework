@@ -10,8 +10,12 @@
   },
   "dependencies": {
     "@observablehq/framework": "^1.9.0",
+    "d3": "^7.9.0",
     "d3-dsv": "^3.0.1",
-    "d3-time-format": "^4.1.0"
+    "d3-tile": "^1.0.0",
+    "d3-time-format": "^4.1.0",
+    "rxjs": "^7.8.1",
+    "topojson": "^3.0.2"
   },
   "devDependencies": {
     "rimraf": "^5.0.5"
