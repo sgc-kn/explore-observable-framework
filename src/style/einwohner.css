@@ -141,3 +141,12 @@ form.inputs-3a86ea-checkbox {
 #observablehq-toc {
     display: none;
 }
+
+.link-container{
+    display: flex;
+    align-items: center;
+}
+.link-text{
+    margin-right: 5px;
+    font-size: 17px;
+}
