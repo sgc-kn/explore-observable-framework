@@ -44,34 +44,8 @@ const stt = stadtteil_check ?
 ```
 
 ```js
-import {map_plot} from "./components/einwohner_map.js";
-```
-
-```js
-const ts_data = d3.filter(einwohner_csv, (r) => r.STT_ID == id);
-
-const caption = `
-  Ich glaube hier sollten wir noch ein paar Worte verlieren. Was sind
-  die Achsen? Wo kommen die Daten her? Kann man die irgendwo downloaded?
-  Etc...
-  `
-
-function ts_plot(width) {
-  return Plot.plot({
-    width,
-    title: "Einwohnerentwicklung",
-    caption,
-    subtitle: stt,
-    marks: [
-      Plot.lineY(ts_data, {
-        x: "Jahr",
-        y: "Einwohner",
-        stroke: "var(--theme-foreground-focus)",
-      }),
-      Plot.crosshairX(ts_data, {x: "Jahr", y: "Einwohner"}),
-    ],
-  });
-}
+import { map_plot } from "./components/einwohner_map.js";
+import { entwicklung_plot } from "./components/einwohner_entwicklung.js"
 ```
 
 ```js
@@ -96,6 +70,8 @@ const maxYear = Math.max(...einwohner_csv.map((x) => x.Jahr));
 
 <div class="grid grid-cols-1">
   <div class="card">
-    ${resize((width) => ts_plot(width))}
+    <h2>Einwohnerentwicklung</h2>
+    <h3>${stt}</h3>
+    ${resize((width) => entwicklung_plot(einwohner_csv, id, width))}
   </div>
 </div>

@@ -1,6 +1,6 @@
 import * as Plot from "npm:@observablehq/plot";
 
-export function map_plot(data, stt, width) {
+export function map_plot(data, stt_id, width) {
   return Plot.plot({
     width,
     projection: {
@@ -10,7 +10,7 @@ export function map_plot(data, stt, width) {
     marks: [
       Plot.geo(data, {
         fill: (x) => (
-          (stt == 0 || (x.properties.STT_ID == stt))
+          (stt_id == 0 || (x.properties.STT_ID == stt_id))
           ? "var(--theme-foreground-focus)"
           : "var(--theme-foreground-muted)"
         ),
