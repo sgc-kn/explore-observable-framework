@@ -7,8 +7,14 @@ toc: false
 ```js
 const stadtteile_geojson = FileAttachment("data/stadtteile.geo.json").json();
 const einwohner_csv = FileAttachment("data/einwohner.csv").csv({typed: true});
+const einwohner_famStd_csv = FileAttachment("data/familienstand.csv").csv({typed: true});
+
 // const map_csv = FileAttachment("data/map.csv").csv();
 // const familienstand_csv = FileAttachment("data/familienstand.csv").csv();
+```
+
+```js
+einwohner_famStd_csv
 ```
 
 # Einwohner in Konstanz
@@ -45,7 +51,8 @@ const stt = stadtteil_check ?
 
 ```js
 import { map_plot } from "./components/einwohner_map.js";
-import { entwicklung_plot } from "./components/einwohner_entwicklung.js"
+import { entwicklung_plot } from "./components/einwohner_entwicklung.js";
+import { familienstand_plot } from "./components/einwohner_familienstand.js";
 ```
 
 ```js
@@ -73,5 +80,18 @@ const maxYear = Math.max(...einwohner_csv.map((x) => x.Jahr));
     <h2>Einwohnerentwicklung</h2>
     <h3>${stt}</h3>
     ${resize((width) => entwicklung_plot(einwohner_csv, id, width))}
+  </div>
+</div>
+
+<div class="grid grid-cols-2">
+  <div class="card">
+    <h2>Familienstand</h2>
+    <h3>${stt}</h3>
+    ${resize((width) => familienstand_plot(einwohner_famStd_csv, id, width))}
+  </div>
+  <div class="card">
+    <h2>...</h2>
+    <h3>${stt}</h3>
+    ...
   </div>
 </div>

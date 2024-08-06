@@ -13,6 +13,7 @@ export function entwicklung_plot(einwohner_csv, stt_id, width) {
   return Plot.plot({
     width,
     caption,
+    x: {tickFormat: ""},
     marks: [
       Plot.lineY(ts_data, {
         x: "Jahr",
