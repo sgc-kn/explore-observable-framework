@@ -1,6 +1,6 @@
 ---
 theme: dashboard
-title: Einwohnerzahlen
+title: Einwohner
 toc: false
 ---
 
