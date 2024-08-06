@@ -44,28 +44,7 @@ const stt = stadtteil_check ?
 ```
 
 ```js
-function map_plot(width) {
-  return Plot.plot({
-    width,
-    projection: {
-      type: "mercator",
-      domain: stadtteile_geojson,
-    },
-    marks: [
-      Plot.geo(stadtteile_geojson, {
-        fill: (x) => (
-          (!stadtteil_check ||
-            (x.properties.STT == stadtteil_select.properties.STT)
-          )
-          ? "var(--theme-foreground-focus)"
-          : "var(--theme-foreground-muted)"
-        ),
-        stroke: "var(--theme-background)",
-        strokeWidth: 1.5,
-      }),
-    ],
-  })
-}
+import {map_plot} from "./components/einwohner_map.js";
 ```
 
 ```js
@@ -105,7 +84,7 @@ const maxYear = Math.max(...einwohner_csv.map((x) => x.Jahr));
     <h3>Dieses Dashboard kann auf Stadtteile gefiltert werden.</h3>
     ${stadtteil_check_input}
     ${stadtteil_select_input}
-    ${resize((width) => map_plot(width))}
+    ${resize((width) => map_plot(stadtteile_geojson, id, width))}
   </div>
   <div class="card">
     <h2>Kennzahlen für das Jahr ${maxYear}</h2>
