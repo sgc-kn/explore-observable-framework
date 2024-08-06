@@ -19,27 +19,18 @@ export function familienstand_plot(einwohner_famStd_csv, stt_id, width) {
 
     return Plot.plot({
       width: width,
-      color: { scheme: "Tableau10", legend: true },
+      color: { scheme: "Observable10", legend: true },
       x: {
         label: "Jahr",
-        tickFormat: d => d,
-        tickFormat: "",       
+        tickFormat: "",
       },
-      y: {
-        //axis: null,
+      y: {        
         label: "Prozent",
         tickFormat: x => `${x * 100}%`,
       },
       marks: [
         Plot.barY(transformedData, {x: "year", y: "value", fill: "status"}),       
-        Plot.ruleY([0]),
-        /*Plot.text(transformedData, {
-          x: "year",  
-          text: d => (d.value * 100).toFixed(1) + "%", 
-          dy: 0, 
-          fill: "black", 
-          textAnchor: "middle"
-        }),*/
+        Plot.ruleY([0])
       ]
     })
 }
