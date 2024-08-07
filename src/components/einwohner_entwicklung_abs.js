@@ -17,9 +17,7 @@ export function absolut_plot(einwohner_csv, stt_id, width) {
                 }),          
             
             Plot.axisY({
-                anchor: "left", 
-                tickFormat: d => d.toLocaleString('de-DE').replace(',', '.'), 
-                tickSize: 0,
+                tickFormat: d => d.toLocaleString('de-DE').replace(',', '.'),
                 ticks: 4
             }), 
         

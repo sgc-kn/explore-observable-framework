@@ -51,27 +51,42 @@ import { map_plot } from "./components/einwohner_map.js";
 import { entwicklung_plot } from "./components/einwohner_entwicklung.js";
 import { familienstand_plot } from "./components/einwohner_familienstand.js";
 import { staatsangehörigkeit_plot } from "./components/einwohner_staatsangehörigkeit.js";
-import { table } from "./components/einwohner_table.js";
+import { Table, Card } from "./components/einwohner_table.js";
 import { absolut_plot } from "./components/einwohner_entwicklung_abs.js";
+import { relativ_plot } from "./components/einwohner_entwicklung_rel.js";
 ```
+
 
 ```js
 const maxYear = Math.max(...einwohner_csv.map((x) => x.Jahr));
 ```
+```jsx
+//display(<Table einwohner_csv={einwohner_csv} einwohner_famStd_csv={einwohner_famStd_csv}    einwohner_staatsangehörigkeit_csv={einwohner_staatsangehörigkeit_csv} id={id} width={width} />)
+display(<Table einwohner_csv={einwohner_csv} einwohner_famStd_csv={einwohner_famStd_csv}    einwohner_staatsangehörigkeit_csv={einwohner_staatsangehörigkeit_csv} id={id} width={width} />)
+```
+
 
 <div class="grid grid-cols-2">
   <div class="card">
     <h2>Stadtteile</h2>
-    <h3>Dieses Dashboard kann auf Stadtteile gefiltert werden.</h3>
+    <h3>Dieses Dashboard kann auf Stadtteile gefiltert werden.</h3>    
     ${stadtteil_check_input}
     ${stadtteil_select_input}
     ${resize((width) => map_plot(stadtteile_geojson, id, width))}
   </div>
+
   <div class="card">
     <h2>Kennzahlen für das Jahr ${maxYear}</h2>
     <h3>${stt}</h3>
-    ${resize((width) => table(einwohner_csv, einwohner_famStd_csv, einwohner_staatsangehörigkeit_csv, id, width))}
-    ToDo
+    <div>
+      <Table 
+        einwohner_csv={einwohner_csv} 
+        einwohner_famStd_csv={einwohner_famStd_csv}    
+        einwohner_staatsangehörigkeit_csv={einwohner_staatsangehörigkeit_csv}
+        id={id} 
+        width={width}
+      />
+    </div>
   </div>
 </div>
 
@@ -99,4 +114,12 @@ const maxYear = Math.max(...einwohner_csv.map((x) => x.Jahr));
     <h3>${stt}</h3>
     ${resize((width) => staatsangehörigkeit_plot(einwohner_staatsangehörigkeit_csv, id, width))}
   </div>
+</div>
+
+<div class="grid grid-cols-1">
+  <div class="card">
+    <h2>...</h2>
+    <h3>${stt}</h3>
+    ${resize((width) => relativ_plot(einwohner_famStd_csv, id, width))}
+  </div>  
 </div>
