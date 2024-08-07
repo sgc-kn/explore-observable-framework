@@ -12,10 +12,8 @@ const einwohner_staatsangehörigkeit_csv = FileAttachment("data/nichtdeutsch.csv
 ```
 
 ```js
-
+einwohner_famStd_csv
 ```
-
-
 # Einwohner in Konstanz
 
 <h2></h2>
@@ -53,6 +51,7 @@ import { map_plot } from "./components/einwohner_map.js";
 import { entwicklung_plot } from "./components/einwohner_entwicklung.js";
 import { familienstand_plot } from "./components/einwohner_familienstand.js";
 import { staatsangehörigkeit_plot } from "./components/einwohner_staatsangehörigkeit.js";
+import { table } from "./components/einwohner_table.js";
 ```
 
 ```js
@@ -70,7 +69,7 @@ const maxYear = Math.max(...einwohner_csv.map((x) => x.Jahr));
   <div class="card">
     <h2>Kennzahlen für das Jahr ${maxYear}</h2>
     <h3>${stt}</h3>
-
+    ${resize((width) => table(einwohner_csv, einwohner_famStd_csv, einwohner_staatsangehörigkeit_csv, id, width))}
     ToDo
   </div>
 </div>
