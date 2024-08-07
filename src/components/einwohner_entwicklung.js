@@ -7,8 +7,10 @@ die Achsen? Wo kommen die Daten her? Kann man die irgendwo downloaden?
 Etc...
 `
 export function entwicklung_plot(einwohner_csv, stt_id, width) {
-  
   const ts_data = d3.filter(einwohner_csv, (r) => r.STT_ID == stt_id);
+
+  const maxValue = Math.max(...ts_data.map(d => d.Einwohner));
+  const minValue = Math.min(...ts_data.map(d => d.Einwohner));  
   
   return Plot.plot({
     width,
@@ -20,7 +22,14 @@ export function entwicklung_plot(einwohner_csv, stt_id, width) {
         y: "Einwohner",
         stroke: "var(--theme-foreground-focus)",
       }),
+      Plot.dot(ts_data.filter(d => d.Einwohner === maxValue), {x: "Jahr", y: "Einwohner", stroke: "orange", r: 3}),
+      Plot.text(ts_data.filter(d => d.Einwohner === maxValue), 
+      {x: "Jahr", y: "Einwohner", text: d => `Max: ${d.Einwohner.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}\n${d.Jahr}`, dy: 0, stroke: "orange", strokeWidth:0.7, fontSize: 20, fontWeight: 0.1,}),
       Plot.crosshairX(ts_data, {x: "Jahr", y: "Einwohner"}),
+      // Mark min value
+      Plot.dot(ts_data.filter(d => d.Einwohner === minValue), {x: "Jahr", y: "Einwohner", stroke: "black", r: 3}),
+      Plot.text(ts_data.filter(d => d.Einwohner === minValue), {x: "Jahr", y: "Einwohner", text: d => `Min: ${d.Einwohner.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}\n${d.Jahr}`,
+      dy: 23, stroke: "green", fontVariant: "tabular-nums", fontSize: 20, fontWeight: 0.1, strokeWidth:0.7})
     ],
   });
 }

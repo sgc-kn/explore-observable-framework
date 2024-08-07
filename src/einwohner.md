@@ -12,7 +12,7 @@ const einwohner_staatsangehörigkeit_csv = FileAttachment("data/nichtdeutsch.csv
 ```
 
 ```js
-einwohner_famStd_csv
+einwohner_csv
 ```
 # Einwohner in Konstanz
 
