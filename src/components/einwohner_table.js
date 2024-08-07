@@ -3,14 +3,20 @@ import { html } from "npm:htl";
 
 export function table(einwohner_csv, einwohner_famStd_csv, einwohner_staatsangehörigkeit_csv, stt_id, width) {
     
-    const maxYear = Math.max(...einwohner_csv.map(obj => obj.Jahr));    
+    const maxYear = Math.max(...einwohner_csv.map(obj => obj.Jahr));        
     const previousYear = maxYear - 1;
 
     const ts_data = d3.filter(einwohner_csv, (r) => r.STT_ID == stt_id);
+    //Max - min values
+    const maxValue = Math.max(...ts_data.map(d => d.Einwohner));
+    const minValue = Math.min(...ts_data.map(d => d.Einwohner));
+    const maxValueJahrEntries = ts_data.filter(d => d.Einwohner === maxValue);
+    const maxValueJahr = maxValueJahrEntries.map(d => d.Jahr);
+    const minValueJahrEntries = ts_data.filter(d => d.Einwohner === minValue);
+    const minValueJahr = minValueJahrEntries.map(d => d.Jahr);
     
     const einwohnerMaxYear = ts_data.filter(obj => obj.Jahr === maxYear);
-    const einwohnerPreviousYear = ts_data.filter(obj => obj.Jahr === previousYear);
-    
+    const einwohnerPreviousYear = ts_data.filter(obj => obj.Jahr === previousYear);    
     const wachstum = (einwohnerMaxYear[0].Einwohner - einwohnerPreviousYear[0].Einwohner) * 100 / einwohnerPreviousYear[0].Einwohner;
     const growthColor = wachstum > 0 ? 'green' : 'red';
     const growth = wachstum > 0 ? '↗︎' : ' ↘︎';
@@ -50,7 +56,15 @@ export function table(einwohner_csv, einwohner_famStd_csv, einwohner_staatsangeh
             </tr>            
             <tr>
                 <td>Wachstum im Vergleich zu ${previousYear}:</td>
-                <td><span style="color: ${growthColor};"> ${wachstum} % ${growth}</span></td>
+                <td><span style="color: ${growthColor};"> ${wachstum.toFixed(2)} % ${growth}</span></td>
+            </tr>
+            <tr>
+                <td>Maximale Einwohnerzahl: </td>
+                <td>${maxValue} im Jahr ${maxValueJahr}</td>
+            </tr>
+            <tr>
+                <td>Manimale Einwohnerzahl:</td>
+                <td> ${minValue} im Jahr ${minValueJahr}</td>
             </tr>
             <tr>
                 <td>Familienstand (EinwohnerInnen ab 18 Jahre):</td>

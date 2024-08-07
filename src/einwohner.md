@@ -52,6 +52,7 @@ import { entwicklung_plot } from "./components/einwohner_entwicklung.js";
 import { familienstand_plot } from "./components/einwohner_familienstand.js";
 import { staatsangehörigkeit_plot } from "./components/einwohner_staatsangehörigkeit.js";
 import { table } from "./components/einwohner_table.js";
+import { absolut_plot } from "./components/einwohner_entwicklung_abs.js";
 ```
 
 ```js
@@ -74,11 +75,16 @@ const maxYear = Math.max(...einwohner_csv.map((x) => x.Jahr));
   </div>
 </div>
 
-<div class="grid grid-cols-1">
+<div class="grid grid-cols-2">
   <div class="card">
     <h2>Einwohnerentwicklung</h2>
     <h3>${stt}</h3>
     ${resize((width) => entwicklung_plot(einwohner_csv, id, width))}
+  </div>
+  <div class="card">
+    <h2>Bevölkerungsentwicklung in den Stadtteile ab 2010</h2>
+    <h3>${stt}</h3>
+    ${resize((width) => absolut_plot(einwohner_csv, id, width))}
   </div>
 </div>
 
