@@ -62,10 +62,11 @@ const maxYear = Math.max(...einwohner_csv.map((x) => x.Jahr));
 ```
 ```jsx
 //display(<Table einwohner_csv={einwohner_csv} einwohner_famStd_csv={einwohner_famStd_csv}    einwohner_staatsangehörigkeit_csv={einwohner_staatsangehörigkeit_csv} id={id} width={width} />)
-display(<Table einwohner_csv={einwohner_csv} einwohner_famStd_csv={einwohner_famStd_csv}    einwohner_staatsangehörigkeit_csv={einwohner_staatsangehörigkeit_csv} id={id} width={width} />)
+
+const table = document.createElement("SPAN");
+const root = ReactDOM.createRoot(table);
+root.render(<Table einwohner_csv={einwohner_csv} einwohner_famStd_csv={einwohner_famStd_csv}    einwohner_staatsangehörigkeit_csv={einwohner_staatsangehörigkeit_csv} id={id} width={width} />);
 ```
-
-
 <div class="grid grid-cols-2">
   <div class="card">
     <h2>Stadtteile</h2>
@@ -79,13 +80,7 @@ display(<Table einwohner_csv={einwohner_csv} einwohner_famStd_csv={einwohner_fam
     <h2>Kennzahlen für das Jahr ${maxYear}</h2>
     <h3>${stt}</h3>
     <div>
-      <Table 
-        einwohner_csv={einwohner_csv} 
-        einwohner_famStd_csv={einwohner_famStd_csv}    
-        einwohner_staatsangehörigkeit_csv={einwohner_staatsangehörigkeit_csv}
-        id={id} 
-        width={width}
-      />
+      ${table}
     </div>
   </div>
 </div>
