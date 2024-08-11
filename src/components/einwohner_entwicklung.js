@@ -30,11 +30,14 @@ export function entwicklung_plot(einwohner_csv, stt_id, width) {
       Plot.dot(ts_data.filter(d => d.Einwohner === maxValue), 
         {x: "Jahr", y: "Einwohner", stroke: "orange", r: 3}),
       Plot.text(ts_data.filter(d => d.Einwohner === maxValue), 
-        {x: "Jahr", y: "Einwohner", text: d => `Max: ${d.Einwohner.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}\n${d.Jahr}`, dy: 0, stroke: "orange", strokeWidth:0.7, fontSize: 16, fontWeight: 0.1,}),
+        {x: "Jahr", y: "Einwohner", 
+        text: d => `Max: ${d.Einwohner.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}\n${d.Jahr}`, 
+        dy: 0, stroke: "orange", strokeWidth:0.7, fontSize: 16, fontWeight: 0.1,}),
       Plot.crosshairX(ts_data, {x: "Jahr", y: "Einwohner"}),
       // Mark min value
       Plot.dot(ts_data.filter(d => d.Einwohner === minValue), {x: "Jahr", y: "Einwohner", stroke: "black", r: 3}),
-      Plot.text(ts_data.filter(d => d.Einwohner === minValue), {x: "Jahr", y: "Einwohner", text: d => `Min: ${d.Einwohner.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}\n${d.Jahr}`,
+      Plot.text(ts_data.filter(d => d.Einwohner === minValue), {x: "Jahr", y: "Einwohner", 
+        text: d => `Min: ${d.Einwohner.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}\n${d.Jahr}`,
         dy: 23, stroke: "green", fontVariant: "tabular-nums", fontSize: 16, fontWeight: 0.1, strokeWidth:0.7})
     ],
   });

@@ -47,6 +47,57 @@ const stt = stadtteil_check ?
 ```
 
 ```js
+/*
+const groupedData = d3.group(einwohner_csv, d => d.STT);
+
+const checkboxEntries = Array.from(groupedData.entries()).map(([key, values]) => ({
+  key: key,
+  values: values
+}));
+console.log('checkboxEntries', checkboxEntries)
+
+const  select_ort = Inputs.select(
+  checkboxEntries,
+  {
+    label: "Выберите город",
+    format: x => x.key
+  }
+);
+select_ort.addEventListener("input", (event) => {
+    const selectedCity = select_ort.values;
+    console.log('selectedCity', selectedCity)
+    //const selectedID = selectedCity[0].STT_ID;
+    //selectedCityID.next(selectedID);
+});
+*/
+
+const groupedData = d3.group(einwohner_csv, d => d.STT);
+
+//default value "Gesamtstadt"
+/*
+const sortedData = Array.from(groupedData).sort((a, b) => {
+  if (a[0] === "Gesamtstadt") return -1;
+    if (b[0] === "Gesamtstadt") return 1;
+    return a[0].localeCompare(b[0]);
+});
+*/
+// removed element with key "Gesamtstadt" and sorted alphabetically
+const sortedData = Array.from(groupedData)
+  .filter(([key, values]) => key !== "Gesamtstadt")  
+  .sort((a, b) => a[0].localeCompare(b[0]));
+
+const combinedData = sortedData.flatMap(item => item[1]);
+const groupedCombinedData = d3.group(combinedData, d => d.STT);
+
+const select_ort = view(
+  Inputs.select(
+    groupedCombinedData,
+    {label: html`<div class="st-title">Stadtteile:</div>`, unique: true}
+  )
+);
+```
+
+```js
 import { map_plot } from "./components/einwohner_map.js";
 import { entwicklung_plot } from "./components/einwohner_entwicklung.js";
 import { familienstand_plot } from "./components/einwohner_familienstand.js";
@@ -55,8 +106,6 @@ import { Table, Card } from "./components/einwohner_table.js";
 import { absolut_plot } from "./components/einwohner_entwicklung_abs.js";
 import { relativ_plot } from "./components/einwohner_entwicklung_rel.js";
 ```
-
-
 ```js
 const maxYear = Math.max(...einwohner_csv.map((x) => x.Jahr));
 ```
@@ -92,10 +141,18 @@ root.render(<Table einwohner_csv={einwohner_csv} einwohner_famStd_csv={einwohner
     ${resize((width) => entwicklung_plot(einwohner_csv, id, width))}
   </div>
   <div class="card">
-    <h2>Bevölkerungsentwicklung in den Stadtteile ab 2010</h2>
-    <h3>${stt}</h3>
+    <h2>Bevölkerungsentwicklung in den Stadtteile ab 2010 (absolute)</h2>
+    <h3>${stt}</h3>    
     ${resize((width) => absolut_plot(einwohner_csv, id, width))}
   </div>
+</div>
+
+<div class="grid grid-cols-2">
+  <div class="card">
+    <h2>Bevölkerungsentwicklung in den Stadtteile ab 2010 (relative)</h2>
+    <h3>${stt}</h3>    
+    ${resize((width) => relativ_plot(einwohner_csv, select_ort, id, width))}
+  </div>  
 </div>
 
 <div class="grid grid-cols-2">
@@ -111,10 +168,3 @@ root.render(<Table einwohner_csv={einwohner_csv} einwohner_famStd_csv={einwohner
   </div>
 </div>
 
-<div class="grid grid-cols-1">
-  <div class="card">
-    <h2>...</h2>
-    <h3>${stt}</h3>
-    ${resize((width) => relativ_plot(einwohner_famStd_csv, id, width))}
-  </div>  
-</div>

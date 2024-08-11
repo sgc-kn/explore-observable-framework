@@ -42,7 +42,60 @@ export function Table({einwohner_csv, einwohner_famStd_csv, einwohner_staatsange
           
         ];
     });
-
+    return(<div width={width} >
+        <h1 class="ort_name_card"> {einwohnerMaxYear.STT} </h1>
+        <div class="card">
+            <table style={{tableLayout: "fixed", width: 100 + "%" }}>
+                <tr>
+                    <td>Gesamt der Einwohner:</td>
+                    <td> {einwohnerMaxYear[0].Einwohner.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")} </td>
+                </tr> 
+                <tr>
+                    <td>Wachstum im Vergleich zu ${previousYear}:</td>
+                    <td><span> {wachstum.toFixed(2).replace('.', ',') } % {growth}</span></td>
+                </tr>
+                <tr>
+                    <td>Maximale Einwohnerzahl: </td>
+                    <td>{maxValue.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")} im Jahr {maxValueJahr}</td>
+                </tr>
+                <tr>
+                    <td>Manimale Einwohnerzahl:</td>
+                    <td> {minValue.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")} im Jahr {minValueJahr}</td>
+                </tr>
+            </table>
+        </div>
+        <div class="card">
+            <table style={{tableLayout: "fixed", width: 100 + "%" }}>
+                <tr>
+                    <td>Familienstand (EinwohnerInnen ab 18 Jahre):</td>
+                    <td>{transformedData.map(item =>
+                        <div>
+                            <span>{item.status}: </span>
+                            <span>{item.absolut.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</span>
+                            <span> ({(item.prozent *100).toFixed(1).replace('.', ',') }%) </span>
+                        </div>
+                    )}
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="card">
+            <table style={{tableLayout: "fixed", width: 100 + "%" }}>
+                <tr>
+                    <td>Staatsangehörigkeit:</td>
+                    <td>{transformedData_sahk.map(item =>
+                        <div>
+                            <span>{item.status}:</span>
+                            <span> {item.absolut.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</span>
+                            <span> ({(item.prozent *100).toFixed(1).replace('.', ',') }%)</span>
+                        </div>)}
+                    </td>
+                </tr>
+            </table>
+        </div>
+        </div>
+    )
+/*
     return (<table>
         <tr>
             <td><h1 class="ort_name_card"> {einwohnerMaxYear.STT} </h1> </td><td></td>
@@ -86,5 +139,7 @@ export function Table({einwohner_csv, einwohner_famStd_csv, einwohner_staatsange
         </td>
         </tr>
     </table>
-)} 
+)
+*/
+} 
    
