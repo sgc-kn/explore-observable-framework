@@ -1,6 +1,6 @@
 import * as d3 from "npm:d3";
 
-export function Table({einwohner_csv, einwohner_famStd_csv, einwohner_staatsangehörigkeit_csv, id, width}={}) {
+export function Table({einwohner_csv, einwohner_famStd_csv, einwohner_staatsangehoerigkeit_csv, id, width}={}) {
     const maxYear = Math.max(...einwohner_csv.map(obj => obj.Jahr));
     const previousYear = maxYear - 1;
     const ts_data = d3.filter(einwohner_csv, (r) => r.STT_ID == id);
@@ -14,14 +14,14 @@ export function Table({einwohner_csv, einwohner_famStd_csv, einwohner_staatsange
     const minValueJahr = minValueJahrEntries.map(d => d.Jahr);
 
     const einwohnerMaxYear = ts_data.filter(obj => obj.Jahr === maxYear);
-    const einwohnerPreviousYear = ts_data.filter(obj => obj.Jahr === previousYear);    
+    const einwohnerPreviousYear = ts_data.filter(obj => obj.Jahr === previousYear);
     const wachstum = (einwohnerMaxYear[0].Einwohner - einwohnerPreviousYear[0].Einwohner) * 100 / einwohnerPreviousYear[0].Einwohner;
     const growthColor = wachstum > 0 ? 'green' : 'red';
     const growth = wachstum > 0 ? '↗︎' : ' ↘︎';
-    const famStd_maxYear = einwohner_famStd_csv.filter(d => d.STT_ID === id && d.Jahr === maxYear); 
-    
-    const transformedData = famStd_maxYear.flatMap(item => { 
-        const total = item.Fam_Stand_Geschieden_LP_aufgehoben + item.Fam_Stand_Verheiratet_Lebenspartnerschaft + item.Fam_Stand_Verwitwet_LP_gestorben + item.Fam_Stand_ledig + item.Fam_Stand_unbekannt;     
+    const famStd_maxYear = einwohner_famStd_csv.filter(d => d.STT_ID === id && d.Jahr === maxYear);
+
+    const transformedData = famStd_maxYear.flatMap(item => {
+        const total = item.Fam_Stand_Geschieden_LP_aufgehoben + item.Fam_Stand_Verheiratet_Lebenspartnerschaft + item.Fam_Stand_Verwitwet_LP_gestorben + item.Fam_Stand_ledig + item.Fam_Stand_unbekannt;
         const year = item.Jahr;
         return [
           { year, status: "Geschieden", prozent: item.Fam_Stand_Geschieden_LP_aufgehoben / total, absolut: item.Fam_Stand_Geschieden_LP_aufgehoben},
@@ -32,14 +32,14 @@ export function Table({einwohner_csv, einwohner_famStd_csv, einwohner_staatsange
         ];
     });
 
-    const staatsAHK_maxYear = einwohner_staatsangehörigkeit_csv.filter(d => d.STT_ID === id && d.Jahr === maxYear);
-    const transformedData_sahk = staatsAHK_maxYear.flatMap(item => { 
+    const staatsAHK_maxYear = einwohner_staatsangehoerigkeit_csv.filter(d => d.STT_ID === id && d.Jahr === maxYear);
+    const transformedData_sahk = staatsAHK_maxYear.flatMap(item => {
         const total = item.Deutsch + item.Nichtdeutsch;
         const year = item.Jahr;
         return [
           { year, status: "Deutsch", prozent: item.Deutsch / total, absolut: item.Deutsch},
           { year, status: "Sonstige", prozent: item.Nichtdeutsch / total, absolut: item.Nichtdeutsch},
-          
+
         ];
     });
     return(<div width={width} >
@@ -49,7 +49,7 @@ export function Table({einwohner_csv, einwohner_famStd_csv, einwohner_staatsange
                 <tr>
                     <td>Gesamt der Einwohner:</td>
                     <td> {einwohnerMaxYear[0].Einwohner.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")} </td>
-                </tr> 
+                </tr>
                 <tr>
                     <td>Wachstum im Vergleich zu ${previousYear}:</td>
                     <td><span> {wachstum.toFixed(2).replace('.', ',') } % {growth}</span></td>
@@ -104,7 +104,7 @@ export function Table({einwohner_csv, einwohner_famStd_csv, einwohner_staatsange
         <tr>
             <td>Gesamt der Einwohner:</td>
             <td> {einwohnerMaxYear[0].Einwohner} </td>
-        </tr> 
+        </tr>
         <tr>
             <td>Wachstum im Vergleich zu ${previousYear}:</td>
             <td><span> {wachstum.toFixed(2)} % {growth}</span></td>
@@ -141,5 +141,5 @@ export function Table({einwohner_csv, einwohner_famStd_csv, einwohner_staatsange
     </table>
 )
 */
-} 
-   
+}
+

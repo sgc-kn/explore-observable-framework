@@ -2,7 +2,7 @@ import * as Plot from "npm:@observablehq/plot";
 
 export function map_plot(data, stt_id, width) {
   return Plot.plot({
-    width,
+    width : Math.min(width, 512),
     projection: {
       type: "mercator",
       domain: data,
