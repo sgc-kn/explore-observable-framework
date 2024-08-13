@@ -98,14 +98,15 @@ root.render(<Table einwohner_csv={einwohner_csv} einwohner_famStd_csv={einwohner
     ${resize((width) => map_plot(stadtteile_geojson, id, width))}
   </div>
 
-  <div class="card">
-    <h2>Kennzahlen für das Jahr ${maxYear}</h2>
-    <h3>${stt}</h3>
-    <div>
-      ${table}
-    </div>
+  
+  ${table}
   </div>
 </div>
+
+<!--
+
+This one is redundant with the one after, right? Which one do we
+prefer for the final product?
 
 <div class="card">
   <h2>Bevölkerungsentwicklung</h2>
@@ -113,10 +114,7 @@ root.render(<Table einwohner_csv={einwohner_csv} einwohner_famStd_csv={einwohner
   ${resize((width) => entwicklung_plot(einwohner_csv, id, width))}
 </div>
 
-<!--
-
-This one is redundant with the one before, right? Which one do we
-prefer for the final product?
+-->
 
 <div class="card">
   <h2>Bevölkerungsentwicklung</h2>
@@ -124,7 +122,6 @@ prefer for the final product?
   ${resize((width) => absolut_plot(einwohner_csv, id, width))}
 </div>
 
--->
 
 ```js
 const compare_select_input = Inputs.select(

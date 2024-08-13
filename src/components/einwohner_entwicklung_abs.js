@@ -6,28 +6,28 @@ export function absolut_plot(einwohner_csv, stt_id, width) {
 
     return Plot.plot({        
         width: width,
-        x: {tickFormat: ""},
+        x: {
+            tickFormat: "",
+        },
+        y: {
+            tickFormat: d => d.toLocaleString(),
+        },
         marks: [
             Plot.rectY(ts_data, 
                 { 
                 x: "Jahr",
                 y: "Einwohner", 
                 fill: "var(--theme-foreground-focus)",  
-                title: d => `Einwohner: ${d.Einwohner.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}` 
+                title: d => `Einwohner: ${d.Einwohner.toLocaleString()}` 
                 }),          
-            
-            Plot.axisY({
-                tickFormat: d => d.toLocaleString('de-DE').replace(',', '.'),
-                ticks: 4
-            }), 
         
             Plot.text(ts_data, {
                 x: d => d.Jahr, 
                 y: d => d.Einwohner, 
-                text: d => `${d.Wachstum.toFixed(1).replace('.', ',')}`, 
+                text: d => `${d.Wachstum.toLocaleString(undefined, {maximumFractionDigits: 2})} %`, 
                 textAnchor: "middle",
                 dy: -15, 
-                fill: d => d.Wachstum >= 0 ? "black" : "red",
+                fill: d => d.Wachstum >= 0 ? "var(--theme-green)" : "var(--theme-red)",
             }),
         ]  
     })    
