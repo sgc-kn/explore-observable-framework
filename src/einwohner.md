@@ -6,9 +6,9 @@ toc: false
 
 ```js
 const stadtteile_geojson = FileAttachment("data/stadtteile.geo.json").json();
-const einwohner_csv = FileAttachment("data/einwohner.csv").csv({typed: true});
-const einwohner_famStd_csv = FileAttachment("data/familienstand.csv").csv({typed: true});
-const einwohner_staatsangehoerigkeit_csv = FileAttachment("data/nichtdeutsch.csv").csv({typed: true});
+const einwohner_csv = FileAttachment("data/stt_ew.csv").csv({typed: true});
+const einwohner_famStd_csv = FileAttachment("data/stt_ew_fam.csv").csv({typed: true});
+const einwohner_staatsangehoerigkeit_csv = FileAttachment("data/stt_ew_nat.csv").csv({typed: true});
 ```
 
 # Einwohner in Konstanz

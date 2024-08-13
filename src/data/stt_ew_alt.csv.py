@@ -1,7 +1,5 @@
-import json
 import pandas as pd
 import sys
-import os
 import csv
 
 baseurl = "https://offenedaten-konstanz.de/sites/default/files/"

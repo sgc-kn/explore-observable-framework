@@ -4,7 +4,7 @@ import sys
 import tempfile
 
 # Load STT_NAME from CSV
-csv = pd.read_csv('raw_data/EW_STT1995ff_cleaned.csv')
+csv = pd.read_csv('raw_data/EW_STT_1995ff.csv', sep=';')
 names = ( csv[['STT_ID', 'STT']]
          .drop_duplicates()
          .set_index('STT_ID')
