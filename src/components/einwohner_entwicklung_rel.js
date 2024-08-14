@@ -26,9 +26,9 @@ export function relativ_plot(einwohner_csv, stt_id, compare_id, width) {
       Plot.lineY(ts_data,{
         x: "Jahr",
         y: "Wachstum",
-        stroke: "STT",
+        stroke: "STT",        
       }),
     ],
     color: {legend: true},
   },
-  )}
+)}

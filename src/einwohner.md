@@ -9,8 +9,12 @@ const stadtteile_geojson = FileAttachment("data/stadtteile.geo.json").json();
 const einwohner_csv = FileAttachment("data/stt_ew.csv").csv({typed: true});
 const einwohner_famStd_csv = FileAttachment("data/stt_ew_fam.csv").csv({typed: true});
 const einwohner_staatsangehoerigkeit_csv = FileAttachment("data/stt_ew_nat.csv").csv({typed: true});
+const stt_ew_alt_csv = FileAttachment("data/stt_ew_alt.csv").csv({typed: true});
 ```
 
+```js
+stt_ew_alt_csv
+```
 # Einwohner in Konstanz
 
 <h2></h2>
@@ -44,6 +48,10 @@ const stt = stadtteil_check ?
     `Stadtteil ${stadtteil_select.properties.STT_NAME}` :
     stadtteil_select;
 ```
+```js
+const toggled = Inputs.toggle({label: "Binary", values: [1, 0]})
+```
+
 
 <!-- Iryna's second select button
 ```js
@@ -75,6 +83,8 @@ import { staatsangehoerigkeit_plot } from "./components/einwohner_staatsangehoer
 import { Table, Card } from "./components/einwohner_table.js";
 import { absolut_plot } from "./components/einwohner_entwicklung_abs.js";
 import { relativ_plot } from "./components/einwohner_entwicklung_rel.js";
+import { altersgruppen_abs_plot } from "./components/einwohner_altersgruppen_abs.js";
+import { einwohner_altersgruppen_erwerbsfähige_abs_plot } from "./components/einwohner_altersgruppen_erwerbsfahige_abs.js";
 ```
 
 ```js
@@ -96,9 +106,7 @@ root.render(<Table einwohner_csv={einwohner_csv} einwohner_famStd_csv={einwohner
     ${stadtteil_check_input}
     ${stadtteil_select_input}
     ${resize((width) => map_plot(stadtteile_geojson, id, width))}
-  </div>
-
-  
+  </div>  
   ${table}
   </div>
 </div>
@@ -138,6 +146,11 @@ const compare_select = Generators.input(compare_select_input);
 const compare_id = compare_select.properties.STT_ID;
 ```
 
+```js
+const toggled_plots = Inputs.toggle({label: "Relative Werte anzeigen:", values: [1, 0]});
+const toggled_value = Generators.input(toggled_plots);
+```
+
 <div class="card">
   <h2>Bevölkerungsentwicklung im Vergleich</h2>
   <h3>${stt}</h3>
@@ -155,4 +168,17 @@ const compare_id = compare_select.properties.STT_ID;
   <h2>Staatsangehörigkeit</h2>
   <h3>${stt}</h3>
   ${resize((width) => staatsangehoerigkeit_plot(einwohner_staatsangehoerigkeit_csv, id, width))}
+</div>
+
+<div class="card">
+  <h2>Altersstruktur der Wohnbevölkerung im Vergleich</h2>
+  <h3>${stt}</h3>
+  ${resize((width) => altersgruppen_abs_plot(stt_ew_alt_csv, id, width))}
+</div>
+
+<div class="card">
+  <h2>Altersstruktur der Wohnbevölkerung im Vergleich</h2>
+  <h3>${stt}</h3>
+  ${toggled_plots}
+  ${resize((width) => einwohner_altersgruppen_erwerbsfähige_abs_plot(stt_ew_alt_csv, id, width, toggled_value))}
 </div>
