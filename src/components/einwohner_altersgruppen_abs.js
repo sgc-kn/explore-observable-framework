@@ -10,7 +10,7 @@ export function altersgruppen_abs_plot(einwohner_altersgruppen_csv, stt_id, widt
   );
 
   //ohne "Erwerbsfähige (15 bis 64 Jahre)"
-  const filteredData = ts_data.filter(item => item.Gruppe !== "Erwerbsfähige (15 bis 64 Jahre)"); 
+  const filteredData = ts_data.filter(item => item.Gruppe !== "Z. Erwerbsfähige (15 bis 64 Jahre)"); 
   /*
   return Plot.plot({
     width: width,
@@ -45,7 +45,8 @@ export function altersgruppen_abs_plot(einwohner_altersgruppen_csv, stt_id, widt
       }),
       Plot.ruleY([0])
     ]
-  });  
+  });
+
   */
 
   return Plot.plot({
@@ -66,5 +67,5 @@ export function altersgruppen_abs_plot(einwohner_altersgruppen_csv, stt_id, widt
         Plot.ruleY([0]),
       ]
     }
-  )
+  )  
 }

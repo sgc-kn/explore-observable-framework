@@ -12,9 +12,6 @@ const einwohner_staatsangehoerigkeit_csv = FileAttachment("data/stt_ew_nat.csv")
 const stt_ew_alt_csv = FileAttachment("data/stt_ew_alt.csv").csv({typed: true});
 ```
 
-```js
-stt_ew_alt_csv
-```
 # Einwohner in Konstanz
 
 <h2></h2>
@@ -94,21 +91,21 @@ const maxYear = Math.max(...einwohner_csv.map((x) => x.Jahr));
 ```jsx
 //display(<Table einwohner_csv={einwohner_csv} einwohner_famStd_csv={einwohner_famStd_csv}    einwohner_staatsangehoerigkeit_csv={einwohner_staatsangehoerigkeit_csv} id={id} width={width} />)
 
-const table = document.createElement("SPAN");
+const table = document.createElement("div");
 const root = ReactDOM.createRoot(table);
-root.render(<Table einwohner_csv={einwohner_csv} einwohner_famStd_csv={einwohner_famStd_csv}    einwohner_staatsangehoerigkeit_csv={einwohner_staatsangehoerigkeit_csv} id={id} width={width} />);
+root.render(<Table einwohner_csv={einwohner_csv} einwohner_famStd_csv={einwohner_famStd_csv}    einwohner_staatsangehoerigkeit_csv={einwohner_staatsangehoerigkeit_csv} stt_ew_alt_csv={stt_ew_alt_csv} id={id} width={width} />);
 ```
 
-<div class="grid grid-cols-2">
-  <div class="card">
-    <h2>Stadtteile</h2>
-    <h3>Dieses Dashboard kann auf Stadtteile gefiltert werden.</h3>
-    ${stadtteil_check_input}
-    ${stadtteil_select_input}
-    ${resize((width) => map_plot(stadtteile_geojson, id, width))}
-  </div>  
-  ${table}
-  </div>
+<div class="card">
+  <h2>Stadtteile</h2>
+  <h3>Dieses Dashboard kann auf Stadtteile gefiltert werden.</h3>
+  ${stadtteil_check_input}
+  ${stadtteil_select_input}
+  ${resize((width) => map_plot(stadtteile_geojson, id, width))}
+</div>
+
+<div>
+${table}
 </div>
 
 <!--
@@ -177,7 +174,7 @@ const toggled_value = Generators.input(toggled_plots);
 </div>
 
 <div class="card">
-  <h2>Altersstruktur der Wohnbevölkerung im Vergleich</h2>
+  <h2>Erwerbsfähige (15 - unter 65) im Vergleich</h2>
   <h3>${stt}</h3>
   ${toggled_plots}
   ${resize((width) => einwohner_altersgruppen_erwerbsfähige_abs_plot(stt_ew_alt_csv, id, width, toggled_value))}

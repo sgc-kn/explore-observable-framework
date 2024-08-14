@@ -13,15 +13,15 @@ dfS = pd.read_csv(baseurl + 'Einwohner_Altersgruppen_Stadtteile_2010-2023.csv',
 df = pd.concat([dfS, dfG])
 
 df = df.rename(columns={
-    'unter 3': 'unter 3 Jahren',
-    '3 - unter 6': '3 bis 5 Jahre',
-    '6 - unter 10': '6 bis 9 Jahre',
-    '10 - unter 18': '10 bis 17 Jahre',
-    '18 - unter 25': '18 bis 25 Jahre',
-    '25 - unter 65': '25 bis 64 Jahre',
-    '65 - unter 85': '65 bis 84 Jahre',
-    '85 und aelter': '85 Jahre und älter',
-    'Erwerbsfaehige\n (15- unter 65)': 'Erwerbsfähige (15 bis 64 Jahre)',
+    'unter 3': 'A. unter 3 Jahren',
+    '3 - unter 6': 'B. 3 bis 5 Jahre',
+    '6 - unter 10': 'C. 6 bis 9 Jahre',
+    '10 - unter 18': 'D. 10 bis 17 Jahre',
+    '18 - unter 25': 'E. 18 bis 25 Jahre',
+    '25 - unter 65': 'F. 25 bis 64 Jahre',
+    '65 - unter 85': 'G. 65 bis 84 Jahre',
+    '85 und aelter': 'H. 85 Jahre und älter',
+    'Erwerbsfaehige\n (15- unter 65)': 'Z. Erwerbsfähige (15 bis 64 Jahre)',
     'Wohnbev_insg': 'insgesamt',
     })
 

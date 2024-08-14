@@ -30,8 +30,7 @@ export function familienstand_plot(einwohner_famStd_csv, stt_id, width) {
       },
       marks: [
         Plot.barY(transformedData, {x: "year", y: "value", fill: "status", 
-        title: d => `Status: ${d.status}\n Jahr: ${d.year}\n Anteil: ${(d.value *100).toFixed(0) }%`}),       
-        Plot.ruleY([0])      
+        title: d => `Status: ${d.status}\n Jahr: ${d.year}\n Anteil: ${(d.value *100).toFixed(0) }%`}),
         
       ]
     })

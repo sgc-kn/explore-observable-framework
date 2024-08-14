@@ -8,8 +8,8 @@ export function einwohner_altersgruppen_erwerbsfähige_abs_plot(einwohner_alters
     einwohner_altersgruppen_csv,
     (r) => stt_id == r.Stadtteil_Nr
   );  
-  const filteredData = ts_data.filter(item => item.Gruppe !== "Erwerbsfähige (15 bis 64 Jahre)");
-  const erwerbsfaehigeData = ts_data.filter(item => item.Gruppe === "Erwerbsfähige (15 bis 64 Jahre)");
+  const filteredData = ts_data.filter(item => item.Gruppe !== "Z. Erwerbsfähige (15 bis 64 Jahre)");
+  const erwerbsfaehigeData = ts_data.filter(item => item.Gruppe === "Z. Erwerbsfähige (15 bis 64 Jahre)");
     
   const summedD_ohneErwerbsfaehige = filteredData.reduce((acc, curr) => {    
     const year = curr.Jahr;
