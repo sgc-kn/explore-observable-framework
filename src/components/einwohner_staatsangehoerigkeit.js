@@ -26,7 +26,9 @@ export function staatsangehoerigkeit_plot(einwohner_staatsAHK_csv, stt_id, width
         tickFormat: x => `${x * 100}%`,
       },
       marks: [
-        Plot.barY(transformedData, {x: "jahr", y: "value", fill: "status"}),
+        Plot.barY(transformedData, {x: "jahr", y: "value", fill: "status", 
+          title: d => `Status: ${d.status}\n Jahr: ${d.jahr}\n Anteil: ${(d.value *100).toFixed(0) }%`
+        }),        
         Plot.ruleY([0])
       ]
     })

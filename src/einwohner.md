@@ -147,7 +147,7 @@ const compare_id = compare_select.properties.STT_ID;
 ```
 
 ```js
-const toggled_plots = Inputs.toggle({label: "Relative Werte anzeigen:", values: [1, 0]});
+const toggled_plots = Inputs.toggle({label: "Relative Werte:", values: [1, 0]});
 const toggled_value = Generators.input(toggled_plots);
 ```
 

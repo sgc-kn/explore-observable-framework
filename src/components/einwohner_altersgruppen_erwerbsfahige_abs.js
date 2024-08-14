@@ -51,40 +51,45 @@ export function einwohner_altersgruppen_erwerbsfähige_abs_plot(einwohner_alters
           ...item,
           Anteil: item.Anzahl / jahreSumme[item.Jahr] // Relativer Anteil
       };
-  });
-
-  console.log('combinedDataMitAnteil', combinedDataMitAnteil);
+  });  
   
   const abs = Plot.plot({
     width: width,
+    marginLeft: 50,
     color: { scheme: "Observable10", legend: true },
     x: {
       label: "Jahr",
       tickFormat:"",
     },
     y: {
-      label: "Anzahl",      
+      label: "Anzahl",
+      tickFormat: d => d.toLocaleString(),     
     },
     marks: [
-      Plot.barY(combinedData, {x: "Jahr", y: "Anzahl", fill: "Gruppe"}),
+      Plot.barY(combinedData, 
+        {x: "Jahr", y: "Anzahl", fill: "Gruppe", 
+        title: d => `Gruppe: ${d.Gruppe}\n Jahr: ${d.Jahr}\nAnteil: ${(d.Anzahl)}`}),
       Plot.ruleY([0])
     ]
   })
+
   const rel = Plot.plot({
     width: width,
+
     color: { scheme: "Observable10", legend: true },
     x: {
       label: "Jahr",
       tickFormat:"",
     },
     y: {
-      label: "Anteil",      
+      label: "Prozent %",
+      tickFormat: x => `${x * 100}%`
     },
     marks: [
       Plot.barY(combinedDataMitAnteil, 
         {x: "Jahr", y: "Anteil", fill: "Gruppe", 
-        title: d => `Jahr: ${d.Jahr}\nAnteil: ${(d.Anteil * 100).toFixed(2)}%`
-      }),
+        title: d => `Gruppe: ${d.Gruppe}\n Jahr: ${d.Jahr}\nAnteil: ${d.Anteil}%`
+        }),
       Plot.ruleY([0]),      
     ]
   });

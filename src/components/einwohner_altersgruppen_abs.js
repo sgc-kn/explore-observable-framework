@@ -50,7 +50,7 @@ export function altersgruppen_abs_plot(einwohner_altersgruppen_csv, stt_id, widt
 
   return Plot.plot({
       width: width,
-      y: { grid: true, label: "Anzahl" },
+      y: { grid: true, label: "Anzahl", tickFormat: d => d.toLocaleString() },
       x: { 
       label: "Jahr",
       tickFormat: ""
@@ -61,11 +61,10 @@ export function altersgruppen_abs_plot(einwohner_altersgruppen_csv, stt_id, widt
         x: "Jahr",
         y: "Anzahl", 
         fill: "Gruppe",
-        title: d => `${d.Gruppe} (${d.Jahr}): ${d.Anzahl}` 
+        title: d => `Gruppe: ${d.Gruppe}\n Jahr:  ${d.Jahr}\n Anzahl: ${d.Anzahl.toLocaleString()}` 
         }),
         Plot.ruleY([0]),
       ]
     }
-  ) 
-  
+  )
 }
