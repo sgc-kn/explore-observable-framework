@@ -23,14 +23,22 @@ export function familienstand_plot(einwohner_famStd_csv, stt_id, width) {
       x: {
         label: "Jahr",
         tickFormat: "",
+        ticks: width < 600 ? 5 : undefined
       },
       y: {        
         label: "Prozent",
         tickFormat: x => `${x * 100}%`,
       },
       marks: [
-        Plot.barY(transformedData, {x: "year", y: "value", fill: "status", 
-        title: d => `Status: ${d.status}\n Jahr: ${d.year}\n Anteil: ${(d.value *100).toFixed(0) }%`}),
+        Plot.barY(transformedData.filter((d, i, arr) => {
+          if (width < 600) {           
+            const uniqueYears = [...new Set(arr.map(item => item.year))];           
+            return uniqueYears.indexOf(d.year) % 2 === 0;
+          }
+          return true;
+        }), 
+          {x: "year", y: "value", fill: "status", 
+          title: d => `Status: ${d.status}\n Jahr: ${d.year}\n Anteil: ${(d.value *100).toFixed(0) }%`}),
         
       ]
     })

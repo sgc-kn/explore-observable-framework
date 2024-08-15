@@ -66,7 +66,13 @@ export function einwohner_altersgruppen_erwerbsfähige_abs_plot(einwohner_alters
       tickFormat: d => d.toLocaleString(),     
     },
     marks: [
-      Plot.barY(combinedData, 
+      Plot.barY(combinedData.filter((d, i, arr) => {
+        if (width < 600) {
+          const uniqueYears = [...new Set(arr.map(item => item.Jahr))];
+          return uniqueYears.indexOf(d.Jahr) % 2 === 0;
+        }
+        return true;
+      }), 
         {x: "Jahr", y: "Anzahl", fill: "Gruppe", 
         title: d => `Gruppe: ${d.Gruppe}\n Jahr: ${d.Jahr}\nAnteil: ${(d.Anzahl)}`}),
       Plot.ruleY([0])
@@ -86,7 +92,13 @@ export function einwohner_altersgruppen_erwerbsfähige_abs_plot(einwohner_alters
       tickFormat: x => `${x * 100}%`
     },
     marks: [
-      Plot.barY(combinedDataMitAnteil, 
+      Plot.barY(combinedDataMitAnteil.filter((d, i, arr) => {
+        if (width < 600) {
+          const uniqueYears = [...new Set(arr.map(item => item.Jahr))];
+          return uniqueYears.indexOf(d.Jahr) % 2 === 0;
+        }
+        return true;
+      }), 
         {x: "Jahr", y: "Anteil", fill: "Gruppe", 
         title: d => `Gruppe: ${d.Gruppe}\n Jahr: ${d.Jahr}\nAnteil: ${d.Anteil}%`
         }),

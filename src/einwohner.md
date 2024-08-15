@@ -86,6 +86,7 @@ import { einwohner_altersgruppen_erwerbsfähige_abs_plot } from "./components/ei
 
 ```js
 const maxYear = Math.max(...einwohner_csv.map((x) => x.Jahr));
+
 ```
 
 ```jsx
