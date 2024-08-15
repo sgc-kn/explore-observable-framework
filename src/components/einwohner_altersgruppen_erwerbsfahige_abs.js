@@ -62,7 +62,7 @@ export function einwohner_altersgruppen_erwerbsfähige_abs_plot(einwohner_alters
       tickFormat:"",
     },
     y: {
-      label: "Anzahl",
+      label: "Einwohnerinnen (Anzahl)",
       tickFormat: d => d.toLocaleString(),     
     },
     marks: [
@@ -74,7 +74,9 @@ export function einwohner_altersgruppen_erwerbsfähige_abs_plot(einwohner_alters
         return true;
       }), 
         {x: "Jahr", y: "Anzahl", fill: "Gruppe", 
-        title: d => `Gruppe: ${d.Gruppe}\n Jahr: ${d.Jahr}\nAnteil: ${(d.Anzahl)}`}),
+        title: d => `Gruppe: ${d.Gruppe}\n Jahr: ${d.Jahr}\nAnteil: ${(d.Anzahl)}`,
+        tip: true
+      }),
       Plot.ruleY([0])
     ]
   })
@@ -88,7 +90,7 @@ export function einwohner_altersgruppen_erwerbsfähige_abs_plot(einwohner_alters
       tickFormat:"",
     },
     y: {
-      label: "Prozent %",
+      label: "Anteil (in Prozent %)",
       tickFormat: x => `${x * 100}%`
     },
     marks: [
@@ -100,7 +102,8 @@ export function einwohner_altersgruppen_erwerbsfähige_abs_plot(einwohner_alters
         return true;
       }), 
         {x: "Jahr", y: "Anteil", fill: "Gruppe", 
-        title: d => `Gruppe: ${d.Gruppe}\n Jahr: ${d.Jahr}\nAnteil: ${d.Anteil}%`
+        title: d => `Gruppe: ${d.Gruppe}\n Jahr: ${d.Jahr}\nAnteil: ${d.Anteil.toLocaleString(undefined, {maximumFractionDigits: 1})}%`,
+        tip: true
         }),
       Plot.ruleY([0]),      
     ]

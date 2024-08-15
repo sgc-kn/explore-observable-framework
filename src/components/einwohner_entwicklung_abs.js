@@ -26,7 +26,8 @@ export function absolut_plot(einwohner_csv, stt_id, width) {
                     x: "Jahr",
                     y: "Einwohner", 
                     fill: "var(--theme-foreground-focus)",  
-                    title: d => `Einwohner: ${d.Einwohner.toLocaleString()}` 
+                    title: d => `Einwohner: ${d.Einwohner.toLocaleString()}`,
+                    tip: true 
                 }
             ),          
         

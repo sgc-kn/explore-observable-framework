@@ -26,6 +26,7 @@ export function entwicklung_plot(einwohner_csv, stt_id, width) {
         x: "Jahr",
         y: "Einwohner",
         stroke: "var(--theme-foreground-focus)",
+        
       }),
 
       // patrik: max/min values look ugly
