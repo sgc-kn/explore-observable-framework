@@ -9,7 +9,7 @@ export function relativ_plot(einwohner_csv, stt_id, compare_id, width) {
     einwohner_csv,
     (r) => [stt_id, compare_id].includes(r.STT_ID)
   );
-  console.log('ts_data', ts_data)
+   
   return Plot.plot({
     width: width,
     x: {
@@ -39,11 +39,15 @@ export function relativ_plot(einwohner_csv, stt_id, compare_id, width) {
             px: "Jahr", 
             py: "Wachstum", 
             dy: -17,
-            dx: 160, 
-            frameAnchor: "top-left",
+             
+            frameAnchor: "top-right",
             fontVariant: "tabular-nums", 
-            text: (d) => [`${d.STT}`, `${d.Jahr}`, `Einwohner: ${d.Einwohner.toLocaleString()}`,
-            `Wachstum: ${d.Wachstum.toFixed(2)} %` ].join(", ")            
+            text: (d) => [
+              `\n${d.STT}`, 
+              `${d.Jahr}`, 
+              `Einwohner: ${d.Einwohner.toLocaleString()}`,
+              `Wachstum: ${d.Wachstum.toFixed(2)} %`
+            ].join(", ")            
           }
         )
       )

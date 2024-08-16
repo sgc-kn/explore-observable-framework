@@ -11,8 +11,9 @@ export function altersgruppen_abs_plot(einwohner_altersgruppen_csv, stt_id, widt
 
   //ohne "Erwerbsfähige (15 bis 64 Jahre)"
   const filteredData = ts_data.filter(item => item.Gruppe !== "Z. Erwerbsfähige (15 bis 64 Jahre)"); 
+  console.log('filteredData', filteredData)
   
-  /*
+  /*  
   return Plot.plot({
     width: width,
     marginLeft: 50,
@@ -28,14 +29,14 @@ export function altersgruppen_abs_plot(einwohner_altersgruppen_csv, stt_id, widt
       domain: Array.from(new Set(filteredData.map(d => d.Gruppe))), 
       axis: null,      
       tickFormat: d => d.replace(',', '')
-    },
+    },    
     marks: [
       Plot.ruleX(filteredData, {
         x: "Gruppe",  
         y: "Anzahl",
         stroke: "Gruppe",
         strokeWidth: 3,
-        tickFormat: d => d.toLocaleString()              
+        tickFormat: d => d.toLocaleString()
       }),
       Plot.dot(filteredData, {
         x: "Gruppe", 
@@ -47,9 +48,7 @@ export function altersgruppen_abs_plot(einwohner_altersgruppen_csv, stt_id, widt
       Plot.ruleY([0])
     ]
   });
-
-  */
-
+ */
   const abs = Plot.plot({
       width: width,
       y: { grid: true, label: "Einwohnerinnen (Anzahl)", tickFormat: d => d.toLocaleString() },
@@ -69,7 +68,7 @@ export function altersgruppen_abs_plot(einwohner_altersgruppen_csv, stt_id, widt
         x: "Jahr",
         y: "Anzahl", 
         fill: "Gruppe",
-        title: d => `Gruppe: ${d.Gruppe}\n Jahr:  ${d.Jahr}\n Anzahl: ${d.Anzahl.toLocaleString()}`, 
+        title: d => `Gruppe: ${d.Gruppe}\nJahr: ${d.Jahr}\nAnzahl: ${d.Anzahl.toLocaleString()}`, 
         tip: true
       }),
         Plot.ruleY([0]),
@@ -107,4 +106,5 @@ export function altersgruppen_abs_plot(einwohner_altersgruppen_csv, stt_id, widt
   }
 )
 return toggled_value_alt ? rel : abs
+
 }

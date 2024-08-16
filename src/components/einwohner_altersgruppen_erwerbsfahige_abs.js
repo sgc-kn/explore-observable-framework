@@ -101,7 +101,7 @@ export function einwohner_altersgruppen_erwerbsfähige_abs_plot(einwohner_alters
         return true;
       }), 
         {x: "Jahr", y: "Anteil", fill: "Gruppe", 
-        title: d => `Gruppe: ${d.Gruppe}\n Jahr: ${d.Jahr}\nAnteil: ${(d.Anteil * 100).toLocaleString(undefined, {maximumFractionDigits: 1})}%`,
+        title: d => `Gruppe: ${d.Gruppe}\nJahr: ${d.Jahr}\nAnteil: ${(d.Anteil * 100).toLocaleString(undefined, {maximumFractionDigits: 1})}%`,
         tip: true
         }),
       Plot.ruleY([0]),      

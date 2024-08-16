@@ -49,7 +49,6 @@ const stt = stadtteil_check ?
 const toggled = Inputs.toggle({label: "Binary", values: [1, 0]})
 ```
 
-
 <!-- Iryna's second select button
 ```js
 const groupedData = d3.group(einwohner_csv, d => d.STT);
@@ -86,12 +85,9 @@ import { einwohner_altersgruppen_erwerbsfähige_abs_plot } from "./components/ei
 
 ```js
 const maxYear = Math.max(...einwohner_csv.map((x) => x.Jahr));
-
 ```
 
 ```jsx
-//display(<Table einwohner_csv={einwohner_csv} einwohner_famStd_csv={einwohner_famStd_csv}    einwohner_staatsangehoerigkeit_csv={einwohner_staatsangehoerigkeit_csv} id={id} width={width} />)
-
 const table = document.createElement("div");
 const root = ReactDOM.createRoot(table);
 root.render(<Table einwohner_csv={einwohner_csv} einwohner_famStd_csv={einwohner_famStd_csv}    einwohner_staatsangehoerigkeit_csv={einwohner_staatsangehoerigkeit_csv} stt_ew_alt_csv={stt_ew_alt_csv} id={id} width={width} />);
@@ -156,7 +152,6 @@ const toggled_value_alt = Generators.input(toggled_plots_alt);
 
 const toggled_plots_erwfk = Inputs.toggle({label: "Relative Werte:", values: [1, 0]});
 const toggled_value_erwfk = Generators.input(toggled_plots_erwfk);
-
 ```
 
 <div class="card">

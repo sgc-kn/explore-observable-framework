@@ -126,53 +126,7 @@ export function Table({einwohner_csv, einwohner_famStd_csv, einwohner_staatsange
                     </tbody>
                 </table>
             </div>
-            </div>
+        </div>
     )
-/*
-    return (<table>
-        <tr>
-            <td><h1 class="ort_name_card"> {einwohnerMaxYear.STT} </h1> </td><td></td>
-        </tr>
-
-        <tr>
-            <td>Gesamt der Einwohner:</td>
-            <td> {einwohnerMaxYear[0].Einwohner} </td>
-        </tr>
-        <tr>
-            <td>Wachstum im Vergleich zu ${previousYear}:</td>
-            <td><span> {wachstum.toFixed(2)} % {growth}</span></td>
-        </tr>
-        <tr>
-            <td>Maximale Einwohnerzahl: </td>
-            <td>{maxValue} im Jahr {maxValueJahr}</td>
-        </tr>
-        <tr>
-            <td>Manimale Einwohnerzahl:</td>
-            <td> {minValue} im Jahr {minValueJahr}</td>
-        </tr>
-        <tr>
-            <td>Familienstand (EinwohnerInnen ab 18 Jahre):</td>
-            <td>{transformedData.map(item =>
-            <p>
-                <span>{item.status}:</span>
-                <span>{item.absolut}</span>
-                <span>({item.prozent.toFixed(3) * 100 }%) </span>
-            </p>
-            )}
-            </td>
-        </tr>
-        <tr>
-            <td>Staatsangehörigkeit:</td>
-            <td>{transformedData_sahk.map(item =>
-            <p>
-                <span>{item.status}:</span>
-                <span>{item.absolut}</span>
-                <span>({item.prozent.toFixed(3) * 100 }%) </span>
-            </p>)}
-        </td>
-        </tr>
-    </table>
-)
-*/
 }
 
