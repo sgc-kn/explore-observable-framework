@@ -25,10 +25,9 @@ export function entwicklung_plot(einwohner_csv, stt_id, width) {
       Plot.lineY(ts_data, {
         x: "Jahr",
         y: "Einwohner",
-        stroke: "var(--theme-foreground-focus)",
-        
+        stroke: "var(--theme-foreground-focus)"        
       }),
-
+      
       // patrik: max/min values look ugly
       // Plot.dot(ts_data.filter(d => d.Einwohner === maxValue),
       //   {x: "Jahr", y: "Einwohner", stroke: "orange", r: 3}),

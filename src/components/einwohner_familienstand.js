@@ -15,8 +15,7 @@ export function familienstand_plot(einwohner_famStd_csv, stt_id, width, toggled_
         { year, status: "Ledig", value_rel: item.Fam_Stand_ledig / total, value_abs: item.Fam_Stand_ledig},
         { year, status: "Unbekannt", value_rel: item.Fam_Stand_unbekannt / total, value_abs: item.Fam_Stand_unbekannt}
       ];
-    });
-    console.log('transformedData', transformedData);
+    });    
 
     const rel = Plot.plot({
       width: width,
