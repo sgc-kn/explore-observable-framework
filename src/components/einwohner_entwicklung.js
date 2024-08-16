@@ -9,8 +9,8 @@ Etc...
 export function entwicklung_plot(einwohner_csv, stt_id, width) {
   const ts_data = d3.filter(einwohner_csv, (r) => r.STT_ID == stt_id);
 
-  const maxValue = Math.max(...ts_data.map(d => d.Einwohner));
-  const minValue = Math.min(...ts_data.map(d => d.Einwohner));
+  //const maxValue = Math.max(...ts_data.map(d => d.Einwohner));
+  //const minValue = Math.min(...ts_data.map(d => d.Einwohner));
 
   return Plot.plot({
     width,

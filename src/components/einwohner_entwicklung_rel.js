@@ -4,7 +4,6 @@ import * as Inputs from "npm:@observablehq/inputs";
 
 export function relativ_plot(einwohner_csv, stt_id, compare_id, width) {
 
-
   // filter two selected stadtteile
   const ts_data = d3.filter(
     einwohner_csv,

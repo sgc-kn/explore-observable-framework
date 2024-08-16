@@ -74,7 +74,7 @@ export function einwohner_altersgruppen_erwerbsfähige_abs_plot(einwohner_alters
         return true;
       }), 
         {x: "Jahr", y: "Anzahl", fill: "Gruppe", 
-        title: d => `Gruppe: ${d.Gruppe}\n Jahr: ${d.Jahr}\nAnteil: ${(d.Anzahl)}`,
+        title: d => `Gruppe: ${d.Gruppe}\nJahr: ${d.Jahr}\nAnteil: ${(d.Anzahl.toLocaleString())}`,
         tip: true
       }),
       Plot.ruleY([0])
@@ -83,7 +83,6 @@ export function einwohner_altersgruppen_erwerbsfähige_abs_plot(einwohner_alters
 
   const rel = Plot.plot({
     width: width,
-
     color: { scheme: "Observable10", legend: true },
     x: {
       label: "Jahr",
@@ -102,7 +101,7 @@ export function einwohner_altersgruppen_erwerbsfähige_abs_plot(einwohner_alters
         return true;
       }), 
         {x: "Jahr", y: "Anteil", fill: "Gruppe", 
-        title: d => `Gruppe: ${d.Gruppe}\n Jahr: ${d.Jahr}\nAnteil: ${d.Anteil.toLocaleString(undefined, {maximumFractionDigits: 1})}%`,
+        title: d => `Gruppe: ${d.Gruppe}\n Jahr: ${d.Jahr}\nAnteil: ${(d.Anteil * 100).toLocaleString(undefined, {maximumFractionDigits: 1})}%`,
         tip: true
         }),
       Plot.ruleY([0]),      

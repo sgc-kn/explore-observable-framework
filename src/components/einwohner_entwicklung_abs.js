@@ -8,9 +8,7 @@ export function absolut_plot(einwohner_csv, stt_id, width) {
         width: width,
         x: {
             label: "Jahr",
-            tickFormat: "",
-            //tickRotate: width < 600 ? -45 : 0,
-            ticks: width < 600 ? 5 : undefined           
+            tickFormat: ""                   
         },
         y: {
             label:"Einwohner",

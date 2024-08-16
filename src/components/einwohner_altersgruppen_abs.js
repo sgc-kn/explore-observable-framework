@@ -2,7 +2,7 @@ import * as Plot from "npm:@observablehq/plot";
 import * as d3 from "npm:d3";
 import * as Inputs from "npm:@observablehq/inputs";
 
-export function altersgruppen_abs_plot(einwohner_altersgruppen_csv, stt_id, width) {
+export function altersgruppen_abs_plot(einwohner_altersgruppen_csv, stt_id, width, toggled_value_alt) {
   // filter two selected stadtteile
   const ts_data = d3.filter(
     einwohner_altersgruppen_csv,
@@ -11,6 +11,7 @@ export function altersgruppen_abs_plot(einwohner_altersgruppen_csv, stt_id, widt
 
   //ohne "Erwerbsfähige (15 bis 64 Jahre)"
   const filteredData = ts_data.filter(item => item.Gruppe !== "Z. Erwerbsfähige (15 bis 64 Jahre)"); 
+  
   /*
   return Plot.plot({
     width: width,
@@ -25,7 +26,7 @@ export function altersgruppen_abs_plot(einwohner_altersgruppen_csv, stt_id, widt
     x: { 
       label: "Jahr",      
       domain: Array.from(new Set(filteredData.map(d => d.Gruppe))), 
-      axis: null,
+      axis: null,      
       tickFormat: d => d.replace(',', '')
     },
     marks: [
@@ -49,7 +50,7 @@ export function altersgruppen_abs_plot(einwohner_altersgruppen_csv, stt_id, widt
 
   */
 
-  return Plot.plot({
+  const abs = Plot.plot({
       width: width,
       y: { grid: true, label: "Einwohnerinnen (Anzahl)", tickFormat: d => d.toLocaleString() },
       x: { 
@@ -75,4 +76,35 @@ export function altersgruppen_abs_plot(einwohner_altersgruppen_csv, stt_id, widt
       ]
     }
   )  
+  const rel = Plot.plot({
+    width: width,
+    y: { 
+      grid: true, 
+      label: "Anteil (in Prozent %)", 
+      tickFormat: x => `${x * 100}%`
+    },
+    x: { 
+      label: "Jahr",
+      tickFormat: ""
+    },
+    color: { legend: true },
+    marks: [
+      Plot.barY(filteredData.filter((d, i, arr) => {
+        if (width < 600) {
+          const uniqueYears = [...new Set(arr.map(item => item.Jahr))];
+          return uniqueYears.indexOf(d.Jahr) % 2 === 0;
+        }
+        return true;
+      }), {
+      x: "Jahr",
+      y: "Anteil", 
+      fill: "Gruppe",
+      title: d => `Gruppe: ${d.Gruppe}\nJahr:  ${d.Jahr}\nAnteil: ${(d.Anteil * 100).toFixed(0)}%`, 
+      tip: true
+    }),
+      Plot.ruleY([0]),
+    ]
+  }
+)
+return toggled_value_alt ? rel : abs
 }

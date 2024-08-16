@@ -145,8 +145,18 @@ const compare_id = compare_select.properties.STT_ID;
 ```
 
 ```js
-const toggled_plots = Inputs.toggle({label: "Relative Werte:", values: [1, 0]});
-const toggled_value = Generators.input(toggled_plots);
+const toggled_plots_famStand = Inputs.toggle({label: "Absolute Werte:", values: [1, 0]});
+const toggled_value_famStand = Generators.input(toggled_plots_famStand);
+
+const toggled_plots_sttatAK = Inputs.toggle({label: "Absolute Werte:", values: [1, 0]});
+const toggled_value_sttatAK = Generators.input(toggled_plots_sttatAK);
+
+const toggled_plots_alt = Inputs.toggle({label: "Relative Werte:", values: [1, 0]});
+const toggled_value_alt = Generators.input(toggled_plots_alt);
+
+const toggled_plots_erwfk = Inputs.toggle({label: "Relative Werte:", values: [1, 0]});
+const toggled_value_erwfk = Generators.input(toggled_plots_erwfk);
+
 ```
 
 <div class="card">
@@ -159,24 +169,27 @@ const toggled_value = Generators.input(toggled_plots);
 <div class="card">
   <h2>Familienstand</h2>
   <h3>${stt}</h3>
-  ${resize((width) => familienstand_plot(einwohner_famStd_csv, id, width))}
+  ${toggled_plots_famStand}
+  ${resize((width) => familienstand_plot(einwohner_famStd_csv, id, width, toggled_value_famStand))}
 </div>
 
 <div class="card">
   <h2>Staatsangehörigkeit</h2>
   <h3>${stt}</h3>
-  ${resize((width) => staatsangehoerigkeit_plot(einwohner_staatsangehoerigkeit_csv, id, width))}
+  ${toggled_plots_sttatAK}
+  ${resize((width) => staatsangehoerigkeit_plot(einwohner_staatsangehoerigkeit_csv, id, width,toggled_value_sttatAK))}
 </div>
 
 <div class="card">
   <h2>Altersstruktur der Wohnbevölkerung im Vergleich</h2>
   <h3>${stt}</h3>
-  ${resize((width) => altersgruppen_abs_plot(stt_ew_alt_csv, id, width))}
+  ${toggled_plots_alt}
+  ${resize((width) => altersgruppen_abs_plot(stt_ew_alt_csv, id, width, toggled_value_alt))}
 </div>
 
 <div class="card">
   <h2>Erwerbsfähige (15 - unter 65) im Vergleich</h2>
   <h3>${stt}</h3>
-  ${toggled_plots}
-  ${resize((width) => einwohner_altersgruppen_erwerbsfähige_abs_plot(stt_ew_alt_csv, id, width, toggled_value))}
+  ${toggled_plots_erwfk}
+  ${resize((width) => einwohner_altersgruppen_erwerbsfähige_abs_plot(stt_ew_alt_csv, id, width, toggled_value_erwfk))}
 </div>
