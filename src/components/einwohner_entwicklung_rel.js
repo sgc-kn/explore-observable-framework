@@ -21,7 +21,7 @@ export function relativ_plot(einwohner_csv, stt_id, compare_id, width) {
       label: "Wachstum (% im Vergleich zum Vorjahr)",      
       grid: true,
       tickFormat: d => d.toLocaleString(),      
-      labelAnchor: "center"
+      labelAnchor: "center"      
     },
     
     marks: [
@@ -52,7 +52,8 @@ export function relativ_plot(einwohner_csv, stt_id, compare_id, width) {
             ].join(", ")            
           }
         )
-      )
+      ),
+      Plot.axisX({interval: 1, tickFormat: ''}),
     ],
     color: {legend: true},
   },

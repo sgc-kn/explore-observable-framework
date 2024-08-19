@@ -130,11 +130,10 @@ prefer for the final product?
 
 ```js
 const compare_select_input = Inputs.select(
-  stadtteile_geojson.features,
+  stadtteile_geojson.features.sort((a, b) => a.properties.STT_NAME.localeCompare(b.properties.STT_NAME)),
   {
     label: "Vergleiche mit Stadtteil:",
-    format: (x) => x.properties.STT_NAME,
-    sort: true
+    format: (x) => x.properties.STT_NAME,    
   }
 );
 const compare_select = Generators.input(compare_select_input);
