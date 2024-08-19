@@ -73,7 +73,7 @@ export function altersgruppen_abs_plot(einwohner_altersgruppen_csv, stt_id, widt
         Plot.barY(filteredData.filter((d, i, arr) => {
           if (width < 600) {
             const uniqueYears = [...new Set(arr.map(item => item.Jahr))];
-            return uniqueYears.indexOf(d.Jahr) % 2 === 0;
+            return uniqueYears.indexOf(d.Jahr) % 3 === 0;
           }
           return true;
         }), {
