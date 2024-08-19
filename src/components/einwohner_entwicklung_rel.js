@@ -8,14 +8,14 @@ export function relativ_plot(einwohner_csv, stt_id, compare_id, width) {
   const ts_data = d3.filter(
     einwohner_csv,
     (r) => [stt_id, compare_id].includes(r.STT_ID)
-  );
-   
+  );  
+  
   return Plot.plot({
     width: width,
     marginLeft: 70,
     x: {
-      label: "Jahr",
-      tickFormat: "",
+      label: "Jahr",      
+      tickFormat: ""      
     },
     y: {
       label: "Wachstum (% im Vergleich zum Vorjahr)",      
@@ -23,6 +23,7 @@ export function relativ_plot(einwohner_csv, stt_id, compare_id, width) {
       tickFormat: d => d.toLocaleString(),      
       labelAnchor: "center"
     },
+    
     marks: [
       Plot.lineY(ts_data,{
         x: "Jahr",
@@ -40,8 +41,8 @@ export function relativ_plot(einwohner_csv, stt_id, compare_id, width) {
           {
             px: "Jahr", 
             py: "Wachstum", 
-            dy: -17,             
-            frameAnchor: "top-right",
+            dy: -27,
+            frameAnchor: "top-left",
             fontVariant: "tabular-nums", 
             text: (d) => [
               `\n${d.STT}`, 

@@ -30,11 +30,14 @@ const stadtteil_check = Generators.input(stadtteil_check_input);
 
 ```js
 const stadtteil_select_input = Inputs.select(
-  (stadtteil_check) ? stadtteile_geojson.features : [ 'Gesamte Stadt' ],
+  //(stadtteil_check) ? stadtteile_geojson.features : [ 'Gesamte Stadt' ], //Patrick's code
+  (stadtteil_check) 
+    ? stadtteile_geojson.features.sort((a, b) => a.properties.STT_NAME.localeCompare(b.properties.STT_NAME))
+    : ['Gesamte Stadt'], //sort by STT_NAME
   {
-    label: "Stadtteil:",
+    label: "Stadtteil:",    
     format: (x) => (stadtteil_check) ? x.properties.STT_NAME : x,
-    disabled: !stadtteil_check,
+    disabled: !stadtteil_check,    
   }
 );
 const stadtteil_select = Generators.input(stadtteil_select_input);
@@ -117,7 +120,6 @@ prefer for the final product?
   <h3>${stt}</h3>
   ${resize((width) => entwicklung_plot(einwohner_csv, id, width))}
 </div>
-
 -->
 
 <div class="card">
@@ -126,13 +128,13 @@ prefer for the final product?
   ${resize((width) => absolut_plot(einwohner_csv, id, width))}
 </div>
 
-
 ```js
 const compare_select_input = Inputs.select(
   stadtteile_geojson.features,
   {
     label: "Vergleiche mit Stadtteil:",
     format: (x) => x.properties.STT_NAME,
+    sort: true
   }
 );
 const compare_select = Generators.input(compare_select_input);

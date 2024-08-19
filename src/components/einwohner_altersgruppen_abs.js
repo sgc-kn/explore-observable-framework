@@ -8,11 +8,17 @@ export function altersgruppen_abs_plot(einwohner_altersgruppen_csv, stt_id, widt
     einwohner_altersgruppen_csv,
     (r) => stt_id == r.Stadtteil_Nr
   );
-
+  /*
   //ohne "Erwerbsfähige (15 bis 64 Jahre)"
+  const updatedArray = ts_data.map(item => {
+    return {
+      ...item,
+      Gruppe: item.Gruppe.substring(3) // Entfernt die ersten drei Zeichen
+    };
+  });
+  */
   const filteredData = ts_data.filter(item => item.Gruppe !== "Z. Erwerbsfähige (15 bis 64 Jahre)"); 
-  console.log('filteredData', filteredData)
-  
+    
   /*  
   return Plot.plot({
     width: width,
@@ -74,7 +80,7 @@ export function altersgruppen_abs_plot(einwohner_altersgruppen_csv, stt_id, widt
         x: "Jahr",
         y: "Anzahl", 
         fill: "Gruppe",
-        title: d => `Gruppe: ${d.Gruppe}\nJahr: ${d.Jahr}\nAnzahl: ${d.Anzahl.toLocaleString()}`, 
+        title: d => `Gruppe: ${d.Gruppe.substring(3)}\nJahr: ${d.Jahr}\nAnzahl: ${d.Anzahl.toLocaleString()}`, 
         tip: true
       }),
         Plot.ruleY([0]),
@@ -106,7 +112,7 @@ export function altersgruppen_abs_plot(einwohner_altersgruppen_csv, stt_id, widt
       x: "Jahr",
       y: "Anteil", 
       fill: "Gruppe",
-      title: d => `Gruppe: ${d.Gruppe}\nJahr:  ${d.Jahr}\nAnteil: ${(d.Anteil * 100).toFixed(0)}%`, 
+      title: d => `Gruppe: ${d.Gruppe.substring(3)}\nJahr:  ${d.Jahr}\nAnteil: ${(d.Anteil * 100).toFixed(0)}%`, 
       tip: true
     }),
       Plot.ruleY([0]),
