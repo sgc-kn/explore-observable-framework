@@ -38,15 +38,15 @@ export function relativ_plot(einwohner_csv, stt_id, compare_id, width) {
         Plot.pointerX(
           {
             px: "Jahr", 
-            py: "Wachstum", 
-            dy: -27,
-            frameAnchor: "top-left",
-            fontVariant: "tabular-nums", 
+            py: "Wachstum",
+            frameAnchor: "top-right",
+            fontVariant: "tabular-nums",
+            dy: -15,           
             text: (d) => [
-              `\n${d.STT}`, 
+              `${d.STT}`, 
               `${d.Jahr}`, 
-              `Einwohner: ${d.Einwohner.toLocaleString()}`,
-              `Wachstum: ${d.Wachstum.toFixed(2)} %`
+              `\nEinwohner: ${d.Einwohner.toLocaleString()}`,
+              `(${d.Wachstum.toFixed(2)} %)`
             ].join(", ")            
           }
         )
