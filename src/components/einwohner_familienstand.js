@@ -19,6 +19,7 @@ export function familienstand_plot(einwohner_famStd_csv, stt_id, width, toggled_
 
     const rel = Plot.plot({
       width: width,
+      marginLeft: 70,
       color: { scheme: "Observable10", legend: true },
       x: {
         label: "Jahr",
@@ -27,6 +28,7 @@ export function familienstand_plot(einwohner_famStd_csv, stt_id, width, toggled_
       y: {        
         label: "Anteil (in Prozent %)",
         tickFormat: x => `${x * 100}%`,
+        labelAnchor: "center"
       },
       marks: [
         Plot.barY(transformedData.filter((d, i, arr) => {
@@ -45,6 +47,7 @@ export function familienstand_plot(einwohner_famStd_csv, stt_id, width, toggled_
 
     const abs = Plot.plot({
       width: width,
+      marginLeft: 90,
       color: { scheme: "Observable10", legend: true },
       x: {
         label: "Jahr",
@@ -53,6 +56,7 @@ export function familienstand_plot(einwohner_famStd_csv, stt_id, width, toggled_
       y: {        
         label: "Einwohnerinnen (Anzahl)",
         tickFormat: d => d.toLocaleString(),
+        labelAnchor: "center"
       },
       marks: [
         Plot.barY(transformedData.filter((d, i, arr) => {

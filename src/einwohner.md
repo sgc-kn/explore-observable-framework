@@ -11,7 +11,9 @@ const einwohner_famStd_csv = FileAttachment("data/stt_ew_fam.csv").csv({typed: t
 const einwohner_staatsangehoerigkeit_csv = FileAttachment("data/stt_ew_nat.csv").csv({typed: true});
 const stt_ew_alt_csv = FileAttachment("data/stt_ew_alt.csv").csv({typed: true});
 ```
-
+```js
+html`<style>svg { font-size: 16px !important;} .card * {font-size: 16px !important;} }`
+```
 # Einwohner in Konstanz
 
 <h2></h2>
