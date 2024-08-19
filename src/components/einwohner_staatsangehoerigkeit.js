@@ -62,7 +62,7 @@ export function staatsangehoerigkeit_plot(einwohner_staatsAHK_csv, stt_id, width
         Plot.barY(transformedData.filter((d, i, arr) => {
           if (width < 600) {
             const uniqueYears = [...new Set(arr.map(item => item.jahr))];
-            return uniqueYears.indexOf(d.jahr) % 2 === 0;
+            return uniqueYears.indexOf(d.jahr) % 3 === 0;
           }
           return true;
         }), 

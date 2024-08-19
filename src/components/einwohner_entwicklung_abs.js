@@ -19,7 +19,7 @@ export function absolut_plot(einwohner_csv, stt_id, width) {
         },
         marks: [
             Plot.rectY(ts_data.filter((d, i) => {
-                if (width < 600) return i % 2 === 0;
+                if (width < 600) return i % 3 === 0;
                 return true;
               }), 
                 { 
@@ -32,7 +32,7 @@ export function absolut_plot(einwohner_csv, stt_id, width) {
             ),          
         
             Plot.text(ts_data.filter((d, i) => {
-                if (width < 600) return i % 2 === 0;
+                if (width < 600) return i % 3 === 0;
                 return true;
               }), {
                 x: d => d.Jahr, 

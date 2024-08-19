@@ -62,7 +62,7 @@ export function familienstand_plot(einwohner_famStd_csv, stt_id, width, toggled_
         Plot.barY(transformedData.filter((d, i, arr) => {
           if (width < 600) {           
             const uniqueYears = [...new Set(arr.map(item => item.year))];           
-            return uniqueYears.indexOf(d.year) % 2 === 0;
+            return uniqueYears.indexOf(d.year) % 3 === 0;
           }
           return true;
         }), 
