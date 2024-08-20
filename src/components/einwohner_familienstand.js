@@ -39,7 +39,7 @@ export function familienstand_plot(einwohner_famStd_csv, stt_id, width, toggled_
           return true;
         }), 
           {x: "year", y: "value_rel", fill: "status", 
-          title: d => `Status: ${d.status}\nJahr: ${d.year}\nAnteil: ${(d.value_rel *100).toFixed(0) }%`,
+          title: d => `Status: ${d.status}\nJahr: ${d.year}\nAnteil: ${(d.value_rel *100).toLocaleString(undefined, {maximumFractionDigits: 0}) }%`,
           tip: true
         }),
       ]

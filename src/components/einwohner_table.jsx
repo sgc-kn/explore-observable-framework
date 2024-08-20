@@ -68,7 +68,7 @@ export function Table({einwohner_csv, einwohner_famStd_csv, einwohner_staatsange
                         </tr>
                         <tr>
                             <td>Wachstum zum Vorjahr</td>
-                            <td><span style={{ color: `${growthColor}` }}> {wachstum.toFixed(2).replace('.', ',') } % {growth}</span></td>
+                            <td><span style={{ color: `${growthColor}` }}> {wachstum.toLocaleString(undefined, {maximumFractionDigits: 2}) } % {growth}</span></td>
                         </tr>
                         <tr>
                             <td>Höchststand</td>
@@ -90,7 +90,7 @@ export function Table({einwohner_csv, einwohner_famStd_csv, einwohner_staatsange
                             <tr>
                                 <td>{item.status} </td>
                                 <td>{item.absolut.toLocaleString()}</td>
-                                <td>{(item.prozent *100).toFixed(1).replace('.', ',') }% </td>
+                                <td>{(item.prozent *100).toLocaleString(undefined, {maximumFractionDigits: 2}) }% </td>
                             </tr>
                         )}                        
                     </tbody>
@@ -105,7 +105,7 @@ export function Table({einwohner_csv, einwohner_famStd_csv, einwohner_staatsange
                             <tr>
                                 <td>{item.status}</td>
                                 <td> {item.absolut.toLocaleString()}</td>
-                                <td> {(item.prozent *100).toFixed(1).replace('.', ',') }%</td>
+                                <td> {(item.prozent *100).toLocaleString(undefined, {maximumFractionDigits: 2})}%</td>
                             </tr>
                         )}
                     </tbody>
@@ -120,7 +120,7 @@ export function Table({einwohner_csv, einwohner_famStd_csv, einwohner_staatsange
                             <tr>
                                 <td>{item.Gruppe}</td>
                                 <td> {item.Anzahl.toLocaleString()}</td>
-                                <td> {(item.Anteil *100).toFixed(1).replace('.', ',') }%</td>
+                                <td> {(item.Anteil *100).toLocaleString(undefined, {maximumFractionDigits: 2}) }%</td>
                             </tr>
                         )}
                     </tbody>

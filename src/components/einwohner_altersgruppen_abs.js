@@ -113,7 +113,7 @@ export function altersgruppen_abs_plot(einwohner_altersgruppen_csv, stt_id, widt
       x: "Jahr",
       y: "Anteil", 
       fill: "Gruppe",
-      title: d => `Gruppe: ${d.Gruppe.substring(3)}\nJahr:  ${d.Jahr}\nAnteil: ${(d.Anteil * 100).toFixed(0)}%`, 
+      title: d => `Gruppe: ${d.Gruppe.substring(3)}\nJahr: ${d.Jahr}\nAnteil: ${(d.Anteil * 100).toLocaleString(undefined, {maximumFractionDigits: 0})}%`, 
       tip: true
     }),
       Plot.ruleY([0]),

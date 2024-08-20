@@ -71,7 +71,7 @@ export function staatsangehoerigkeit_plot(einwohner_staatsAHK_csv, stt_id, width
           {x: "jahr", 
           y: "value_rel", 
           fill: "status", 
-          title: d => `Status: ${d.status}\nJahr: ${d.jahr}\nAnteil: ${(d.value_rel *100).toFixed(0) }%`,
+          title: d => `Status: ${d.status}\nJahr: ${d.jahr}\nAnteil: ${(d.value_rel *100).toLocaleString(undefined, {maximumFractionDigits: 0})}%`,
           tip: true
         }),        
         Plot.ruleY([0])

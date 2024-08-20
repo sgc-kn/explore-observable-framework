@@ -26,7 +26,7 @@ export function absolut_plot(einwohner_csv, stt_id, width) {
                     x: "Jahr",
                     y: "Einwohner", 
                     fill: "var(--theme-foreground-focus)",  
-                    title: d => `Jahr: ${d.Jahr}\nEinwohner: ${d.Einwohner.toLocaleString()}\nWachstum: ${d.Wachstum.toLocaleString(undefined, {maximumFractionDigits: 2})} %`,
+                    title: d => `Jahr: ${d.Jahr}\nEinwohner: ${d.Einwohner.toLocaleString()}\nWachstum: ${d.Wachstum.toLocaleString(undefined, {maximumFractionDigits: 2})}%`,
                     tip: true 
                 }
             ),          
