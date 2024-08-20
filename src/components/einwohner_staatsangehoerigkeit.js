@@ -16,16 +16,16 @@ export function staatsangehoerigkeit_plot(einwohner_staatsAHK_csv, stt_id, width
         
     const abs = Plot.plot({
       width: width,
-      marginLeft: 90,
+      marginLeft: 60,
       color: { scheme: "Observable10", legend: true },
       x: {
         label: "Jahr",
         tickFormat:"",
+        labelOffset: 29
       },
       y: {
         label: "Einwohnerinnen (Anzahl)",
-        tickFormat: d => d.toLocaleString(),
-        labelAnchor: "center"
+        tickFormat: d => d.toLocaleString(),        
       },
       marks: [
         Plot.barY(transformedData.filter((d, i, arr) => {
@@ -47,16 +47,18 @@ export function staatsangehoerigkeit_plot(einwohner_staatsAHK_csv, stt_id, width
 
     const rel = Plot.plot({
       width: width,
-      marginLeft: 70,
+      marginLeft: 50,
       color: { scheme: "Observable10", legend: true },
       x: {
-        label: "Jahr",
+        label:"Jahr",
         tickFormat:"",
+        labelOffset: 29
       },
       y: {
         label: "Anteil (in Prozent %)",
-        tickFormat: x => `${x * 100}%`,
-        labelAnchor: "center"
+        tickFormat: x => `${x}%`,
+        //tickFormat: x => `${x * 100}%`,
+        percent: true       
       },
       marks: [
         Plot.barY(transformedData.filter((d, i, arr) => {

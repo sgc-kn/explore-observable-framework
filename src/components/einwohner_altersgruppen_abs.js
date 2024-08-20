@@ -57,16 +57,16 @@ export function altersgruppen_abs_plot(einwohner_altersgruppen_csv, stt_id, widt
  */
   const abs = Plot.plot({
       width: width,
-      marginLeft: 90,
+      marginLeft: 60,
       y: { 
         grid: true, 
         label: "Einwohnerinnen (Anzahl)", 
-        tickFormat: d => d.toLocaleString(),
-        labelAnchor: "center"
+        tickFormat: d => d.toLocaleString(),        
       },
       x: { 
         label: "Jahr",
-        tickFormat: ""
+        tickFormat: "",
+        labelOffset: 29
       },
       color: { legend: true },
       marks: [
@@ -90,16 +90,16 @@ export function altersgruppen_abs_plot(einwohner_altersgruppen_csv, stt_id, widt
   
   const rel = Plot.plot({
     width: width,
-    marginLeft: 70,
+    marginLeft: 50,
     y: { 
       grid: true, 
       label: "Anteil (in Prozent %)", 
-      tickFormat: x => `${x * 100}%`,
-      labelAnchor: "center"
+      tickFormat: x => `${x * 100}%`,     
     },
     x: { 
       label: "Jahr",
-      tickFormat: ""
+      tickFormat: "",
+      labelOffset: 29
     },
     color: { legend: true },
     marks: [

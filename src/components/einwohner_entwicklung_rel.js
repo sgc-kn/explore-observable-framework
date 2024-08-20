@@ -12,15 +12,14 @@ export function relativ_plot(einwohner_csv, stt_id, compare_id, width) {
   
   return Plot.plot({
     width: width,
-    marginLeft: 70,    
+    marginLeft: 30,    
     x: {
-      label: "Jahr", interval: 1, tickFormat: '', labelAnchor: "center"
+      label: "Jahr", interval: 1, tickFormat: '', labelAnchor: "center", labelOffset: 29
     },
     y: {
       label: "Wachstum (% im Vergleich zum Vorjahr)",      
       grid: true,
       tickFormat: d => d.toLocaleString(),      
-      labelAnchor: "center"
     },    
     marks: [
       Plot.lineY(ts_data,{
@@ -41,7 +40,7 @@ export function relativ_plot(einwohner_csv, stt_id, compare_id, width) {
             py: "Wachstum",
             frameAnchor: "top-right",
             fontVariant: "tabular-nums",
-            dy: -15,           
+            dy: -5,           
             text: (d) => [
               `${d.STT}`, 
               `${d.Jahr}`, 
@@ -50,8 +49,7 @@ export function relativ_plot(einwohner_csv, stt_id, compare_id, width) {
             ].join(", ")            
           }
         )
-      ),
-      //Plot.axisX({label: "Jahr", interval: 1, tickFormat: '', labelAnchor: "center"}),
+      ),     
     ],
     color: {legend: true},
   },

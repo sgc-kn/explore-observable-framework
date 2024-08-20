@@ -6,16 +6,16 @@ export function absolut_plot(einwohner_csv, stt_id, width) {
     
     return Plot.plot({        
         width: width,
-        marginLeft: 90,
+        marginLeft: 60,
         x: {
             label: "Jahr",
-            tickFormat: ""                   
+            tickFormat: "",
+            labelOffset: 29
         },
         y: {
             label:"Einwohnerinnen (Anzahl)",
             grid: true,
             tickFormat: d => d.toLocaleString(),
-            labelAnchor: "center"
         },
         marks: [
             Plot.rectY(ts_data.filter((d, i) => {
@@ -37,7 +37,7 @@ export function absolut_plot(einwohner_csv, stt_id, width) {
               }), {
                 x: d => d.Jahr, 
                 y: d => d.Einwohner, 
-                text: d => `${d.Wachstum.toLocaleString(undefined, {maximumFractionDigits: 2})} %`, 
+                text: d => `${d.Wachstum.toLocaleString(undefined, {maximumFractionDigits: 2})}%`, 
                 textAnchor: "middle",
                 dy: -15, 
                 fill: d => d.Wachstum >= 0 ? "var(--theme-green)" : "var(--theme-red)",

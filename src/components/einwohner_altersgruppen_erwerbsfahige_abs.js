@@ -55,16 +55,16 @@ export function einwohner_altersgruppen_erwerbsfähige_abs_plot(einwohner_alters
   
   const abs = Plot.plot({
     width: width,
-    marginLeft: 90,
+    marginLeft: 60,
     color: { scheme: "Observable10", legend: true },
     x: {
       label: "Jahr",
       tickFormat:"",
+      labelOffset: 29
     },
     y: {
       label: "Einwohnerinnen (Anzahl)",
-      tickFormat: d => d.toLocaleString(),
-      labelAnchor: "center"  
+      tickFormat: d => d.toLocaleString()     
     },
     marks: [
       Plot.barY(combinedData.filter((d, i, arr) => {
@@ -84,16 +84,17 @@ export function einwohner_altersgruppen_erwerbsfähige_abs_plot(einwohner_alters
 
   const rel = Plot.plot({
     width: width,
-    marginLeft: 70,
+    marginLeft: 50,
     color: { scheme: "Observable10", legend: true },
     x: {
       label: "Jahr",
       tickFormat:"",
+      labelOffset: 29
     },
     y: {
       label: "Anteil (in Prozent %)",
       tickFormat: x => `${x * 100}%`,
-      labelAnchor: "center"
+      //labelAnchor: "center"
     },
     marks: [
       Plot.barY(combinedDataMitAnteil.filter((d, i, arr) => {
