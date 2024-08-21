@@ -10,7 +10,7 @@ export function staatsangehoerigkeit_plot(einwohner_staatsAHK_csv, stt_id, width
       const jahr = item.Jahr;
       return [
         { jahr, status: "Deutsch", value_rel: item.Deutsch / total, value_abs: item.Deutsch },
-        { jahr, status: "Sonstige", value_rel: item.Nichtdeutsch / total, value_abs: item.Nichtdeutsch}
+        { jahr, status: "Nichtdeutsch", value_rel: item.Nichtdeutsch / total, value_abs: item.Nichtdeutsch}
       ];
     });
         
@@ -24,7 +24,7 @@ export function staatsangehoerigkeit_plot(einwohner_staatsAHK_csv, stt_id, width
         labelOffset: 29
       },
       y: {
-        label: "Einwohnerinnen (Anzahl)",
+        label: "EinwohnerInnen (Anzahl)",
         tickFormat: d => d.toLocaleString(),        
       },
       marks: [

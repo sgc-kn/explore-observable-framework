@@ -42,11 +42,11 @@ export function relativ_plot(einwohner_csv, stt_id, compare_id, width) {
             fontVariant: "tabular-nums",
             dy: -5,           
             text: (d) => [
-              `${d.STT}`, 
-              `${d.Jahr}`, 
+              `${d.STT},`, 
+              `${d.Jahr}`,
               `\nEinwohner: ${d.Einwohner.toLocaleString()}`,              
-              `(${d.Wachstum.toLocaleString(undefined, {maximumFractionDigits: 2})}%)`              
-            ].join(", ")            
+              `(${d.Wachstum.toLocaleString(undefined, {maximumFractionDigits: 1})}%)`              
+            ].join(" ")            
           }
         )
       ),     

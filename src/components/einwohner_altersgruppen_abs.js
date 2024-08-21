@@ -8,59 +8,15 @@ export function altersgruppen_abs_plot(einwohner_altersgruppen_csv, stt_id, widt
     einwohner_altersgruppen_csv,
     (r) => stt_id == r.Stadtteil_Nr
   );
-  /*
-  //ohne "Erwerbsfähige (15 bis 64 Jahre)"
-  const updatedArray = ts_data.map(item => {
-    return {
-      ...item,
-      Gruppe: item.Gruppe.substring(3) // Entfernt die ersten drei Zeichen
-    };
-  });
-  */
+  
   const filteredData = ts_data.filter(item => item.Gruppe !== "Z. Erwerbsfähige (15 bis 64 Jahre)"); 
     
-  /*  
-  return Plot.plot({
-    width: width,
-    marginLeft: 50,
-    color: { scheme: "Observable10", legend: true },
-    facet: { data: filteredData, x: "Jahr"},
-    y: { 
-      label: "Anzahl", 
-      grid: true, 
-      tickFormat: d => d.toLocaleString()
-    },
-    x: { 
-      label: "Jahr",      
-      domain: Array.from(new Set(filteredData.map(d => d.Gruppe))), 
-      axis: null,      
-      tickFormat: d => d.replace(',', '')
-    },    
-    marks: [
-      Plot.ruleX(filteredData, {
-        x: "Gruppe",  
-        y: "Anzahl",
-        stroke: "Gruppe",
-        strokeWidth: 3,
-        tickFormat: d => d.toLocaleString()
-      }),
-      Plot.dot(filteredData, {
-        x: "Gruppe", 
-        y: "Anzahl",
-        fill: "Gruppe",
-        r: 5,
-        sort: { fx: "y", reduce: "sum", reverse: false }
-      }),
-      Plot.ruleY([0])
-    ]
-  });
- */
   const abs = Plot.plot({
       width: width,
       marginLeft: 60,
       y: { 
         grid: true, 
-        label: "Einwohnerinnen (Anzahl)", 
+        label: "EinwohnerInnen (Anzahl)", 
         tickFormat: d => d.toLocaleString(),        
       },
       x: { 

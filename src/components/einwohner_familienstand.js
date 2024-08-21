@@ -55,7 +55,7 @@ export function familienstand_plot(einwohner_famStd_csv, stt_id, width, toggled_
         labelOffset: 29        
       },
       y: {        
-        label: "Einwohnerinnen (Anzahl)",
+        label: "EinwohnerInnen (Anzahl)",
         tickFormat: d => d.toLocaleString(),       
       },
       marks: [

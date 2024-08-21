@@ -12,9 +12,15 @@ const einwohner_staatsangehoerigkeit_csv = FileAttachment("data/stt_ew_nat.csv")
 const stt_ew_alt_csv = FileAttachment("data/stt_ew_alt.csv").csv({typed: true});
 ```
 ```js
-html`<style>svg 
-{ font-size: 15px !important;} 
-.card * {font-size: 15px !important;}
+html`<style>
+@media (min-width: 600px) {
+  .card * {font-size: 15px !important;}
+  .card h2, .card h2 * {font-size: 21px !important;}   
+  .card h3 {font-size: 19px !important;}
+  .card table td, .card table td * {font-size: 19px !important;}
+  .card label {font-size: 17px !important;}
+}
+.align-right {text-align: right;}
 </style>`
 ```
 # Einwohner in Konstanz
@@ -100,7 +106,6 @@ const table = document.createElement("div");
 const root = ReactDOM.createRoot(table);
 root.render(<Table einwohner_csv={einwohner_csv} einwohner_famStd_csv={einwohner_famStd_csv}    einwohner_staatsangehoerigkeit_csv={einwohner_staatsangehoerigkeit_csv} stt_ew_alt_csv={stt_ew_alt_csv} id={id} width={width} />);
 ```
-
 <div class="card">
   <h2>Stadtteile</h2>
   <h3>Dieses Dashboard kann auf Stadtteile gefiltert werden.</h3>
@@ -153,10 +158,10 @@ const toggled_value_famStand = Generators.input(toggled_plots_famStand);
 const toggled_plots_sttatAK = Inputs.toggle({label: "Absolute Werte:", values: [1, 0]});
 const toggled_value_sttatAK = Generators.input(toggled_plots_sttatAK);
 
-const toggled_plots_alt = Inputs.toggle({label: "Relative Werte:", values: [1, 0]});
+const toggled_plots_alt = Inputs.toggle({label: "in Prozent %:", values: [1, 0]});
 const toggled_value_alt = Generators.input(toggled_plots_alt);
 
-const toggled_plots_erwfk = Inputs.toggle({label: "Relative Werte:", values: [1, 0]});
+const toggled_plots_erwfk = Inputs.toggle({label: "in Prozent %:", values: [1, 0]});
 const toggled_value_erwfk = Generators.input(toggled_plots_erwfk);
 ```
 

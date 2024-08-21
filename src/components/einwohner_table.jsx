@@ -64,19 +64,19 @@ export function Table({einwohner_csv, einwohner_famStd_csv, einwohner_staatsange
                     <tbody>
                         <tr>
                             <td>Einwohner im Jahr {maxYear}</td>
-                            <td>{einwohnerMaxYear[0].Einwohner.toLocaleString()} </td>
+                            <td class="align-right">{einwohnerMaxYear[0].Einwohner.toLocaleString()} </td>
                         </tr>
                         <tr>
                             <td>Wachstum zum Vorjahr</td>
-                            <td><span style={{ color: `${growthColor}` }}> {wachstum.toLocaleString(undefined, {maximumFractionDigits: 2}) } % {growth}</span></td>
+                            <td class="align-right"><span style={{ color: `${growthColor}` }}> {wachstum.toLocaleString(undefined, {maximumFractionDigits: 2}) } % {growth}</span></td>
                         </tr>
                         <tr>
                             <td>Höchststand</td>
-                            <td>{maxValue.toLocaleString()} im Jahr {maxValueJahr}</td>
+                            <td class="align-right">{maxValue.toLocaleString()} im Jahr {maxValueJahr}</td>
                         </tr>
                         <tr>
                             <td>Minimum</td>
-                            <td>{minValue.toLocaleString()} im Jahr {minValueJahr}</td>
+                            <td class="align-right">{minValue.toLocaleString()} im Jahr {minValueJahr}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -89,8 +89,8 @@ export function Table({einwohner_csv, einwohner_famStd_csv, einwohner_staatsange
                         {transformedData.map(item =>
                             <tr>
                                 <td>{item.status} </td>
-                                <td>{item.absolut.toLocaleString()}</td>
-                                <td>{(item.prozent *100).toLocaleString(undefined, {maximumFractionDigits: 2}) }% </td>
+                                <td class="align-right">{item.absolut.toLocaleString()}</td>
+                                <td class="align-right">{(item.prozent *100).toLocaleString(undefined, {maximumFractionDigits: 1}) }% </td>
                             </tr>
                         )}                        
                     </tbody>
@@ -104,8 +104,8 @@ export function Table({einwohner_csv, einwohner_famStd_csv, einwohner_staatsange
                        {transformedData_sahk.map(item =>
                             <tr>
                                 <td>{item.status}</td>
-                                <td> {item.absolut.toLocaleString()}</td>
-                                <td> {(item.prozent *100).toLocaleString(undefined, {maximumFractionDigits: 2})}%</td>
+                                <td class="align-right">{item.absolut.toLocaleString()}</td>
+                                <td class="align-right">{(item.prozent *100).toLocaleString(undefined, {maximumFractionDigits: 1})}%</td>
                             </tr>
                         )}
                     </tbody>
@@ -119,8 +119,8 @@ export function Table({einwohner_csv, einwohner_famStd_csv, einwohner_staatsange
                         {updatedArray.map(item =>
                             <tr>
                                 <td>{item.Gruppe}</td>
-                                <td> {item.Anzahl.toLocaleString()}</td>
-                                <td> {(item.Anteil *100).toLocaleString(undefined, {maximumFractionDigits: 2}) }%</td>
+                                <td class="align-right"> {item.Anzahl.toLocaleString()}</td>
+                                <td class="align-right"> {(item.Anteil *100).toLocaleString(undefined, {maximumFractionDigits: 1}) }%</td>
                             </tr>
                         )}
                     </tbody>

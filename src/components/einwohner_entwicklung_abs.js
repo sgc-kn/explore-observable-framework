@@ -13,7 +13,7 @@ export function absolut_plot(einwohner_csv, stt_id, width) {
             labelOffset: 29
         },
         y: {
-            label:"Einwohnerinnen (Anzahl)",
+            label:"EinwohnerInnen (Anzahl)",
             grid: true,
             tickFormat: d => d.toLocaleString(),
         },
@@ -26,7 +26,7 @@ export function absolut_plot(einwohner_csv, stt_id, width) {
                     x: "Jahr",
                     y: "Einwohner", 
                     fill: "var(--theme-foreground-focus)",  
-                    title: d => `Jahr: ${d.Jahr}\nEinwohner: ${d.Einwohner.toLocaleString()}\nWachstum: ${d.Wachstum.toLocaleString(undefined, {maximumFractionDigits: 2})}%`,
+                    title: d => `Jahr: ${d.Jahr}\nEinwohner: ${d.Einwohner.toLocaleString()}\nWachstum: ${d.Wachstum.toLocaleString(undefined, {maximumFractionDigits: 1})}%`,
                     tip: true 
                 }
             ),          
@@ -37,7 +37,7 @@ export function absolut_plot(einwohner_csv, stt_id, width) {
               }), {
                 x: d => d.Jahr, 
                 y: d => d.Einwohner, 
-                text: d => `${d.Wachstum.toLocaleString(undefined, {maximumFractionDigits: 2})}%`, 
+                text: d => `${d.Wachstum.toLocaleString(undefined, {maximumFractionDigits: 1})}%`, 
                 textAnchor: "middle",
                 dy: -15, 
                 fill: d => d.Wachstum >= 0 ? "var(--theme-green)" : "var(--theme-red)",

@@ -63,7 +63,7 @@ export function einwohner_altersgruppen_erwerbsfähige_abs_plot(einwohner_alters
       labelOffset: 29
     },
     y: {
-      label: "Einwohnerinnen (Anzahl)",
+      label: "EinwohnerInnen (Anzahl)",
       tickFormat: d => d.toLocaleString()     
     },
     marks: [
