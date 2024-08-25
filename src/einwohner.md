@@ -10,22 +10,31 @@ const einwohner_csv = FileAttachment("data/stt_ew.csv").csv({typed: true});
 const einwohner_famStd_csv = FileAttachment("data/stt_ew_fam.csv").csv({typed: true});
 const einwohner_staatsangehoerigkeit_csv = FileAttachment("data/stt_ew_nat.csv").csv({typed: true});
 const stt_ew_alt_csv = FileAttachment("data/stt_ew_alt.csv").csv({typed: true});
+const svgLink = FileAttachment("icons/icons8-externer-link.svg").url();
 ```
+
 ```js
 html`<style>
 @media (min-width: 600px) {
+  h2, h3 {max-width: 100% !important;}
   .card * {font-size: 15px !important;}
-  .card h2, .card h2 * {font-size: 21px !important;}   
-  .card h3 {font-size: 19px !important;}
-  .card table td, .card table td * {font-size: 19px !important;}
+  .card h2, .card h2 * {font-size: 21px !important;} .card h2 {font-weight: 600;}  
+  .card h3, .card .teil_name {font-size: 19px !important;} .card .teil_name {color: #3b5fc0;}
+  .card table td, .card table td * {font-size: 17px !important;}
   .card label {font-size: 17px !important;}
+  .inputs-3a86ea {--label-width: 140px;}
 }
 .align-right {text-align: right;}
 </style>`
 ```
-# Einwohner in Konstanz
+# EinwohnerInnen in Konstanz
 
-<h2></h2>
+<h2>EinwohnerInnen: Wohnbevölkerung (EinwohnerInnen mit Hauptwohnsitz am 31.12. des Jahres). Datenquelle ist die eigene Einwohnerfortschreibung auf Basis des städtischen Melderegisters. <br>
+Haushalte: Basis Wohnbevölkerung insgesamt. Haushalte ermittelt über Haushaltegenerierung mit dem Programm HHGen.</h2>
+<div>
+  <a href="https://offenedaten-konstanz.de/search/taxonomy/term/42/field_tags/Bev%C3%B6lkerung-42">Datenquelle<img src="icons/icons8-externer-link.svg" alt="link" width="16" height="16">
+  </a>
+</div>
 
 <!-- Global Stadtteil Selection: affect all plots on this dashboard -->
 
@@ -56,35 +65,12 @@ const stadtteil_select = Generators.input(stadtteil_select_input);
 const id = stadtteil_check ?
     stadtteil_select.properties.STT_ID : 0 ;
 const stt = stadtteil_check ?
-    `Stadtteil ${stadtteil_select.properties.STT_NAME}` :
+    `${stadtteil_select.properties.STT_NAME}` :
     stadtteil_select;
 ```
 ```js
 const toggled = Inputs.toggle({label: "Binary", values: [1, 0]})
 ```
-
-<!-- Iryna's second select button
-```js
-const groupedData = d3.group(einwohner_csv, d => d.STT);
-//default value "Gesamtstadt"
-
-// removed element with key "Gesamtstadt" and sorted alphabetically
-const sortedData = Array.from(groupedData)
-  .filter(([key, values]) => key !== "Gesamtstadt")
-  .sort((a, b) => a[0].localeCompare(b[0]));
-
-const combinedData = sortedData.flatMap(item => item[1]);
-const groupedCombinedData = d3.group(combinedData, d => d.STT);
-
-const select_ort = view(
-  Inputs.select(
-    groupedCombinedData,
-    {label: html`<div class="st-title">Stadtteile:</div>`, unique: true}
-  )
-);
-```
--->
-
 ```js
 import { map_plot } from "./components/einwohner_map.js";
 import { entwicklung_plot } from "./components/einwohner_entwicklung.js";
@@ -104,11 +90,11 @@ const maxYear = Math.max(...einwohner_csv.map((x) => x.Jahr));
 ```jsx
 const table = document.createElement("div");
 const root = ReactDOM.createRoot(table);
-root.render(<Table einwohner_csv={einwohner_csv} einwohner_famStd_csv={einwohner_famStd_csv}    einwohner_staatsangehoerigkeit_csv={einwohner_staatsangehoerigkeit_csv} stt_ew_alt_csv={stt_ew_alt_csv} id={id} width={width} />);
+root.render(<Table einwohner_csv={einwohner_csv} einwohner_famStd_csv={einwohner_famStd_csv}    einwohner_staatsangehoerigkeit_csv={einwohner_staatsangehoerigkeit_csv} stt_ew_alt_csv={stt_ew_alt_csv} id={id} width={width} svgLink={svgLink} />);
 ```
 <div class="card">
-  <h2>Stadtteile</h2>
-  <h3>Dieses Dashboard kann auf Stadtteile gefiltert werden.</h3>
+  <h2>Stadtteile der Stadt Konstanz</h2>
+  <h3>Um Detailergebnisse für einzelne Stadtteile zu erhalten, aktivieren Sie bitte die Filterfunktion („Filter aktivieren“). Im darunterliegenden Menü können Sie dann die einzelnen Stadtteile auswählen. Die nachfolgenden Ergebnisse werden dann auf die Stadtteile angepasst.</h3>
   ${stadtteil_check_input}
   ${stadtteil_select_input}
   ${resize((width) => map_plot(stadtteile_geojson, id, width))}
@@ -118,21 +104,10 @@ root.render(<Table einwohner_csv={einwohner_csv} einwohner_famStd_csv={einwohner
 ${table}
 </div>
 
-<!--
-
-This one is redundant with the one after, right? Which one do we
-prefer for the final product?
 
 <div class="card">
-  <h2>Bevölkerungsentwicklung</h2>
-  <h3>${stt}</h3>
-  ${resize((width) => entwicklung_plot(einwohner_csv, id, width))}
-</div>
--->
-
-<div class="card">
-  <h2>Bevölkerungsentwicklung</h2>
-  <h3>${stt}</h3>
+  <h2>Einwohnerentwicklung</h2>
+  <h3><span class="teil_name">${stt}</span></h3>
   ${resize((width) => absolut_plot(einwohner_csv, id, width))}
 </div>
 
@@ -158,44 +133,44 @@ const toggled_value_famStand = Generators.input(toggled_plots_famStand);
 const toggled_plots_sttatAK = Inputs.toggle({label: "Absolute Werte:", values: [1, 0]});
 const toggled_value_sttatAK = Generators.input(toggled_plots_sttatAK);
 
-const toggled_plots_alt = Inputs.toggle({label: "in Prozent %:", values: [1, 0]});
+const toggled_plots_alt = Inputs.toggle({label: "Absolute Werte:", values: [1, 0]});
 const toggled_value_alt = Generators.input(toggled_plots_alt);
 
-const toggled_plots_erwfk = Inputs.toggle({label: "in Prozent %:", values: [1, 0]});
+const toggled_plots_erwfk = Inputs.toggle({label: "Absolute Werte:", values: [1, 0]});
 const toggled_value_erwfk = Generators.input(toggled_plots_erwfk);
 ```
 
 <div class="card">
-  <h2>Bevölkerungsentwicklung im Vergleich</h2>
-  <h3>${stt}</h3>
+  <h2>Jährliche Einwohnerentwicklung im Vergleich</h2>
+  <h3><span class="teil_name">${stt}</span></h3>
   ${compare_select_input}
   ${resize((width) => relativ_plot(einwohner_csv, id, compare_id, width))}
 </div>
 
 <div class="card">
-  <h2>Familienstand</h2>
-  <h3>${stt}</h3>
+  <h2>Familienstand (Wohnbevölkerung 18 Jahre und älter)</h2>
+  <h3><span class="teil_name">${stt}</span></h3>
   ${toggled_plots_famStand}
   ${resize((width) => familienstand_plot(einwohner_famStd_csv, id, width, toggled_value_famStand))}
 </div>
 
 <div class="card">
   <h2>Staatsangehörigkeit</h2>
-  <h3>${stt}</h3>
+  <h3><span class="teil_name">${stt}</span></h3>
   ${toggled_plots_sttatAK}
   ${resize((width) => staatsangehoerigkeit_plot(einwohner_staatsangehoerigkeit_csv, id, width,toggled_value_sttatAK))}
 </div>
 
 <div class="card">
-  <h2>Altersstruktur der Wohnbevölkerung im Vergleich</h2>
-  <h3>${stt}</h3>
+  <h2>Altersstruktur der EinwohnerInnen</h2>
+  <h3><span class="teil_name">${stt}</span></h3>
   ${toggled_plots_alt}
   ${resize((width) => altersgruppen_abs_plot(stt_ew_alt_csv, id, width, toggled_value_alt))}
 </div>
 
 <div class="card">
-  <h2>Erwerbsfähige (15 - unter 65) im Vergleich</h2>
-  <h3>${stt}</h3>
+  <h2>Erwerbsfähige (15 bis unter 65 jährige EinwohnerInnen)</h2>
+  <h3><span class="teil_name">${stt}</span></h3>
   ${toggled_plots_erwfk}
   ${resize((width) => einwohner_altersgruppen_erwerbsfähige_abs_plot(stt_ew_alt_csv, id, width, toggled_value_erwfk))}
 </div>

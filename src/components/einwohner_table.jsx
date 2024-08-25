@@ -1,6 +1,6 @@
 import * as d3 from "npm:d3";
 
-export function Table({einwohner_csv, einwohner_famStd_csv, einwohner_staatsangehoerigkeit_csv, stt_ew_alt_csv, id, width}={}) {
+export function Table({einwohner_csv, einwohner_famStd_csv, einwohner_staatsangehoerigkeit_csv, stt_ew_alt_csv, id, width, svgLink}={}) {
     const maxYear = Math.max(...einwohner_csv.map(obj => obj.Jahr));
     const minYear = Math.min(...einwohner_csv.map(obj => obj.Jahr));
     const previousYear = maxYear - 1;
@@ -40,7 +40,7 @@ export function Table({einwohner_csv, einwohner_famStd_csv, einwohner_staatsange
         const year = item.Jahr;
         return [
           { year, status: "Deutsch", prozent: item.Deutsch / total, absolut: item.Deutsch},
-          { year, status: "Sonstige", prozent: item.Nichtdeutsch / total, absolut: item.Nichtdeutsch},
+          { year, status: "Nichtdeutsch", prozent: item.Nichtdeutsch / total, absolut: item.Nichtdeutsch},
 
         ];
     });
@@ -58,32 +58,32 @@ export function Table({einwohner_csv, einwohner_famStd_csv, einwohner_staatsange
 
     return(<div class="grid grid-cols-2">
     <div class="card">
-                <h2><b>Bevölkerungsentwicklung</b></h2>
-                <h3>{einwohnerMaxYear[0].STT}, {minYear} bis {maxYear}</h3>
+                <h2>Entwicklung EinwohnerInnen</h2>
+                <h3><span class="teil_name">{einwohnerMaxYear[0].STT}</span>, {minYear} bis {maxYear}</h3>
                 <table>
                     <tbody>
                         <tr>
-                            <td>Einwohner im Jahr {maxYear}</td>
+                            <td>EinwohnerInnen im Jahr {maxYear}</td>
                             <td class="align-right">{einwohnerMaxYear[0].Einwohner.toLocaleString()} </td>
                         </tr>
                         <tr>
-                            <td>Wachstum zum Vorjahr</td>
+                            <td>Wachstum im Vergleich zum Vorjahr</td>
                             <td class="align-right"><span style={{ color: `${growthColor}` }}> {wachstum.toLocaleString(undefined, {maximumFractionDigits: 2}) } % {growth}</span></td>
                         </tr>
                         <tr>
-                            <td>Höchststand</td>
+                            <td>Höchste Einwohnerzahl</td>
                             <td class="align-right">{maxValue.toLocaleString()} im Jahr {maxValueJahr}</td>
                         </tr>
                         <tr>
-                            <td>Minimum</td>
+                            <td>Niedrigste Einwohnerzahl</td>
                             <td class="align-right">{minValue.toLocaleString()} im Jahr {minValueJahr}</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
             <div class="card">
-                <h2><b>Familienstand</b></h2> 
-                <h3>{einwohnerMaxYear[0].STT}, {maxYear}, EinwohnerInnen ab 18 Jahren</h3>           
+                <h2>Familienstand</h2> 
+                <h3><span class="teil_name">{einwohnerMaxYear[0].STT}</span>, {maxYear}, EinwohnerInnen ab 18 Jahren</h3>           
                 <table>
                     <tbody>                        
                         {transformedData.map(item =>
@@ -92,13 +92,22 @@ export function Table({einwohner_csv, einwohner_famStd_csv, einwohner_staatsange
                                 <td class="align-right">{item.absolut.toLocaleString()}</td>
                                 <td class="align-right">{(item.prozent *100).toLocaleString(undefined, {maximumFractionDigits: 1}) }% </td>
                             </tr>
-                        )}                        
-                    </tbody>
+                        )}
+                        <tr>
+                            <td>
+                                <a href="https://offenedaten-konstanz.de/dataset/einwohner-nach-familienstand" target="_blank" title="Einwohner in Konstanz nach Familienstand">
+                                    Datenquelle
+                                    <img src={svgLink} alt="link" />
+                                </a>
+                            </td>
+                            <td></td>
+                        </tr>
+                    </tbody>                    
                 </table>
             </div>
             <div class="card">
-                <h2><b>Staatsangehörigkeit</b></h2>
-                <h3>{einwohnerMaxYear[0].STT}, {maxYear}</h3>
+                <h2>Staatsangehörigkeit</h2>
+                <h3><span class="teil_name">{einwohnerMaxYear[0].STT}</span>, {maxYear}</h3>
                 <table>
                     <tbody>
                        {transformedData_sahk.map(item =>
@@ -108,12 +117,22 @@ export function Table({einwohner_csv, einwohner_famStd_csv, einwohner_staatsange
                                 <td class="align-right">{(item.prozent *100).toLocaleString(undefined, {maximumFractionDigits: 1})}%</td>
                             </tr>
                         )}
+                        <tr>
+                            <td>
+                                    <a href="https://offenedaten-konstanz.de/dataset/einwohner-deutsch-nichtdeutsch" target="_blank" title="Einwohner in Konstanz deutsch - nichtdeutsch
+
+    ">                                   Datenquelle
+                                        <img src={svgLink} alt="link" />
+                                    </a>
+                            </td>
+                            <td></td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
             <div class="card">
-                <h2><b>Altersstruktur</b></h2>
-                <h3>{einwohnerMaxYear[0].STT}, {maxYear}</h3>
+                <h2>Altersstruktur</h2>
+                <h3><span class="teil_name">{einwohnerMaxYear[0].STT}</span>, {maxYear}</h3>
                 <table>
                     <tbody>
                         {updatedArray.map(item =>
@@ -123,6 +142,14 @@ export function Table({einwohner_csv, einwohner_famStd_csv, einwohner_staatsange
                                 <td class="align-right"> {(item.Anteil *100).toLocaleString(undefined, {maximumFractionDigits: 1}) }%</td>
                             </tr>
                         )}
+                        <tr>
+                            <td>
+                                    <a href="https://offenedaten-konstanz.de/dataset/einwohner-nach-altersgruppen" target="_blank" title="Einwohner in Konstanz nach Altersgruppen">                                   Datenquelle
+                                        <img src={svgLink} alt="link" />
+                                    </a>
+                            </td>
+                            <td></td>
+                        </tr>
                     </tbody>
                 </table>
             </div>

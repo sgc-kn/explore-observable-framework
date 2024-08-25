@@ -76,6 +76,6 @@ export function altersgruppen_abs_plot(einwohner_altersgruppen_csv, stt_id, widt
     ]
   }
 )
-return toggled_value_alt ? rel : abs
+return toggled_value_alt ? abs : rel
 
 }

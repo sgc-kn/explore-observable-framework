@@ -10,10 +10,10 @@ export function familienstand_plot(einwohner_famStd_csv, stt_id, width, toggled_
       const year = item.Jahr;
       return [
         { year, status: "Geschieden", value_rel: item.Fam_Stand_Geschieden_LP_aufgehoben / total, value_abs: item.Fam_Stand_Geschieden_LP_aufgehoben },
-        { year, status: "Verheiratet", value_rel: item.Fam_Stand_Verheiratet_Lebenspartnerschaft / total, value_abs: item.Fam_Stand_Verheiratet_Lebenspartnerschaft},
-        { year, status: "Verwitwet", value_rel: item.Fam_Stand_Verwitwet_LP_gestorben / total, value_abs: item.Fam_Stand_Verwitwet_LP_gestorben},
         { year, status: "Ledig", value_rel: item.Fam_Stand_ledig / total, value_abs: item.Fam_Stand_ledig},
-        { year, status: "Unbekannt", value_rel: item.Fam_Stand_unbekannt / total, value_abs: item.Fam_Stand_unbekannt}
+        { year, status: "Unbekannt", value_rel: item.Fam_Stand_unbekannt / total, value_abs: item.Fam_Stand_unbekannt},
+        { year, status: "Verheiratet", value_rel: item.Fam_Stand_Verheiratet_Lebenspartnerschaft / total, value_abs: item.Fam_Stand_Verheiratet_Lebenspartnerschaft},
+        { year, status: "Verwitwet", value_rel: item.Fam_Stand_Verwitwet_LP_gestorben / total, value_abs: item.Fam_Stand_Verwitwet_LP_gestorben}
       ];
     });    
 

@@ -27,7 +27,7 @@ export function einwohner_altersgruppen_erwerbsfähige_abs_plot(einwohner_alters
     return [
       {
         Jahr: erwerbsfaehige.Jahr,
-        Gruppe: 'Erwerbsfaehige',
+        Gruppe: 'Erwerbsfähige',
         Anzahl: erwerbsfaehige.Anzahl
       },
       {
@@ -112,5 +112,5 @@ export function einwohner_altersgruppen_erwerbsfähige_abs_plot(einwohner_alters
     ]
   });
 
-  return toggled_value ? rel : abs;
+  return toggled_value ? abs : rel;
 }
