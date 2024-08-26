@@ -29,10 +29,9 @@ html`<style>
 ```
 # EinwohnerInnen in Konstanz
 
-<h2>EinwohnerInnen: Wohnbevölkerung (EinwohnerInnen mit Hauptwohnsitz am 31.12. des Jahres). Datenquelle ist die eigene Einwohnerfortschreibung auf Basis des städtischen Melderegisters. <br>
-Haushalte: Basis Wohnbevölkerung insgesamt. Haushalte ermittelt über Haushaltegenerierung mit dem Programm HHGen.</h2>
+<h2>EinwohnerInnen: Wohnbevölkerung (EinwohnerInnen mit Hauptwohnsitz am 31.12. des Jahres). Datenquelle ist die eigene Einwohnerfortschreibung auf Basis des städtischen Melderegisters.</h2>
 <div>
-  <a href="https://offenedaten-konstanz.de/search/taxonomy/term/42/field_tags/Bev%C3%B6lkerung-42">Datenquelle<img src="icons/icons8-externer-link.svg" alt="link" width="16" height="16">
+  <a href="https://offenedaten-konstanz.de/search/taxonomy/term/42/field_tags/Bev%C3%B6lkerung-42">Datenquelle Stadt Konstanz<img src="icons/icons8-externer-link.svg" alt="link" width="16" height="16">
   </a>
 </div>
 

@@ -96,7 +96,7 @@ export function Table({einwohner_csv, einwohner_famStd_csv, einwohner_staatsange
                         <tr>
                             <td>
                                 <a href="https://offenedaten-konstanz.de/dataset/einwohner-nach-familienstand" target="_blank" title="Einwohner in Konstanz nach Familienstand">
-                                    Datenquelle
+                                    Datenquelle Stadt Konstanz
                                     <img src={svgLink} alt="link" />
                                 </a>
                             </td>
@@ -121,7 +121,7 @@ export function Table({einwohner_csv, einwohner_famStd_csv, einwohner_staatsange
                             <td>
                                     <a href="https://offenedaten-konstanz.de/dataset/einwohner-deutsch-nichtdeutsch" target="_blank" title="Einwohner in Konstanz deutsch - nichtdeutsch
 
-    ">                                   Datenquelle
+    ">                                   Datenquelle Stadt Konstanz
                                         <img src={svgLink} alt="link" />
                                     </a>
                             </td>
@@ -144,7 +144,8 @@ export function Table({einwohner_csv, einwohner_famStd_csv, einwohner_staatsange
                         )}
                         <tr>
                             <td>
-                                    <a href="https://offenedaten-konstanz.de/dataset/einwohner-nach-altersgruppen" target="_blank" title="Einwohner in Konstanz nach Altersgruppen">                                   Datenquelle
+                                    <a href="https://offenedaten-konstanz.de/dataset/einwohner-nach-altersgruppen" target="_blank" title="Einwohner in Konstanz nach Altersgruppen"> 
+                                        Datenquelle Stadt Konstanz
                                         <img src={svgLink} alt="link" />
                                     </a>
                             </td>
