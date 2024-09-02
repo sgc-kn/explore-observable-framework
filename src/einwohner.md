@@ -16,18 +16,22 @@ const svgLink = FileAttachment("icons/icons8-externer-link.svg").url();
 ```js
 html`<style>
 @media (min-width: 600px) {
-  h2, h3 {max-width: 100% !important;}
+  h1, h2, h3 {max-width: 100% !important;}
   .card * {font-size: 15px !important;}
   .card h2, .card h2 * {font-size: 21px !important;} .card h2 {font-weight: 600;}  
   .card h3, .card .teil_name {font-size: 19px !important;} .card .teil_name {color: #3b5fc0;}
   .card table td, .card table td * {font-size: 17px !important;}
   .card label {font-size: 17px !important;}
   .inputs-3a86ea {--label-width: 140px;}
+  .logo {float: left; width: 180px; margin-right: 20px;}
 }
 .align-right {text-align: right;}
 </style>`
 ```
+<img src="icons/logo-konstanz-2024.png" class="logo">
+
 # EinwohnerInnen in Konstanz
+
 
 <h2>EinwohnerInnen: Wohnbevölkerung (EinwohnerInnen mit Hauptwohnsitz am 31.12. des Jahres). Datenquelle ist die eigene Einwohnerfortschreibung auf Basis des städtischen Melderegisters.</h2>
 <div>
