@@ -2,7 +2,7 @@
 
 pkgs.mkShell {
   buildInputs = [
-    pkgs.nodejs_18
+    pkgs.nodejs_20
 
     # keep this line if you use bash
     pkgs.bashInteractive

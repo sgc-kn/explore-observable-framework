@@ -1,7 +1,32 @@
-// See https://observablehq.com/framework/config for documentation.
+// Dynamic Page Footer
+import * as child_process from 'child_process';
+
 const now = new Date();
 const date = now.toLocaleDateString('de-DE');
 const time = now.toLocaleTimeString('de-DE', {hour: '2-digit', minute:'2-digit'});
+const repo = 'https://github.com/sgc-kn/explore-observable-framework'
+
+var footer = `Seite erstellt am ${date} um ${time} Uhr.`
+
+if (process.env.GITHUB_SHA) {
+  // we're likely in a CI build
+  const hash = process.env.GITHUB_SHA
+  const branch = process.env.GITHUB_REF.replace('/refs/heads', '')
+  if (branch == 'main') {
+    footer += ` <a href="${repo}">Quellcode auf Github.</a>`
+  } else {
+    footer += ` <a href="${repo}/tree/${branch}">Quellcode auf Github.</a>`
+  }
+  footer += ` <a href="${repo}/tree/${hash}">Version: ${hash.substring(0, 8)}</a>`
+} else {
+  const revision = child_process
+    .execSync('git describe --all --long --dirty')
+    .toString().trim().replace('heads/', '')
+  footer += ` Version: ${revision}`
+}
+
+// Observable Configuration
+// See https://observablehq.com/framework/config for documentation.
 
 export default {
   // The project’s title; used in the sidebar and webpage titles.
@@ -43,6 +68,6 @@ export default {
   // cleanUrls: true, // drop .html from URLs
 
   pager: false,
-  footer: `Erstellt mit <a href="observablehq.com">Observable</a> am ${date} um ${time} Uhr.`,
   cleanUrls: false,
+  footer,
 };
