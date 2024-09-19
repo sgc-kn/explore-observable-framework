@@ -6,7 +6,7 @@ The Python script simulates a random walk and returns the result as json.
 Let's first load and show the script itself.
 
 ```js
-const data_loader = FileAttachment("data/random.json.py").text();
+const data_loader = FileAttachment("data.json.py").text();
 ```
 
 ```js
@@ -16,7 +16,7 @@ display('\n' + data_loader)
 Now, let's have a look at the data:
 
 ```js
-const data = FileAttachment("data/random.json").json();
+const data = FileAttachment("data.json").json();
 ```
 
 ```js
