@@ -19,11 +19,25 @@ multiple CSV files to a zip files holding parquet files. We can query
 these parquet files with (DuckDB) SQL:
 
 ```sql id=data display
-select * from data;
+select
+  cast(STATIONS_ID as integer) as STATIONS_ID,
+  MESS_DATUM_BEGINN,
+  MESS_DATUM_ENDE,
+  cast(JA_FROSTTAGE as integer) as JA_FROSTTAGE,
+  cast(JA_TROPENNAECHTE as integer) as JA_TROPENNAECHTE,
+from data;
 ```
 
 ```sql id=meta_parameter display
-select * from meta_parameter;
+select
+  cast(Stations_ID as integer) as Stations_ID,
+  Von_Datum,
+  Bis_Datum,
+  Stationsname,
+  Parameter,
+  Parameterbeschreibung,
+  Einheit,
+from meta_parameter;
 ```
 
 ---
