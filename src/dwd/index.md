@@ -23,7 +23,7 @@ these parquet files with (DuckDB) SQL:
 ### KLINDEX data
 
 
-```sql id=klindex display
+```sql id=klindex_data display
 select
   cast(STATIONS_ID as integer) as STATIONS_ID,
   MESS_DATUM_BEGINN,
@@ -50,7 +50,7 @@ from klindex_meta_parameter;
 
 ### KL data
 
-```sql id=kl display
+```sql id=kl_data display
 select
   cast(STATIONS_ID as integer) as STATIONS_ID,
   MESS_DATUM_BEGINN,
@@ -83,7 +83,7 @@ Plotting works like before:
 Plot.plot({
   style: "overflow: visible;",
   marks: [
-    Plot.line(klindex, {x: "MESS_DATUM_BEGINN", y: "JA_FROSTTAGE"})
+    Plot.line(klindex_data, {x: "MESS_DATUM_BEGINN", y: "JA_FROSTTAGE"})
   ]
 })
 ```
@@ -92,7 +92,7 @@ Plot.plot({
 Plot.plot({
   style: "overflow: visible;",
   marks: [
-    Plot.line(klindex, {x: "MESS_DATUM_BEGINN", y: "JA_TROPENNAECHTE"})
+    Plot.line(klindex_data, {x: "MESS_DATUM_BEGINN", y: "JA_TROPENNAECHTE"})
   ]
 })
 ```
@@ -101,7 +101,42 @@ Plot.plot({
 Plot.plot({
   style: "overflow: visible;",
   marks: [
-    Plot.line(kl, {x: "MESS_DATUM_BEGINN", y: "JA_TX"})
+    Plot.line(kl_data, {x: "MESS_DATUM_BEGINN", y: "JA_TX"})
+  ]
+})
+```
+
+---
+
+## Moving Average
+
+```sql id=kl_tx_ma
+select
+    MESS_DATUM_BEGINN,
+    cast(JA_TX as double) as JA_TX,
+    AVG(JA_TX::double) OVER (
+        PARTITION BY STATIONS_ID
+        ORDER BY MESS_DATUM_BEGINN
+        ROWS BETWEEN 29 PRECEDING AND CURRENT ROW
+    ) AS JA_TX_MA,
+    row_number() OVER (
+        PARTITION BY STATIONS_ID
+        ORDER BY MESS_DATUM_BEGINN
+    ) AS JA_TX_MA_N,
+from kl_data
+where
+  JA_TX != -999
+qualify
+  JA_TX_MA_N >= 30
+```
+
+```js
+Plot.plot({
+  style: "overflow: visible;",
+  grid: true,
+  marks: [
+    Plot.dot(kl_data, {x: "MESS_DATUM_BEGINN", y: "JA_TX"}),
+    Plot.line(kl_tx_ma, {x: "MESS_DATUM_BEGINN", y: "JA_TX_MA"}),
   ]
 })
 ```
