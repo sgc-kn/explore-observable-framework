@@ -1,7 +1,9 @@
 ---
 sql:
-  data: ./data/data.parquet
-  meta_parameter: ./data/meta_parameter.parquet
+  kl_data: ./data/kl_data.parquet
+  kl_meta_parameter: ./data/kl_meta_parameter.parquet
+  klindex_data: ./data/klindex_data.parquet
+  klindex_meta_parameter: ./data/klindex_meta_parameter.parquet
 ---
 
 # Klimadashboard
@@ -18,17 +20,23 @@ The script `data.zip.py` translates the DWD source zip file containing
 multiple CSV files to a zip files holding parquet files. We can query
 these parquet files with (DuckDB) SQL:
 
-```sql id=data display
+### KLINDEX data
+
+
+```sql id=klindex display
 select
   cast(STATIONS_ID as integer) as STATIONS_ID,
   MESS_DATUM_BEGINN,
   MESS_DATUM_ENDE,
+  cast(JA_EISTAGE as integer) as JA_EISTAGE,
+  cast(JA_SOMMERTAGE as integer) as JA_SOMMERTAGE,
+  cast(JA_HEISSE_TAGE as integer) as JA_HEISSE_TAGE,
   cast(JA_FROSTTAGE as integer) as JA_FROSTTAGE,
   cast(JA_TROPENNAECHTE as integer) as JA_TROPENNAECHTE,
-from data;
+from klindex_data;
 ```
 
-```sql id=meta_parameter display
+```sql id=klindex_meta_parameter display
 select
   cast(Stations_ID as integer) as Stations_ID,
   Von_Datum,
@@ -37,7 +45,32 @@ select
   Parameter,
   Parameterbeschreibung,
   Einheit,
-from meta_parameter;
+from klindex_meta_parameter;
+```
+
+### KL data
+
+```sql id=kl display
+select
+  cast(STATIONS_ID as integer) as STATIONS_ID,
+  MESS_DATUM_BEGINN,
+  MESS_DATUM_ENDE,
+  cast(JA_TX as double) as JA_TX,
+from kl_data
+where
+  JA_TX != -999
+```
+
+```sql id=kl_meta_parameter display
+select
+  cast(Stations_ID as integer) as Stations_ID,
+  Von_Datum,
+  Bis_Datum,
+  Stationsname,
+  Parameter,
+  Parameterbeschreibung,
+  Einheit,
+from kl_meta_parameter;
 ```
 
 ---
@@ -50,7 +83,7 @@ Plotting works like before:
 Plot.plot({
   style: "overflow: visible;",
   marks: [
-    Plot.line(data, {x: "MESS_DATUM_BEGINN", y: "JA_FROSTTAGE"})
+    Plot.line(klindex, {x: "MESS_DATUM_BEGINN", y: "JA_FROSTTAGE"})
   ]
 })
 ```
@@ -59,7 +92,16 @@ Plot.plot({
 Plot.plot({
   style: "overflow: visible;",
   marks: [
-    Plot.line(data, {x: "MESS_DATUM_BEGINN", y: "JA_TROPENNAECHTE"})
+    Plot.line(klindex, {x: "MESS_DATUM_BEGINN", y: "JA_TROPENNAECHTE"})
+  ]
+})
+```
+
+```js
+Plot.plot({
+  style: "overflow: visible;",
+  marks: [
+    Plot.line(kl, {x: "MESS_DATUM_BEGINN", y: "JA_TX"})
   ]
 })
 ```
