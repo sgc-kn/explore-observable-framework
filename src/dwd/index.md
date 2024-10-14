@@ -8,35 +8,40 @@ sql:
 
 # Dashboard: DWD Wetterbeobachtungen
 
-```sql id=ja_tt
-select
-  cast(STATIONS_ID as integer) as STATIONS_ID,
-  MESS_DATUM_BEGINN,
-  MESS_DATUM_ENDE,
-  cast(JA_TT as double) as JA_TT,
-from kl_data
-where
-  JA_TT != -999
-```
-
-```sql id=ja_tt_ma
-select
-    MESS_DATUM_BEGINN,
-    cast(JA_TT as double) as JA_TT,
-    AVG(JA_TT::double) OVER (
-        PARTITION BY STATIONS_ID
-        ORDER BY MESS_DATUM_BEGINN
-        ROWS BETWEEN 29 PRECEDING AND CURRENT ROW
-    ) AS JA_TT_MA,
-    row_number() OVER (
-        PARTITION BY STATIONS_ID
-        ORDER BY MESS_DATUM_BEGINN
-    ) AS JA_TT_MA_N,
-from kl_data
-where
-  JA_TT != -999
-qualify
-  JA_TT_MA_N >= 30
+```sql id=kl_long
+with long as(
+  select
+    cast(STATIONS_ID as integer) as station,
+    MESS_DATUM_BEGINN as year,
+    variable,
+    cast(value as double) as value,
+  from kl_data
+  unpivot (
+    value for variable in (JA_TT, JA_TX, JA_TN)
+  )
+  where value != -999
+),
+ma as (
+  select
+      station,
+      year,
+      variable,
+      AVG(value::double) OVER (
+          PARTITION BY station, variable
+          ORDER BY year
+          ROWS BETWEEN 29 PRECEDING AND CURRENT ROW
+      ) AS value_ma,
+      row_number() OVER (
+          PARTITION BY station, variable
+          ORDER BY year
+      ) AS n,
+  from long
+  qualify n >= 30
+)
+select long.station, long.year, long.variable, long.value, ma.value_ma
+from long
+left join ma
+on long.station = ma.station and long.variable = ma.variable and long.year = ma.year
 ```
 
 <div class="card">
@@ -46,135 +51,29 @@ qualify
       width,
       grid: true,
       inset: 10,
+      color: { legend: true },
       marks: [
         Plot.frame(),
         Plot.axisX({label: 'Jahr', labelAnchor: 'center', labelArrow: 'none'}),
         Plot.axisY({label: null}),
-        Plot.dot(ja_tt, {
-          x: "MESS_DATUM_BEGINN",
-          y: "JA_TT",
-          stroke: "currentColor",
+        Plot.dot(kl_long, {
+          x: "year",
+          y: "value",
+          stroke: "variable",
         }),
-        Plot.line(ja_tt_ma, {
-          x: "MESS_DATUM_BEGINN",
-          y: "JA_TT_MA",
-          stroke: "var(--theme-foreground-focus)"},
-        ),
+        Plot.line(kl_long, {
+          x: "year",
+          y: "value_ma",
+          stroke: "variable",
+          filter: (d) => d.value_ma != null
+        }),
       ]
     }))}
+  TODO: bessere Labels auf der Legende
+
+  TODO: Y-Achse zuschneiden?
 </div>
 
-```sql id=ja_tn
-select
-  cast(STATIONS_ID as integer) as STATIONS_ID,
-  MESS_DATUM_BEGINN,
-  MESS_DATUM_ENDE,
-  cast(JA_TN as double) as JA_TN,
-from kl_data
-where
-  JA_TN != -999
-```
-
-```sql id=ja_tn_ma
-select
-    MESS_DATUM_BEGINN,
-    cast(JA_TN as double) as JA_TN,
-    AVG(JA_TN::double) OVER (
-        PARTITION BY STATIONS_ID
-        ORDER BY MESS_DATUM_BEGINN
-        ROWS BETWEEN 29 PRECEDING AND CURRENT ROW
-    ) AS JA_TN_MA,
-    row_number() OVER (
-        PARTITION BY STATIONS_ID
-        ORDER BY MESS_DATUM_BEGINN
-    ) AS JA_TN_MA_N,
-from kl_data
-where
-  JA_TN != -999
-qualify
-  JA_TN_MA_N >= 30
-```
-
-<div class="card">
-  <h2>Temperatur (Tagesmininum)</h2>
-  <h3>Jahresmittel mit 30-jährigem gleitendem Durchschnitt (°C)</h3>
-  ${resize((width) => Plot.plot({
-      width,
-      grid: true,
-      inset: 10,
-      marks: [
-        Plot.frame(),
-        Plot.axisX({label: 'Jahr', labelAnchor: 'center', labelArrow: 'none'}),
-        Plot.axisY({label: null}),
-        Plot.dot(ja_tn, {
-          x: "MESS_DATUM_BEGINN",
-          y: "JA_TN",
-          stroke: "currentColor",
-        }),
-        Plot.line(ja_tn_ma, {
-          x: "MESS_DATUM_BEGINN",
-          y: "JA_TN_MA",
-          stroke: "var(--theme-foreground-focus)"},
-        ),
-      ]
-    }))}
-</div>
-
-```sql id=js_tx
-select
-  cast(STATIONS_ID as integer) as STATIONS_ID,
-  MESS_DATUM_BEGINN,
-  MESS_DATUM_ENDE,
-  cast(JA_TX as double) as JA_TX,
-from kl_data
-where
-  JA_TX != -999
-```
-
-```sql id=js_tx_ma
-select
-    MESS_DATUM_BEGINN,
-    cast(JA_TX as double) as JA_TX,
-    AVG(JA_TX::double) OVER (
-        PARTITION BY STATIONS_ID
-        ORDER BY MESS_DATUM_BEGINN
-        ROWS BETWEEN 29 PRECEDING AND CURRENT ROW
-    ) AS JA_TX_MA,
-    row_number() OVER (
-        PARTITION BY STATIONS_ID
-        ORDER BY MESS_DATUM_BEGINN
-    ) AS JA_TX_MA_N,
-from kl_data
-where
-  JA_TX != -999
-qualify
-  JA_TX_MA_N >= 30
-```
-
-<div class="card">
-  <h2>Temperatur (Tagesmaximum)</h2>
-  <h3>Jahresmittel mit 30-jährigem gleitendem Durchschnitt (°C)</h3>
-  ${resize((width) => Plot.plot({
-      width,
-      grid: true,
-      inset: 10,
-      marks: [
-        Plot.frame(),
-        Plot.axisX({label: 'Jahr', labelAnchor: 'center', labelArrow: 'none'}),
-        Plot.axisY({label: null}),
-        Plot.dot(js_tx, {
-          x: "MESS_DATUM_BEGINN",
-          y: "JA_TX",
-          stroke: "currentColor",
-        }),
-        Plot.line(js_tx_ma, {
-          x: "MESS_DATUM_BEGINN",
-          y: "JA_TX_MA",
-          stroke: "var(--theme-foreground-focus)"},
-        ),
-      ]
-    }))}
-</div>
 
 ```sql id=ja_sd_s
 select
