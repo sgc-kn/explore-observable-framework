@@ -32,6 +32,8 @@ tables |= { 'klindex_' + k: v for k, v in klindex_tables.items() }
 
 kl_data = tables['kl_data']
 kl_variables = tables['kl_meta_parameter']['Parameter'].drop_duplicates()
+klindex_data = tables['klindex_data']
+klindex_variables = tables['klindex_meta_parameter']['Parameter'].drop_duplicates()
 
 sql_long_ma30y = f"""
 with
@@ -43,6 +45,16 @@ long as (
   from kl_data
   unpivot (
     value for variable in ({", ".join(kl_variables)})
+  )
+  where value != -999
+  union
+  select
+    MESS_DATUM_BEGINN as year,
+    variable,
+    cast(value as double) as value,
+  from klindex_data
+  unpivot (
+    value for variable in ({", ".join(klindex_variables)})
   )
   where value != -999
 ),
