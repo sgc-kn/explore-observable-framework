@@ -25,12 +25,34 @@ if (process.env.GITHUB_SHA) {
   footer += ` Version: ${revision}`
 }
 
+const header = `
+<div style="display: flex; justify-content: space-between; width: 100%">
+  <div style="display: flex; align-items: center">
+    <img style="height: 2rem"
+         src="assets/skn-logo.svg"
+         alt="Logo der Stadtverwaltung Konstanz"
+         /><b>Stadtdaten Konstanz</b>
+  </div>
+  <div>
+    <a href="${repo}">
+      <img style="height: 1.5rem"
+           src="assets/github-logo.svg"
+           alt="Github Logo"
+           />
+    </a>
+  </div>
+</div>
+`
+
 // Observable Configuration
 // See https://observablehq.com/framework/config for documentation.
 
 export default {
   // The project’s title; used in the sidebar and webpage titles.
   title: "Stadtdaten Konstanz",
+
+  home: 'Navigation',
+  header,
 
   // The pages and sections in the sidebar. If you don’t specify this option,
   // all pages will be listed in alphabetical order. Listing pages explicitly
@@ -50,6 +72,10 @@ export default {
     <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
     <link rel="icon" type="image/png" href="/assets/favicon.png">
   `,
+
+  toc: {
+    label: 'Inhaltsverzeichnis',
+  },
 
   // The path to the source root.
   root: "src",

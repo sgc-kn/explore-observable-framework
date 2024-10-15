@@ -1,6 +1,5 @@
 ---
 theme: dashboard
-toc: false
 sql:
   long_ma30y: ./data/long_ma30y.parquet
   kl_meta_geo: ./data/kl_meta_geo.parquet
