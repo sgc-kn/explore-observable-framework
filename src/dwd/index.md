@@ -1,5 +1,6 @@
 ---
 sql:
+  long_ma30y: ./data/long_ma30y.parquet
   kl_data: ./data/kl_data.parquet
   kl_meta_parameter: ./data/kl_meta_parameter.parquet
   klindex_data: ./data/klindex_data.parquet
@@ -8,103 +9,147 @@ sql:
 
 # Dashboard: DWD Wetterbeobachtungen
 
-```sql id=kl_long
-with long as(
-  select
-    cast(STATIONS_ID as integer) as station,
-    MESS_DATUM_BEGINN as year,
-    variable,
-    cast(value as double) as value,
-  from kl_data
-  unpivot (
-    value for variable in (JA_TT, JA_TX, JA_TN)
-  )
-  where value != -999
-),
-ma as (
-  select
-      station,
-      year,
-      variable,
-      AVG(value::double) OVER (
-          PARTITION BY station, variable
-          ORDER BY year
-          ROWS BETWEEN 29 PRECEDING AND CURRENT ROW
-      ) AS value_ma,
-      row_number() OVER (
-          PARTITION BY station, variable
-          ORDER BY year
-      ) AS n,
-  from long
-  qualify n >= 30
-)
-select long.station, long.year, long.variable, long.value, ma.value_ma
-from long
-left join ma
-on long.station = ma.station and long.variable = ma.variable and long.year = ma.year
+```sql id=temp
+select
+  year,
+  variable,
+  coalesce(value::double, 'NaN'::double) as value,
+  coalesce(ma30y::double, 'NaN'::double) as ma30y,
+from long_ma30y
+where variable in ('JA_TT', 'JA_TN', 'JA_TX')
+order by year asc, variable asc
+```
+
+```js
+const variable_labels = {
+  "JA_MX_TN": "Absolutes Minimum",
+  "JA_MX_TX": "Absolutes Maximum",
+  "JA_TN": "Jahresmittel aus Tagesminimum",
+  "JA_TT": "Jahresmittel aus Tagesdurchschnitt",
+  "JA_TX": "Jahresmittel aus Tagesmaximum",
+};
+
+function label_variable(variable) {
+  return variable_labels[variable]
+};
 ```
 
 <div class="card">
-  <h2>Temperatur</h2>
-  <h3>Jahresmittel mit 30-jährigem gleitendem Durchschnitt (°C)</h3>
+  <h2>Temperatur der Luft</h2>
+  <h3>Jahresmittel mit 30-jährigem gleitendem Durchschnitt</h3>
   ${resize((width) => Plot.plot({
       width,
       grid: true,
       inset: 10,
-      color: { legend: true },
+      color: {
+        domain: ["JA_TN", "JA_TT", "JA_TX"],
+        legend: true,
+        tickFormat: label_variable,
+      },
       marks: [
         Plot.frame(),
         Plot.axisX({label: 'Jahr', labelAnchor: 'center', labelArrow: 'none'}),
-        Plot.axisY({label: null}),
-        Plot.dot(kl_long, {
+        Plot.axisY({label: '°C', labelArrow: 'none'}),
+        Plot.dot(temp, {
           x: "year",
           y: "value",
           stroke: "variable",
         }),
-        Plot.line(kl_long, {
+        Plot.line(temp, {
           x: "year",
-          y: "value_ma",
+          y: "ma30y",
           stroke: "variable",
-          filter: (d) => d.value_ma != null
         }),
       ]
     }))}
-  TODO: bessere Labels auf der Legende
-
-  TODO: Y-Achse zuschneiden?
 </div>
 
-
-```sql id=ja_sd_s
+```sql id=maxtemp
 select
-  cast(STATIONS_ID as integer) as STATIONS_ID,
-  MESS_DATUM_BEGINN,
-  MESS_DATUM_ENDE,
-  cast(JA_SD_S as double) as JA_SD_S,
-from kl_data
-where JA_SD_S != -999
+  year,
+  variable,
+  coalesce(value::double, 'NaN'::double) as value,
+  coalesce(ma30y::double, 'NaN'::double) as ma30y,
+from long_ma30y
+where variable in ('JA_MX_TX')
+order by year asc, variable asc
 ```
 
-```sql id=ja_sd_s_ma
+<div class="card">
+  <h2>Temperatur der Luft</h2>
+  <h3>Absolutes Maximum mit 30-jährigem gleitendem Durchschnitt</h3>
+  ${resize((width) => Plot.plot({
+      width,
+      grid: true,
+      inset: 10,
+      marks: [
+        Plot.frame(),
+        Plot.axisX({label: 'Jahr', labelAnchor: 'center', labelArrow: 'none'}),
+        Plot.axisY({label: '°C', labelArrow: 'none'}),
+        Plot.dot(maxtemp, {
+          x: "year",
+          y: "value",
+          stroke: "variable",
+        }),
+        Plot.line(maxtemp, {
+          x: "year",
+          y: "ma30y",
+          stroke: "variable",
+        }),
+      ]
+    }))}
+</div>
+
+```sql id=mintemp
 select
-    MESS_DATUM_BEGINN,
-    AVG(JA_SD_S::double) OVER (
-        PARTITION BY STATIONS_ID
-        ORDER BY MESS_DATUM_BEGINN
-        ROWS BETWEEN 29 PRECEDING AND CURRENT ROW
-    ) AS JA_SD_S_MA,
-    row_number() OVER (
-        PARTITION BY STATIONS_ID
-        ORDER BY MESS_DATUM_BEGINN
-    ) AS N,
-from kl_data
-where JA_SD_S != -999
-qualify N >= 30
+  year,
+  variable,
+  coalesce(value::double, 'NaN'::double) as value,
+  coalesce(ma30y::double, 'NaN'::double) as ma30y,
+from long_ma30y
+where variable in ('JA_MX_TN')
+order by year asc, variable asc
+```
+
+<div class="card">
+  <h2>Temperatur der Luft</h2>
+  <h3>Absolutes Minimum mit 30-jährigem gleitendem Durchschnitt</h3>
+  ${resize((width) => Plot.plot({
+      width,
+      grid: true,
+      inset: 10,
+      marks: [
+        Plot.frame(),
+        Plot.axisX({label: 'Jahr', labelAnchor: 'center', labelArrow: 'none'}),
+        Plot.axisY({label: '°C', labelArrow: 'none'}),
+        Plot.dot(mintemp, {
+          x: "year",
+          y: "value",
+          stroke: "variable",
+        }),
+        Plot.line(mintemp, {
+          x: "year",
+          y: "ma30y",
+          stroke: "variable",
+        }),
+      ]
+    }))}
+</div>
+
+```sql id=sun
+select
+  year,
+  variable,
+  coalesce(value::double, 'NaN'::double) as value,
+  coalesce(ma30y::double, 'NaN'::double) as ma30y,
+from long_ma30y
+where variable in ('JA_SD_S')
+order by year asc, variable asc
 ```
 
 <div class="card">
   <h2>Sonnenstunden</h2>
-  <h3>Jahressummen mit 30-jährigem gleitendem Durchschnitt</h3>
+  <h3>Jahressumme mit 30-jährigem gleitendem Durchschnitt</h3>
   ${resize((width) => Plot.plot({
       width,
       grid: true,
@@ -113,49 +158,70 @@ qualify N >= 30
         Plot.frame(),
         Plot.axisX({label: 'Jahr', labelAnchor: 'center', labelArrow: 'none'}),
         Plot.axisY({label: null}),
-        Plot.dot(ja_sd_s, {
-          x: "MESS_DATUM_BEGINN",
-          y: "JA_SD_S",
-          stroke: "currentColor",
+        Plot.dot(sun, {
+          x: "year",
+          y: "value",
+          stroke: "variable",
         }),
-        Plot.line(ja_sd_s_ma, {
-          x: "MESS_DATUM_BEGINN",
-          y: "JA_SD_S_MA",
-          stroke: "var(--theme-foreground-focus)"},
+        Plot.line(sun, {
+          x: "year",
+          y: "ma30y",
+          stroke: "variable",
+        }),
+      ]
+    }))}
+</div>
+
+```sql id=rain
+select
+  year,
+  variable,
+  coalesce(value::double, 'NaN'::double) as value,
+  coalesce(ma30y::double, 'NaN'::double) as ma30y,
+from long_ma30y
+where variable in ('JA_RR')
+order by year asc, variable asc
+```
+
+<div class="card">
+  <h2>Niederschlag</h2>
+  <h3>Jahressumme mit 30-jährigem gleitendem Durchschnitt</h3>
+  ${resize((width) => Plot.plot({
+      width,
+      grid: true,
+      inset: 10,
+      marks: [
+        Plot.frame(),
+        Plot.axisX({label: 'Jahr', labelAnchor: 'center', labelArrow: 'none'}),
+        Plot.axisY({label: 'Millimeter', labelArrow: 'none'}),
+        Plot.dot(rain, {
+          x: "year",
+          y: "value",
+          stroke: "variable",
+        }),
+        Plot.line(rain, {
+          x: "year",
+          y: "ma30y",
+          stroke: "variable"},
         ),
       ]
     }))}
 </div>
 
-```sql id=ja_rr
+```sql id=maxrain
 select
-  cast(STATIONS_ID as integer) as STATIONS_ID,
-  MESS_DATUM_BEGINN,
-  MESS_DATUM_ENDE,
-  cast(JA_RR as double) as JA_RR,
-from kl_data
-```
-
-```sql id=ja_rr_ma
-select
-    MESS_DATUM_BEGINN,
-    AVG(JA_RR::double) OVER (
-        PARTITION BY STATIONS_ID
-        ORDER BY MESS_DATUM_BEGINN
-        ROWS BETWEEN 29 PRECEDING AND CURRENT ROW
-    ) AS JA_RR_MA,
-    row_number() OVER (
-        PARTITION BY STATIONS_ID
-        ORDER BY MESS_DATUM_BEGINN
-    ) AS N,
-from kl_data
-where JA_RR != -999
-qualify N >= 30
+  year,
+  variable,
+  coalesce(value::double, 'NaN'::double) as value,
+  coalesce(ma30y::double, 'NaN'::double) as ma30y,
+from long_ma30y
+where variable in ('JA_MX_RS')
+order by year asc, variable asc
 ```
 
 <div class="card">
   <h2>Niederschlag</h2>
-  <h3>Jahressummen mit 30-jährigem gleitendem Durchschnitt (mm)</h3>
+  <h3>Jahresmaximum mit 30-jährigem gleitendem Durchschnitt</h3>
   ${resize((width) => Plot.plot({
       width,
       grid: true,
@@ -163,16 +229,16 @@ qualify N >= 30
       marks: [
         Plot.frame(),
         Plot.axisX({label: 'Jahr', labelAnchor: 'center', labelArrow: 'none'}),
-        Plot.axisY({label: null}),
-        Plot.dot(ja_rr, {
-          x: "MESS_DATUM_BEGINN",
-          y: "JA_RR",
-          stroke: "currentColor",
+        Plot.axisY({label: 'Millimeter', labelArrow: 'none'}),
+        Plot.dot(maxrain, {
+          x: "year",
+          y: "value",
+          stroke: "variable",
         }),
-        Plot.line(ja_rr_ma, {
-          x: "MESS_DATUM_BEGINN",
-          y: "JA_RR_MA",
-          stroke: "var(--theme-foreground-focus)"},
+        Plot.line(maxrain, {
+          x: "year",
+          y: "ma30y",
+          stroke: "variable"},
         ),
       ]
     }))}
@@ -180,43 +246,22 @@ qualify N >= 30
 
 ---
 
-# Tabellen
+# Variablen
 
-```sql id=klindex_data
-select
-  cast(STATIONS_ID as integer) as STATIONS_ID,
-  MESS_DATUM_BEGINN,
-  MESS_DATUM_ENDE,
-  cast(JA_EISTAGE as integer) as JA_EISTAGE,
-  cast(JA_SOMMERTAGE as integer) as JA_SOMMERTAGE,
-  cast(JA_HEISSE_TAGE as integer) as JA_HEISSE_TAGE,
-  cast(JA_FROSTTAGE as integer) as JA_FROSTTAGE,
-  cast(JA_TROPENNAECHTE as integer) as JA_TROPENNAECHTE,
-from klindex_data;
-```
-
-```sql id=klindex_meta_parameter display
-select
-  cast(Stations_ID as integer) as Stations_ID,
-  Von_Datum,
-  Bis_Datum,
-  Stationsname,
-  Parameter,
-  Parameterbeschreibung,
-  Einheit,
-from klindex_meta_parameter;
-```
-
-```sql id=kl_meta_parameter display
-select
-  cast(Stations_ID as integer) as Stations_ID,
-  Von_Datum,
-  Bis_Datum,
-  Stationsname,
-  Parameter,
-  Parameterbeschreibung,
-  Einheit,
-from kl_meta_parameter;
+```sql id=kl_meta display
+select distinct
+  Parameter as variable,
+  Parameterbeschreibung as label,
+  Einheit as unit,
+  'kl' as tab,
+from kl_meta_parameter
+union
+select distinct
+  Parameter as variable,
+  Parameterbeschreibung as label,
+  Einheit as unit,
+  'klindex' as tab,
+from klindex_meta_parameter
 ```
 
 ---
