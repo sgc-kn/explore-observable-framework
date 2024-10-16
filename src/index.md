@@ -66,6 +66,16 @@ function label_klindex(variable) {
       width,
       grid: true,
       inset: 10,
+      x: {
+        label: 'Jahr',
+        labelAnchor: 'center',
+        labelArrow: 'none',
+      },
+      y: {
+        label: null,
+        labelArrow: 'none',
+        tickFormat: Plot.formatNumber("de-DE"),
+      },
       color: {
         domain: ["JA_SOMMERTAGE", "JA_HEISSE_TAGE", "JA_TROPENNAECHTE"],
         legend: true,
@@ -73,8 +83,6 @@ function label_klindex(variable) {
       },
       marks: [
         Plot.frame(),
-        Plot.axisX({label: 'Jahr', labelAnchor: 'center', labelArrow: 'none'}),
-        Plot.axisY({label: null, labelArrow: 'none'}),
         Plot.dot(klindex, {
           x: "year",
           y: "value",
