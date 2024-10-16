@@ -1,5 +1,6 @@
 ---
 theme: dashboard
+toc: false
 sql:
   long_ma30y: ./data/long_ma30y.parquet
   kl_meta_geo: ./data/kl_meta_geo.parquet
@@ -28,7 +29,8 @@ group by lat, lon
 order by von asc
 ```
 
-<div class="card">
+<div class="grid grid-cols-4">
+<div class="card grid-colspan-2 grid-rowspan-2">
   <h2>Messstation Konstanz</h2>
   <h3>Position der Station im Laufe der Zeit</h3>
 
@@ -36,8 +38,33 @@ order by von asc
 const map_div = display(document.createElement("div"));
 map_div.style = "height: 400px;";
 ```
-
 </div>
+
+<div class="card grid-colspan-1">
+
+## TODO
+### Wichtige Kenndaten 1
+
+abc
+</div>
+
+<div class="card grid-colspan-1">
+
+## TODO
+### Wichtige Kenndaten 2
+
+abc
+</div>
+
+<div class="card grid-colspan-2">
+
+## TODO
+### Wichtige Kenndaten 3
+
+abc
+</div>
+
+</div><!-- grid -->
 
 ```js
 const map = L.map(map_div, {
@@ -91,6 +118,28 @@ where variable in ('JA_TT', 'JA_TN', 'JA_TX')
 order by year asc, variable asc
 ```
 
+```sql id=maxtemp
+select
+  year,
+  variable,
+  coalesce(value::double, 'NaN'::double) as value,
+  coalesce(ma30y::double, 'NaN'::double) as ma30y,
+from long_ma30y
+where variable in ('JA_MX_TX')
+order by year asc, variable asc
+```
+
+```sql id=mintemp
+select
+  year,
+  variable,
+  coalesce(value::double, 'NaN'::double) as value,
+  coalesce(ma30y::double, 'NaN'::double) as ma30y,
+from long_ma30y
+where variable in ('JA_MX_TN')
+order by year asc, variable asc
+```
+
 ```js
 const temp_variables = {
   "JA_MX_TN": "Absolutes Minimum",
@@ -105,6 +154,7 @@ function label_temp(variable) {
 };
 ```
 
+<div class="grid grid-cols-2">
 <div class="card">
   <h2>Temperatur der Luft</h2>
   <h3>Jahresmittel mit 30-jährigem gleitendem Durchschnitt</h3>
@@ -141,18 +191,8 @@ function label_temp(variable) {
         }),
       ]
     }))}
-</div>
 
-```sql id=maxtemp
-select
-  year,
-  variable,
-  coalesce(value::double, 'NaN'::double) as value,
-  coalesce(ma30y::double, 'NaN'::double) as ma30y,
-from long_ma30y
-where variable in ('JA_MX_TX')
-order by year asc, variable asc
-```
+</div>
 
 <div class="card">
   <h2>Temperatur der Luft</h2>
@@ -187,16 +227,20 @@ order by year asc, variable asc
     }))}
 </div>
 
-```sql id=mintemp
+</div> <!-- grid -->
+
+```sql id=sun
 select
   year,
   variable,
   coalesce(value::double, 'NaN'::double) as value,
   coalesce(ma30y::double, 'NaN'::double) as ma30y,
 from long_ma30y
-where variable in ('JA_MX_TN')
+where variable in ('JA_SD_S')
 order by year asc, variable asc
 ```
+
+<div class="grid grid-cols-2">
 
 <div class="card">
   <h2>Temperatur der Luft</h2>
@@ -231,17 +275,6 @@ order by year asc, variable asc
     }))}
 </div>
 
-```sql id=sun
-select
-  year,
-  variable,
-  coalesce(value::double, 'NaN'::double) as value,
-  coalesce(ma30y::double, 'NaN'::double) as ma30y,
-from long_ma30y
-where variable in ('JA_SD_S')
-order by year asc, variable asc
-```
-
 <div class="card">
   <h2>Sonnenstunden</h2>
   <h3>Jahressumme mit 30-jährigem gleitendem Durchschnitt</h3>
@@ -275,6 +308,8 @@ order by year asc, variable asc
     }))}
 </div>
 
+</div> <!-- grid -->
+
 ```sql id=rain
 select
   year,
@@ -285,6 +320,19 @@ from long_ma30y
 where variable in ('JA_RR')
 order by year asc, variable asc
 ```
+
+```sql id=maxrain
+select
+  year,
+  variable,
+  coalesce(value::double, 'NaN'::double) as value,
+  coalesce(ma30y::double, 'NaN'::double) as ma30y,
+from long_ma30y
+where variable in ('JA_MX_RS')
+order by year asc, variable asc
+```
+
+<div class="grid grid-cols-2">
 
 <div class="card">
   <h2>Niederschlag</h2>
@@ -319,17 +367,6 @@ order by year asc, variable asc
     }))}
 </div>
 
-```sql id=maxrain
-select
-  year,
-  variable,
-  coalesce(value::double, 'NaN'::double) as value,
-  coalesce(ma30y::double, 'NaN'::double) as ma30y,
-from long_ma30y
-where variable in ('JA_MX_RS')
-order by year asc, variable asc
-```
-
 <div class="card">
   <h2>Niederschlag</h2>
   <h3>Jahresmaximum mit 30-jährigem gleitendem Durchschnitt</h3>
@@ -363,6 +400,8 @@ order by year asc, variable asc
     }))}
 </div>
 
+</div> <!-- grid -->
+
 ```sql id=klindex
 select
   year,
@@ -392,6 +431,8 @@ function label_klindex(variable) {
   }
 };
 ```
+
+<div class="grid grid-cols-2">
 
 <div class="card">
   <h2>Klimakenntage</h2>
@@ -468,3 +509,5 @@ function label_klindex(variable) {
       ]
     }))}
 </div>
+
+</div> <!-- grid -->
